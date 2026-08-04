@@ -1,0 +1,85 @@
+[gd_scene format=4 uid="uid://qcohh0mnmxyn"]
+
+[ext_resource type="Texture2D" uid="uid://bnu0mwvep1iwr" path="res://assets/base_floor.png" id="1_e058w"]
+[ext_resource type="Texture2D" uid="uid://ci16s1wkwrj7d" path="res://assets/parking_superior_line.png" id="2_q3vu2"]
+[ext_resource type="Texture2D" uid="uid://cndhbnq5c3mrf" path="res://assets/stop_park_down.png" id="3_1ue1w"]
+[ext_resource type="Texture2D" uid="uid://ct47yucunmx3d" path="res://assets/stop_up.png" id="4_35i50"]
+[ext_resource type="Texture2D" uid="uid://cm5uf6fdynelv" path="res://assets/number_0.png" id="5_5cna4"]
+[ext_resource type="Texture2D" uid="uid://hnrm2ole3na7" path="res://assets/number_1.png" id="6_bfknp"]
+[ext_resource type="Texture2D" uid="uid://bv4x42b7tc0dy" path="res://assets/stain_central.png" id="7_1ue1w"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yrowo"]
+texture = ExtResource("1_e058w")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_u5bk5"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_yrowo")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ujdkt"]
+texture = ExtResource("2_q3vu2")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_57cdy"]
+texture = ExtResource("3_1ue1w")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_c2ank"]
+texture = ExtResource("4_35i50")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6a3x0"]
+texture = ExtResource("5_5cna4")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qrre2"]
+texture = ExtResource("6_bfknp")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_kh5iw"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_ujdkt")
+sources/1 = SubResource("TileSetAtlasSource_57cdy")
+sources/2 = SubResource("TileSetAtlasSource_c2ank")
+sources/3 = SubResource("TileSetAtlasSource_6a3x0")
+sources/4 = SubResource("TileSetAtlasSource_qrre2")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_35i50"]
+texture = ExtResource("7_1ue1w")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_0ru8o"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_35i50")
+
+[node name="GarageMap" type="Node2D" unique_id=874395224]
+
+[node name="TilemapLayer" type="Node2D" parent="." unique_id=1021077905]
+
+[node name="Background" type="TileMapLayer" parent="TilemapLayer" unique_id=501313134]
+
+[node name="Foreground" type="TileMapLayer" parent="TilemapLayer" unique_id=2069683026]
+tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAACAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAALAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAANAAAAAAAAAAAAAAAOAAAAAAAAAAAAAAAOAAEAAAAAAAAAAAANAAEAAAAAAAAAAAAMAAEAAAAAAAAAAAALAAEAAAAAAAAAAAAKAAEAAAAAAAAAAAAJAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAHAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAFAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAADAAEAAAAAAAAAAAACAAEAAAAAAAAAAAABAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAIAAAAAAAAAAAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAAEAAIAAAAAAAAAAAAFAAIAAAAAAAAAAAAGAAIAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAIAAAAAAAAAAAAJAAIAAAAAAAAAAAAKAAIAAAAAAAAAAAALAAIAAAAAAAAAAAAMAAIAAAAAAAAAAAANAAIAAAAAAAAAAAAOAAIAAAAAAAAAAAAOAAMAAAAAAAAAAAAOAAQAAAAAAAAAAAAOAAUAAAAAAAAAAAAOAAYAAAAAAAAAAAAOAAcAAAAAAAAAAAANAAcAAAAAAAAAAAAMAAcAAAAAAAAAAAALAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAADAAcAAAAAAAAAAAADAAYAAAAAAAAAAAACAAYAAAAAAAAAAAABAAYAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAcAAAAAAAAAAAABAAcAAAAAAAAAAAACAAcAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAMAAAAAAAAAAAABAAMAAAAAAAAAAAABAAQAAAAAAAAAAAABAAUAAAAAAAAAAAACAAUAAAAAAAAAAAACAAQAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAAAAAAAAAADAAQAAAAAAAAAAAADAAUAAAAAAAAAAAAEAAQAAAAAAAAAAAAEAAMAAAAAAAAAAAAEAAUAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAFAAUAAAAAAAAAAAAFAAQAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAAGAAQAAAAAAAAAAAAGAAUAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAQAAAAAAAAAAAAHAAMAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAYAAAAAAAAAAAAMAAYAAAAAAAAAAAANAAYAAAAAAAAAAAANAAUAAAAAAAAAAAANAAQAAAAAAAAAAAANAAMAAAAAAAAAAAAMAAMAAAAAAAAAAAALAAMAAAAAAAAAAAAKAAMAAAAAAAAAAAAJAAMAAAAAAAAAAAAIAAMAAAAAAAAAAAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAKAAQAAAAAAAAAAAALAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAAMAAUAAAAAAAAAAAALAAUAAAAAAAAAAAAKAAUAAAAAAAAAAAAJAAUAAAAAAAAAAAAIAAUAAAAAAAAAAAAAAAgAAAAAAAAAAAABAAgAAAAAAAAAAAACAAgAAAAAAAAAAAADAAgAAAAAAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAGAAgAAAAAAAAAAAAHAAgAAAAAAAAAAAAIAAgAAAAAAAAAAAAJAAgAAAAAAAAAAAAKAAgAAAAAAAAAAAALAAgAAAAAAAAAAAAMAAgAAAAAAAAAAAANAAgAAAAAAAAAAAAOAAgAAAAAAAAAAAAHAAUAAAAAAAAAAAAAAAkAAAAAAAAAAAABAAkAAAAAAAAAAAACAAkAAAAAAAAAAAADAAkAAAAAAAAAAAAEAAkAAAAAAAAAAAAFAAkAAAAAAAAAAAAGAAkAAAAAAAAAAAAHAAkAAAAAAAAAAAAIAAkAAAAAAAAAAAAJAAkAAAAAAAAAAAAKAAkAAAAAAAAAAAALAAkAAAAAAAAAAAAMAAkAAAAAAAAAAAANAAkAAAAAAAAAAAAOAAkAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_u5bk5")
+
+[node name="ParkingStop" type="TileMapLayer" parent="TilemapLayer" unique_id=1317138038]
+position = Vector2(64, 3)
+tile_map_data = PackedByteArray("AAABAAIAAgAAAAAAAAABAAMAAQAAAAAAAAADAAMAAwAAAAAAAGADAAIABAAAAAAAAGA=")
+tile_set = SubResource("TileSet_kh5iw")
+
+[node name="ParkingLines" type="TileMapLayer" parent="TilemapLayer" unique_id=1656965896]
+position = Vector2(64, 3)
+tile_map_data = PackedByteArray("AAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAABAAMAAAAAAAAAADACAAMAAAAAAAAAADADAAMAAAAAAAAAADA=")
+tile_set = SubResource("TileSet_kh5iw")
+
+[node name="Stains" type="TileMapLayer" parent="TilemapLayer" unique_id=1211741850]
+visible = false
+tile_map_data = PackedByteArray("AAAHAAUAAAAAAAAAAAALAAIAAAAAAAAAAAAIAAEAAAAAAAAAAAABAAcAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_0ru8o")

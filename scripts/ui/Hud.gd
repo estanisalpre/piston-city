@@ -1,0 +1,1 @@
+MoneyLabel.text = "$" + str(Game.state.money)

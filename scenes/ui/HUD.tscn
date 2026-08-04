@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://d0r50apt75iku"]
+
+[node name="Hud" type="CanvasLayer" unique_id=2306923]
+
+[node name="TopBar" type="MarginContainer" parent="." unique_id=1857108826]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+
+[node name="MoneyLabel" type="Label" parent="TopBar" unique_id=1990035792]
+layout_mode = 2
+text = "$50,000"
+
+[node name="VersionLabel" type="Label" parent="TopBar" unique_id=834683748]
+layout_mode = 2
+text = "Pre-alpha 0.0.1"
+horizontal_alignment = 2

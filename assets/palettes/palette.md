@@ -1,0 +1,68 @@
+// Grises
+#0F1115
+#1A1E24
+#2A2F37
+#434A54
+#646C77
+#8C96A1
+#B9C2CB
+#E3E8EC
+
+// Asfalto
+#23262B
+#2E3238
+#3D424A
+#5D6570
+
+// Blancos
+#F8F8F8
+#DADADA
+#BDBDBD
+
+// Azules
+#0A4FFF
+#266DFF
+#5AA0FF
+#A6D5FF
+
+// Rojos
+#7A0E0E
+#B32020
+#F13B3B
+#FF7474
+
+// Amarillos
+#D88A00
+#FFB400
+#FFD54A
+
+// Naranjas
+#C55A00
+#FF7A00
+#FFB05A
+
+// Verdes
+#0E8C52
+#16C47F
+#74F7B3
+
+// Violetas
+#742BFF
+#A35EFF
+#D2A8FF
+
+// Cyan 
+#00C8FF
+#46E2FF
+#9DF5FF
+
+// Rosa neón
+#FF008C
+#FF4FB3
+#FFA6D7
+
+// Luces
+#FFF8B0
+#FFE04A
+#FFFFFF
+
