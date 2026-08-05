@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://d0r50apt75iku" path="res://scenes/ui/HUD.tscn" id="1_elqb8"]
 [ext_resource type="PackedScene" uid="uid://qcohh0mnmxyn" path="res://scenes/garage/GarageMap.tscn" id="2_garage"]
 [ext_resource type="PackedScene" uid="uid://bfu4l7wafxupb" path="res://scenes/player/Player.tscn" id="3_player"]
-[ext_resource type="Texture2D" path="res://assets/dark-background.png" id="7_nxtc6"]
+[ext_resource type="Texture2D" uid="uid://hqogdkqsngij" path="res://assets/backgrounds/dark-background_32x32.png" id="3_vcsgt"]
 
 [sub_resource type="Animation" id="Animation_0ge4i"]
 length = 0.001
@@ -50,6 +50,9 @@ script = ExtResource("1_c01mt")
 [node name="GarageMap" parent="World" unique_id=300000020 instance=ExtResource("2_garage")]
 position = Vector2(656, 456)
 
+[node name="SpawnPlayer" type="Marker2D" parent="World/GarageMap" unique_id=75041335]
+position = Vector2(302, 84)
+
 [node name="Effects" type="Node2D" parent="." unique_id=2020977331]
 position = Vector2(-1, 0)
 
@@ -57,7 +60,7 @@ position = Vector2(-1, 0)
 visible = false
 position = Vector2(327, 212)
 scale = Vector2(21.5, 14.499999)
-texture = ExtResource("7_nxtc6")
+texture = ExtResource("3_vcsgt")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Effects/DarkBackground" unique_id=1382990491]
 libraries/ = SubResource("AnimationLibrary_nxtc6")
@@ -72,6 +75,3 @@ position = Vector2(108, 0)
 
 [node name="Player" parent="Entities" unique_id=300000021 instance=ExtResource("3_player")]
 position = Vector2(843, 551)
-
-[node name="SpawnPlayer" type="Marker2D" parent="Entities" unique_id=75041335]
-position = Vector2(850, 540)

@@ -8,4 +8,4 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 func _ready():
-	global_position = get_tree().current_scene.get_node("World/SpawnPlayer").global_position
+	global_position = get_tree().current_scene.get_node("World/GarageMap/SpawnPlayer").global_position
