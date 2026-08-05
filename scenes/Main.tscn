@@ -2,11 +2,9 @@
 
 [ext_resource type="Script" uid="uid://y7mibdlfkc2" path="res://scripts/main.gd" id="1_c01mt"]
 [ext_resource type="PackedScene" uid="uid://d0r50apt75iku" path="res://scenes/ui/HUD.tscn" id="1_elqb8"]
-[ext_resource type="PackedScene" uid="uid://cvtlhioxl4oxm" path="res://scenes/garage/GarageFloor.tscn" id="1_rarhs"]
 [ext_resource type="PackedScene" uid="uid://qcohh0mnmxyn" path="res://scenes/garage/GarageMap.tscn" id="2_garage"]
 [ext_resource type="PackedScene" uid="uid://bfu4l7wafxupb" path="res://scenes/player/Player.tscn" id="3_player"]
-[ext_resource type="PackedScene" uid="uid://ct7twwjoci2wv" path="res://scenes/garage/GarageBorderWall.tscn" id="4_vcsgt"]
-[ext_resource type="Texture2D" uid="uid://hqogdkqsngij" path="res://assets/dark-background.png" id="7_nxtc6"]
+[ext_resource type="Texture2D" path="res://assets/dark-background.png" id="7_nxtc6"]
 
 [sub_resource type="Animation" id="Animation_0ge4i"]
 length = 0.001
@@ -49,39 +47,31 @@ script = ExtResource("1_c01mt")
 
 [node name="World" type="Node2D" parent="." unique_id=652165696]
 
-[node name="GarageFloor" parent="World" unique_id=231349843 instance=ExtResource("1_rarhs")]
-visible = false
-position = Vector2(656, 456)
-
 [node name="GarageMap" parent="World" unique_id=300000020 instance=ExtResource("2_garage")]
 position = Vector2(656, 456)
 
-[node name="GarageBorderWall" parent="World" unique_id=161569855 instance=ExtResource("4_vcsgt")]
-visible = false
-position = Vector2(656, 456)
-
-[node name="Player" parent="World" unique_id=300000021 instance=ExtResource("3_player")]
-position = Vector2(951, 551)
-
-[node name="SpawnPlayer" type="Marker2D" parent="World" unique_id=75041335]
-position = Vector2(958, 540)
-
-[node name="Entities" type="Node2D" parent="World" unique_id=1729540401]
-position = Vector2(108, 0)
-
 [node name="Effects" type="Node2D" parent="." unique_id=2020977331]
 position = Vector2(-1, 0)
+
+[node name="DarkBackground" type="Sprite2D" parent="Effects" unique_id=1105848908]
+visible = false
+position = Vector2(327, 212)
+scale = Vector2(21.5, 14.499999)
+texture = ExtResource("7_nxtc6")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Effects/DarkBackground" unique_id=1382990491]
+libraries/ = SubResource("AnimationLibrary_nxtc6")
+autoplay = &"fade_out"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1812564219]
 
 [node name="Hud" parent="UI" unique_id=1065919167 instance=ExtResource("1_elqb8")]
 
-[node name="DarkBackground" type="Sprite2D" parent="." unique_id=1105848908]
-visible = false
-position = Vector2(326, 212)
-scale = Vector2(21.5, 14.499999)
-texture = ExtResource("7_nxtc6")
+[node name="Entities" type="Node2D" parent="." unique_id=1729540401]
+position = Vector2(108, 0)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="DarkBackground" unique_id=1382990491]
-libraries/ = SubResource("AnimationLibrary_nxtc6")
-autoplay = &"fade_out"
+[node name="Player" parent="Entities" unique_id=300000021 instance=ExtResource("3_player")]
+position = Vector2(843, 551)
+
+[node name="SpawnPlayer" type="Marker2D" parent="Entities" unique_id=75041335]
+position = Vector2(850, 540)

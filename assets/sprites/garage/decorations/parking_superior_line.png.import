@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ci16s1wkwrj7d"
-path="res://.godot/imported/parking_superior_line.png-246aae575ab8f924d0076bb66e47d63b.ctex"
+path="res://.godot/imported/parking_superior_line.png-1d1f2a78910d50af6ddc95b70bc57a21.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/parking_superior_line.png"
-dest_files=["res://.godot/imported/parking_superior_line.png-246aae575ab8f924d0076bb66e47d63b.ctex"]
+source_file="res://assets/sprites/garage/decorations/parking_superior_line.png"
+dest_files=["res://.godot/imported/parking_superior_line.png-1d1f2a78910d50af6ddc95b70bc57a21.ctex"]
 
 [params]
 

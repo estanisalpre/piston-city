@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://hnrm2ole3na7"
-path="res://.godot/imported/number_1.png-6ee107c430654f09379dd72b30fdd023.ctex"
+path="res://.godot/imported/number_1.png-969c495fc5dd3001f25436d819e81c24.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/number_1.png"
-dest_files=["res://.godot/imported/number_1.png-6ee107c430654f09379dd72b30fdd023.ctex"]
+source_file="res://assets/sprites/garage/decorations/number_1.png"
+dest_files=["res://.godot/imported/number_1.png-969c495fc5dd3001f25436d819e81c24.ctex"]
 
 [params]
 

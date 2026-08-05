@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ct47yucunmx3d"
-path="res://.godot/imported/stop_up.png-019f2551ea5b6e915267b71c56a6149b.ctex"
+path="res://.godot/imported/stop_up.png-bc1d6230649213f588da22309c506bf7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/stop_up.png"
-dest_files=["res://.godot/imported/stop_up.png-019f2551ea5b6e915267b71c56a6149b.ctex"]
+source_file="res://assets/sprites/garage/decorations/stop_up.png"
+dest_files=["res://.godot/imported/stop_up.png-bc1d6230649213f588da22309c506bf7.ctex"]
 
 [params]
 

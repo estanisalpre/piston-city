@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cwdxl1hy18wi1"
-path="res://.godot/imported/wall_front_bottom.png-a92bcf3699757f80a8ceffd735c8bffe.ctex"
+path="res://.godot/imported/wall_top_2.png-70f059b19a82c2cddadf624fbb6f5fee.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/wall_front_bottom.png"
-dest_files=["res://.godot/imported/wall_front_bottom.png-a92bcf3699757f80a8ceffd735c8bffe.ctex"]
+source_file="res://assets/sprites/garage/walls/wall_top_2.png"
+dest_files=["res://.godot/imported/wall_top_2.png-70f059b19a82c2cddadf624fbb6f5fee.ctex"]
 
 [params]
 
