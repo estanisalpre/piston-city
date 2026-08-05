@@ -1,0 +1,80 @@
+[gd_scene format=4 uid="uid://ct7twwjoci2wv"]
+
+[ext_resource type="Texture2D" uid="uid://c4s400rhmgp4s" path="res://assets/border.png" id="1_spwvb"]
+[ext_resource type="Texture2D" uid="uid://ua84uddnbf1p" path="res://assets/garage_atlas.png" id="2_gug08"]
+[ext_resource type="Texture2D" uid="uid://hqogdkqsngij" path="res://assets/dark-background.png" id="2_s2ucs"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s2ucs"]
+texture = ExtResource("1_spwvb")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -10.196184, -16, -10.196184, 16, -16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3311e"]
+texture = ExtResource("2_gug08")
+texture_region_size = Vector2i(32, 32)
+0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -11.470707, -16, -11.152077, 16, -16, 16)
+1:1/0 = 0
+2:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_kddjp"]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_s2ucs")
+sources/1 = SubResource("TileSetAtlasSource_3311e")
+
+[sub_resource type="Animation" id="Animation_0ge4i"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_20jni"]
+resource_name = "fade_out"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.99),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gug08"]
+_data = {
+&"RESET": SubResource("Animation_0ge4i"),
+&"fade_out": SubResource("Animation_20jni")
+}
+
+[node name="GarageBorderWall" type="Node2D" unique_id=161569855]
+
+[node name="BorderWall" type="TileMapLayer" parent="." unique_id=1135292770]
+tile_map_data = PackedByteArray("AAAAAAIAAQAAAAEAAAAAAAMAAQAAAAEAAAAAAAQAAQAAAAEAAAAAAAUAAQAAAAEAAAAAAAYAAQAAAAEAAAAAAAcAAQAAAAEAAAAAAAgAAQAAAAEAAAABAAkAAQAAAAEAAGACAAkAAQAAAAEAAGADAAkAAQAAAAEAAGAEAAkAAQAAAAEAAGAFAAkAAQAAAAEAAGAGAAkAAQAAAAEAAGAHAAkAAQAAAAEAAGAIAAkAAQAAAAEAAGAJAAkAAQAAAAEAAGAKAAkAAQAAAAEAAGALAAkAAQAAAAEAAGAMAAkAAQAAAAEAAGANAAkAAQAAAAEAAGAOAAgAAQAAAAEAADAOAAcAAQAAAAEAADAOAAYAAQAAAAEAADAOAAUAAQAAAAEAADAOAAQAAQAAAAEAADAOAAMAAQAAAAEAADAOAAIAAQAAAAEAADAAAAEAAQAAAAEAAAAOAAEAAQAAAAEAADA=")
+tile_set = SubResource("TileSet_kddjp")
+
+[node name="DarkLayer" type="CanvasModulate" parent="." unique_id=1344859250]
+color = Color(0.9079417, 0.9079417, 0.9079416, 1)
+
+[node name="DarkBackground" type="Sprite2D" parent="." unique_id=1765217400]
+visible = false
+position = Vector2(326, 212)
+scale = Vector2(21.5, 14.499999)
+texture = ExtResource("2_s2ucs")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="DarkBackground" unique_id=1204868901]
+libraries/ = SubResource("AnimationLibrary_gug08")
+autoplay = &"fade_out"

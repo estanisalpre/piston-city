@@ -21,11 +21,13 @@ Game="*uid://b6yj45f562k83"
 
 [display]
 
-window/size/viewport_width=480
-window/size/viewport_height=320
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/mode=3
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [physics]
 
