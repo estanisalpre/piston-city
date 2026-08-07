@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://bqf1lsxk4h6yw"]
+
+[ext_resource type="Script" path="res://scripts/ui/SleepModal.gd" id="1_sleepmodal"]
+
+[node name="SleepModal" type="CanvasLayer"]
+layer = 25
+script = ExtResource("1_sleepmodal")
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -90.0
+grow_horizontal = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MessageLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "¿Quieres ir a descansar?"
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="YesButton" type="Button" parent="Panel/VBox/Buttons"]
+layout_mode = 2
+text = "Sí"
+
+[node name="NoButton" type="Button" parent="Panel/VBox/Buttons"]
+layout_mode = 2
+text = "No"

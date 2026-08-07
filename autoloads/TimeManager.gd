@@ -16,6 +16,9 @@ const HEAT_START := 720.0
 const HEAT_END := 1050.0
 const HEAT_RAMP_MINUTES := 30.0
 
+const WAKE_TIME := 390.0
+const SLEEP_ALLOWED_FROM := 1200.0
+
 const SEASON_NAMES := ["Primavera", "Verano", "Otoño", "Invierno"]
 
 # Cada estación define su propio horario de luz:
@@ -97,6 +100,22 @@ func is_daytime() -> bool:
 	var t: float = Game.state.time_of_day
 
 	return t >= schedule.dawn_end and t < schedule.dusk_end
+
+func can_sleep_now() -> bool:
+	var t: float = Game.state.time_of_day
+	return t >= SLEEP_ALLOWED_FROM or t < WAKE_TIME
+
+func advance_to_next_morning() -> void:
+	Game.state.day += 1
+	Game.state.time_of_day = WAKE_TIME
+
+	_last_minute = int(WAKE_TIME)
+	day_changed.emit(Game.state.day)
+	minute_changed.emit(get_hour(), get_minute())
+	_emit_color()
+	_emit_heat_strength()
+	_last_is_day = not is_daytime()
+	_emit_day_phase_if_changed()
 
 func get_hour() -> int:
 	return int(Game.state.time_of_day / 60.0)

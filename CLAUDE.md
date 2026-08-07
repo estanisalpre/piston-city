@@ -214,10 +214,10 @@ Definido junto con el usuario el 2026-08-06. Orden pensado para que el guardado 
 
 1. ✅ **Guardado + autoguardado cada 5 min** — hecho.
 2. ✅ Ciclo día/noche + calendario (hora, día, mes, estación simple derivada del día) + reloj/fecha en el HUD.
-3. ⬜ Sistema de dormir (cama interactiva → modal "Dormir" → avanza el día → autoguarda). Reglas definidas (2026-08-06):
+3. ✅ Sistema de dormir (cama interactiva → modal "Dormir" → avanza el día → autoguarda). Reglas definidas (2026-08-06):
    - El jugador puede dormir desde las 20:00 en adelante. Nunca es obligatorio dormir a una hora fija.
    - Sin importar la hora a la que se durmió ni la estación, **siempre se despierta a las 06:30am**.
-   - Si el jugador NO duerme durante 3 días seguidos, se desmaya automáticamente al llegar el 3er día, fuerza el avance de día (despierta a las 06:30am igual) y le descuenta **$1,000** de `Game.state.money` (penalización provisoria — se va a rebalancear cuando exista economía real).
+   ⬜ Si el jugador NO duerme durante 3 días seguidos, se desmaya automáticamente al llegar el 3er día, fuerza el avance de día (despierta a las 06:30am igual) y le descuenta **$1,000** de `Game.state.money` (penalización provisoria — se va a rebalancear cuando exista economía real).
 4. ⬜ Sistema de habilidades + Escuela de mecánica (empezás sin saber nada, desbloqueás trabajos aprendiendo).
 5. ⬜ App "Trabajos" en el celular (encargos bloqueados/disponibles según habilidad, aceptar → completar → cobrar).
 6. ⬜ Vehículo de desguasadero (comprar 1 auto simple, sin reparación modular todavía).

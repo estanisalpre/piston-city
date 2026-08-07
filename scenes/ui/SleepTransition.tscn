@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://d0y1lqf2r3kpg"]
+
+[ext_resource type="Script" path="res://scripts/ui/SleepTransition.gd" id="1_sleeptrans"]
+
+[node name="SleepTransition" type="CanvasLayer"]
+layer = 30
+script = ExtResource("1_sleeptrans")
+
+[node name="FadeRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="LoadingLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -10.0
+offset_right = 40.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+horizontal_alignment = 1
+text = "Cargando..."

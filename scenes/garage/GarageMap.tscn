@@ -39,7 +39,8 @@
 [ext_resource type="Texture2D" uid="uid://dbj4mk4fdwbt7" path="res://assets/sprites/garage/walls/bedroom/window_bottom_day.png" id="34_ynoap"]
 [ext_resource type="Texture2D" uid="uid://dket7hqvam6s" path="res://assets/sprites/garage/walls/bedroom/window_top_night.png" id="35_wtopnight"]
 [ext_resource type="Texture2D" uid="uid://cdqqr2pvxgskd" path="res://assets/sprites/garage/walls/bedroom/window_bottom_night.png" id="36_wbotnight"]
-[ext_resource type="Script" path="res://scripts/world/DayNightVisibility.gd" id="37_daynightvis"]
+[ext_resource type="Script" uid="uid://crrnm26m5omnk" path="res://scripts/world/DayNightVisibility.gd" id="37_daynightvis"]
+[ext_resource type="Script" uid="uid://c72gg8lcnhfct" path="res://scripts/world/BedTrigger.gd" id="38_bedtrigger"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pik3s"]
 texture = ExtResource("1_57cdy")
@@ -276,6 +277,12 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_1paue")
 sources/1 = SubResource("TileSetAtlasSource_8b1du")
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_kddjp"]
+polygon = PackedVector2Array(394, 87, 442, 87, 443, 94, 394, 94)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bedtrigger"]
+size = Vector2(56, 37)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gp113"]
 texture = ExtResource("29_uwgag")
 texture_region_size = Vector2i(32, 32)
@@ -408,6 +415,16 @@ tile_set = SubResource("TileSet_8evni")
 z_index = 5
 tile_map_data = PackedByteArray("AAAMAAIAAQAAAAAAAAANAAIAAAAAAAAAAAA=")
 tile_set = SubResource("TileSet_u5bk5")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Map/bedroom/bed" unique_id=1800744868]
+occluder = SubResource("OccluderPolygon2D_kddjp")
+
+[node name="BedTrigger" type="Area2D" parent="Map/bedroom" unique_id=1900744868]
+script = ExtResource("38_bedtrigger")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Map/bedroom/BedTrigger" unique_id=1900744869]
+position = Vector2(419, 81)
+shape = SubResource("RectangleShape2D_bedtrigger")
 
 [node name="walls" type="Node2D" parent="Map/bedroom" unique_id=62751003]
 
