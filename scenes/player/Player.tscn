@@ -215,8 +215,5 @@ position_smoothing_speed = 8.0
 position = Vector2(0.1875, 15)
 shape = SubResource("RectangleShape2D_qrre2")
 
-[node name="DarkLayer" type="CanvasModulate" parent="." unique_id=2115242579]
-color = Color(0.9079417, 0.9079417, 0.9079416, 1)
-
 [node name="LightOccluder2D" type="LightOccluder2D" parent="." unique_id=214260650]
 occluder = SubResource("OccluderPolygon2D_u5bk5")

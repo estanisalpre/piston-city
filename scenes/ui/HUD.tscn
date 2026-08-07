@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://d0r50apt75iku"]
+[gd_scene load_steps=2 format=3 uid="uid://d0r50apt75iku"]
+
+[ext_resource type="Script" path="res://scripts/ui/Hud.gd" id="1_hud"]
 
 [node name="Hud" type="CanvasLayer" unique_id=2306923]
+script = ExtResource("1_hud")
 
 [node name="TopBar" type="MarginContainer" parent="." unique_id=1857108826]
 anchors_preset = 10
@@ -16,3 +19,20 @@ text = "$50,000"
 layout_mode = 2
 text = "Pre-alpha 0.0.1"
 horizontal_alignment = 2
+
+[node name="TimeLabel" type="Label" parent="TopBar" unique_id=1503927861]
+layout_mode = 2
+horizontal_alignment = 1
+text = "00:00 - Día 1, Primavera"
+
+[node name="AutosaveLabel" type="Label" parent="." unique_id=3927581046]
+visible = false
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -23.0
+offset_right = 200.0
+offset_bottom = -4.0
+grow_vertical = 0
+text = "Guardando tu taller..."

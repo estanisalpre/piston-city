@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://c8vhpq0mxr6yl"]
+
+[ext_resource type="Script" path="res://scripts/ui/DebugBar.gd" id="1_debugbar"]
+
+[node name="DebugBar" type="CanvasLayer" unique_id=3164729581]
+layer = 20
+script = ExtResource("1_debugbar")
+
+[node name="Bar" type="PanelContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 24.0
+offset_bottom = 48.0
+grow_horizontal = 2
+
+[node name="Row" type="HBoxContainer" parent="Bar"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="Bar/Row"]
+layout_mode = 2
+text = "DEBUG -"
+
+[node name="SeasonOption" type="OptionButton" parent="Bar/Row"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Bar/Row"]
+layout_mode = 2
+text = "Día:"
+
+[node name="DaySpin" type="SpinBox" parent="Bar/Row"]
+layout_mode = 2
+min_value = 1
+max_value = 28
+value = 1
+
+[node name="Label3" type="Label" parent="Bar/Row"]
+layout_mode = 2
+text = "Hora:"
+
+[node name="HourSpin" type="SpinBox" parent="Bar/Row"]
+layout_mode = 2
+max_value = 23.0
+value = 8.0
+
+[node name="Label4" type="Label" parent="Bar/Row"]
+layout_mode = 2
+text = ":"
+
+[node name="MinuteSpin" type="SpinBox" parent="Bar/Row"]
+layout_mode = 2
+max_value = 59.0
+step = 5.0
+
+[node name="ApplyButton" type="Button" parent="Bar/Row"]
+layout_mode = 2
+text = "Aplicar"

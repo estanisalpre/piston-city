@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://cubaqs8f0k7sa"]
+
+[ext_resource type="Script" uid="uid://duhfidta4ohf3" path="res://scripts/ui/phone/HomeScreen.gd" id="1_6cean"]
+[ext_resource type="PackedScene" uid="uid://cfgh1n1xffw8c" path="res://scenes/ui/phone/components/AppIcon.tscn" id="2_appicon"]
+[ext_resource type="Texture2D" uid="uid://ppb6lvcorq62" path="res://assets/ui/phone/icons/marketplace_icon.png" id="3_4ktyb"]
+[ext_resource type="PackedScene" uid="uid://dxgutfgk7jmuc" path="res://scenes/ui/phone/apps/Marketplace.tscn" id="3_marketplace"]
+
+[node name="HomeScreen" type="Control" unique_id=98771056]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_6cean")
+
+[node name="apps_grid" type="GridContainer" parent="." unique_id=187980151]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 4
+columns = 2
+
+[node name="Marketplace" parent="apps_grid" unique_id=840903905 instance=ExtResource("2_appicon")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 9
+app_name = "Consecionario"
+app_icon = ExtResource("3_4ktyb")
+app_scene = ExtResource("3_marketplace")

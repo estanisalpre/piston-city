@@ -8,6 +8,7 @@ var last_direction := Vector2.DOWN
 
 
 func _ready() -> void:
+	add_to_group("player")
 	global_position = get_tree().current_scene.get_node("World/GarageMap/SpawnPlayer").global_position
 
 

@@ -2,7 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://hqogdkqsngij" path="res://assets/backgrounds/dark-background_32x32.png" id="1_57cdy"]
 [ext_resource type="Texture2D" uid="uid://edpmookr36o4" path="res://assets/sprites/doors/exit_door/door_bottom.png" id="2_c2ank"]
+[ext_resource type="Texture2D" uid="uid://0b60m0h2q3n2" path="res://assets/sprites/garage/walls/bedroom/top_interior_wall_center.png" id="2_kpo1s"]
 [ext_resource type="Texture2D" uid="uid://cwpm2wy0x170g" path="res://assets/sprites/doors/exit_door/door_top.png" id="3_6a3x0"]
+[ext_resource type="Texture2D" uid="uid://dijd4gxlwq3el" path="res://assets/sprites/garage/walls/bedroom/top_interior_wall_center_top.png" id="3_co3ap"]
 [ext_resource type="Texture2D" uid="uid://b30nwpj53xaxu" path="res://assets/sprites/garage/walls/wall_top_1.png" id="4_qrre2"]
 [ext_resource type="Texture2D" uid="uid://cwdxl1hy18wi1" path="res://assets/sprites/garage/walls/wall_top_2.png" id="5_okrt3"]
 [ext_resource type="Texture2D" uid="uid://hf2f3hky7p4r" path="res://assets/sprites/garage/walls/square.png" id="6_2ani3"]
@@ -26,6 +28,18 @@
 [ext_resource type="Texture2D" uid="uid://bxbks6dw5rre5" path="res://assets/sprites/doors/parking_garage_door/top_center.png" id="18_4yspm"]
 [ext_resource type="AudioStream" uid="uid://borb4520kqy4f" path="res://effects/sounds/garage/music.mp3" id="19_20jni"]
 [ext_resource type="Texture2D" uid="uid://cpmcw4oe68t3j" path="res://assets/sprites/doors/parking_garage_door/bottom_center.png" id="19_34s8u"]
+[ext_resource type="Texture2D" uid="uid://blbygia6l423n" path="res://assets/sprites/garage/bedroom/bed_right.png" id="24_n2gec"]
+[ext_resource type="Texture2D" uid="uid://dugnmqq318row" path="res://assets/sprites/garage/bedroom/bed_left.png" id="25_fdh2m"]
+[ext_resource type="Texture2D" uid="uid://c8hy3vrx7reta" path="res://assets/sprites/garage/walls/bedroom/square_interior_wall.png" id="26_uco2r"]
+[ext_resource type="Texture2D" uid="uid://7v5h3g2ceh6s" path="res://assets/sprites/garage/walls/bedroom/border_interior_wall.png" id="27_00gme"]
+[ext_resource type="Texture2D" uid="uid://byrjbl2qct3k7" path="res://assets/sprites/garage/walls/bedroom/square_left_interior_wall.png" id="29_6enqx"]
+[ext_resource type="Texture2D" uid="uid://6p3y21h68jfk" path="res://assets/sprites/garage/walls/bedroom/full_interior_wall_center.png" id="29_uwgag"]
+[ext_resource type="PackedScene" uid="uid://c3wbt01lrmrhq" path="res://scenes/world/WallBehindTrigger.tscn" id="30_wallbehind"]
+[ext_resource type="Texture2D" uid="uid://dnb4cwqabrikd" path="res://assets/sprites/garage/walls/bedroom/window_top_day.png" id="33_6enqx"]
+[ext_resource type="Texture2D" uid="uid://dbj4mk4fdwbt7" path="res://assets/sprites/garage/walls/bedroom/window_bottom_day.png" id="34_ynoap"]
+[ext_resource type="Texture2D" uid="uid://dket7hqvam6s" path="res://assets/sprites/garage/walls/bedroom/window_top_night.png" id="35_wtopnight"]
+[ext_resource type="Texture2D" uid="uid://cdqqr2pvxgskd" path="res://assets/sprites/garage/walls/bedroom/window_bottom_night.png" id="36_wbotnight"]
+[ext_resource type="Script" path="res://scripts/world/DayNightVisibility.gd" id="37_daynightvis"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pik3s"]
 texture = ExtResource("1_57cdy")
@@ -38,6 +52,17 @@ sources/1 = SubResource("TileSetAtlasSource_pik3s")
 
 [sub_resource type="TileSet" id="TileSet_h3y7r"]
 tile_size = Vector2i(32, 32)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d80we"]
+texture = ExtResource("2_kpo1s")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, 5.098091, 16, 5.098091, 16, 16, -16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_avj37"]
+texture = ExtResource("3_co3ap")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_l8tpn"]
 texture = ExtResource("4_qrre2")
@@ -55,6 +80,8 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/3 = SubResource("TileSetAtlasSource_l8tpn")
 sources/4 = SubResource("TileSetAtlasSource_3sbbl")
+sources/0 = SubResource("TileSetAtlasSource_d80we")
+sources/1 = SubResource("TileSetAtlasSource_avj37")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sr41o"]
 texture = ExtResource("6_2ani3")
@@ -231,6 +258,93 @@ sources/1 = SubResource("TileSetAtlasSource_co3ap")
 sources/2 = SubResource("TileSetAtlasSource_bqv7a")
 sources/3 = SubResource("TileSetAtlasSource_6enqx")
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1paue"]
+texture = ExtResource("24_n2gec")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 11.805553, -16, 11.748245, 16, -16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8b1du"]
+texture = ExtResource("25_fdh2m")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-6.8770227, -9.627831, 11.633629, -9.971683, 11.748245, 16, -6.991638, 16)
+
+[sub_resource type="TileSet" id="TileSet_u5bk5"]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_1paue")
+sources/1 = SubResource("TileSetAtlasSource_8b1du")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gp113"]
+texture = ExtResource("29_uwgag")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, 4.2640734, 16, 4.3655987, 16, 16, -16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_27bx0"]
+texture = ExtResource("29_6enqx")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -11.152077, -16, -12.107971, 5.7353554, 16, 5.7353554, 16, 16, -16, 16)
+
+[sub_resource type="TileSet" id="TileSet_kh5iw"]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_gp113")
+sources/1 = SubResource("TileSetAtlasSource_27bx0")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wallbehind"]
+size = Vector2(78, 88)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qcc6g"]
+texture = ExtResource("26_uco2r")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, -10.833445, -12.4265995, -10.833445, -12.4265995, 16, -16, 16)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yb3if"]
+texture = ExtResource("27_00gme")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, -10.514816, -16, -10.514816, 16, -16, 16)
+
+[sub_resource type="TileSet" id="TileSet_kddjp"]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_qcc6g")
+sources/1 = SubResource("TileSetAtlasSource_yb3if")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_msm6i"]
+texture = ExtResource("33_6enqx")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rxlga"]
+texture = ExtResource("34_ynoap")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_0ru8o"]
+tile_size = Vector2i(32, 32)
+sources/1 = SubResource("TileSetAtlasSource_msm6i")
+sources/2 = SubResource("TileSetAtlasSource_rxlga")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wtopnight"]
+texture = ExtResource("35_wtopnight")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wbotnight"]
+texture = ExtResource("36_wbotnight")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_windownight"]
+tile_size = Vector2i(32, 32)
+sources/1 = SubResource("TileSetAtlasSource_wtopnight")
+sources/2 = SubResource("TileSetAtlasSource_wbotnight")
+
 [node name="GarageMap" type="Node2D" unique_id=874395224]
 
 [node name="Map" type="Node2D" parent="." unique_id=1021077905]
@@ -245,12 +359,12 @@ tile_set = SubResource("TileSet_h3y7r")
 
 [node name="top_wall" type="TileMapLayer" parent="Map/walls" unique_id=2077152594]
 z_index = 4
-tile_map_data = PackedByteArray("AAAAAAEABAAAAAAAAAABAAEABAAAAAAAAAACAAEABAAAAAAAAAADAAEABAAAAAAAAAAEAAEABAAAAAAAAAAFAAEABAAAAAAAAAAGAAEABAAAAAAAAAAHAAEABAAAAAAAAAAIAAEABAAAAAAAAAAJAAEABAAAAAAAAAAKAAEABAAAAAAAAAALAAEABAAAAAAAAAAMAAEABAAAAAAAAAANAAEABAAAAAAAAAAOAAEABAAAAAAAAAAAAAAAAwAAAAAAAAABAAAAAwAAAAAAAAACAAAAAwAAAAAAAAADAAAAAwAAAAAAAAAEAAAAAwAAAAAAAAAFAAAAAwAAAAAAAAAGAAAAAwAAAAAAAAAHAAAAAwAAAAAAAAAIAAAAAwAAAAAAAAAJAAAAAwAAAAAAAAAKAAAAAwAAAAAAAAALAAAAAwAAAAAAAAAMAAAAAwAAAAAAAAANAAAAAwAAAAAAAAAOAAAAAwAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAAAAEABAAAAAAAAAABAAEABAAAAAAAAAACAAEABAAAAAAAAAADAAEABAAAAAAAAAAEAAEABAAAAAAAAAAFAAEABAAAAAAAAAAGAAEABAAAAAAAAAAHAAEABAAAAAAAAAAIAAEABAAAAAAAAAAJAAEABAAAAAAAAAAKAAEABAAAAAAAAAALAAEABAAAAAAAAAAMAAEAAAAAAAAAAAANAAEAAAAAAAAAAAAOAAEAAAAAAAAAAAAAAAAAAwAAAAAAAAABAAAAAwAAAAAAAAACAAAAAwAAAAAAAAADAAAAAwAAAAAAAAAEAAAAAwAAAAAAAAAFAAAAAwAAAAAAAAAGAAAAAwAAAAAAAAAHAAAAAwAAAAAAAAAIAAAAAwAAAAAAAAAJAAAAAwAAAAAAAAAKAAAAAwAAAAAAAAALAAAAAwAAAAAAAAAMAAAAAQAAAAAAAAANAAAAAQAAAAAAAAAOAAAAAQAAAAAAAAA=")
 tile_set = SubResource("TileSet_ktat8")
 
 [node name="borders_and_squares" type="TileMapLayer" parent="Map/walls" unique_id=680407036]
 z_index = 10
-tile_map_data = PackedByteArray("AAAAAAEAAwAAAAAAAAAAAAIAAwAAAAAAAAAAAAMAAwAAAAAAAAAAAAQAAwAAAAAAAAAAAAUAAwAAAAAAAAAAAAYAAwAAAAAAAAAAAAcAAwAAAAAAAAAAAAgAAwAAAAAAAAAOAAEAAwAAAAAAADAOAAIAAwAAAAAAADAOAAMAAwAAAAAAADAOAAQAAwAAAAAAADAOAAUAAwAAAAAAADAOAAYAAwAAAAAAADAOAAcAAwAAAAAAADAOAAgAAwAAAAAAADAOAAAAAgAAAAAAAFAAAAAAAgAAAAAAAAABAAAAAwAAAAAAAFACAAAAAwAAAAAAAFADAAAAAwAAAAAAAFAEAAAAAwAAAAAAAFAFAAAAAwAAAAAAAFAGAAAAAwAAAAAAAFAHAAAAAwAAAAAAAFAIAAAAAwAAAAAAAFAJAAAAAwAAAAAAAFAKAAAAAwAAAAAAAFALAAAAAwAAAAAAAFAMAAAAAwAAAAAAAFANAAAAAwAAAAAAAFAAAAkAAwAAAAAAAAAOAAkAAwAAAAAAADA=")
+tile_map_data = PackedByteArray("AAAAAAEAAwAAAAAAAAAAAAIAAwAAAAAAAAAAAAMAAwAAAAAAAAAAAAQAAwAAAAAAAAAAAAUAAwAAAAAAAAAAAAYAAwAAAAAAAAAAAAcAAwAAAAAAAAAAAAgAAwAAAAAAAAAOAAQAAwAAAAAAADAOAAUAAwAAAAAAADAOAAYAAwAAAAAAADAOAAcAAwAAAAAAADAOAAgAAwAAAAAAADAAAAAAAgAAAAAAAAABAAAAAwAAAAAAAFACAAAAAwAAAAAAAFADAAAAAwAAAAAAAFAEAAAAAwAAAAAAAFAFAAAAAwAAAAAAAFAGAAAAAwAAAAAAAFAHAAAAAwAAAAAAAFAIAAAAAwAAAAAAAFAJAAAAAwAAAAAAAFAKAAAAAwAAAAAAAFALAAAAAwAAAAAAAFAAAAkAAwAAAAAAAAAOAAkAAwAAAAAAADA=")
 tile_set = SubResource("TileSet_qqdwg")
 
 [node name="exterior_wall" type="TileMapLayer" parent="Map/walls" unique_id=1507144176]
@@ -288,8 +402,48 @@ z_index = 40
 tile_map_data = PackedByteArray("AAAFAAsAAAAAAAAAAAAFAAoAAQAAAAAAAAAJAAsAAAAAAAAAABAJAAoAAQAAAAAAABAGAAoAAgAAAAAAAAAHAAoAAgAAAAAAAAAIAAoAAgAAAAAAAAAGAAsAAwAAAAAAAAAHAAsAAwAAAAAAAAAIAAsAAwAAAAAAAAA=")
 tile_set = SubResource("TileSet_8evni")
 
-[node name="DarkLayer" type="CanvasModulate" parent="." unique_id=2124090692]
-color = Color(0.9166399, 0.91663986, 0.9166398, 1)
+[node name="bedroom" type="Node2D" parent="Map" unique_id=982641270]
+
+[node name="bed" type="TileMapLayer" parent="Map/bedroom" unique_id=1177536075]
+z_index = 5
+tile_map_data = PackedByteArray("AAAMAAIAAQAAAAAAAAANAAIAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_u5bk5")
+
+[node name="walls" type="Node2D" parent="Map/bedroom" unique_id=62751003]
+
+[node name="interior_walls" type="TileMapLayer" parent="Map/bedroom/walls" unique_id=550257893]
+y_sort_enabled = true
+tile_map_data = PackedByteArray("AAANAAQAAAAAAAAAAAAMAAQAAQAAAAAAAAA=")
+tile_set = SubResource("TileSet_kh5iw")
+
+[node name="BehindWallTrigger" parent="Map/bedroom/walls" unique_id=1837462950 instance=ExtResource("30_wallbehind")]
+wall_path = NodePath("../interior_walls")
+
+[node name="CollisionShape2D" parent="Map/bedroom/walls/BehindWallTrigger" index="0"]
+visible = false
+position = Vector2(431, 107)
+shape = SubResource("RectangleShape2D_wallbehind")
+
+[node name="borders_and_squares" type="TileMapLayer" parent="Map/bedroom/walls" unique_id=1714571261]
+z_index = 21
+tile_map_data = PackedByteArray("AAAMAAAAAAAAAAAAAAAMAAEAAQAAAAAAAAAMAAIAAQAAAAAAAAAMAAMAAQAAAAAAAAANAAAAAQAAAAAAAFAOAAAAAAAAAAAAAFAOAAEAAQAAAAAAADAOAAIAAQAAAAAAADAOAAMAAQAAAAAAADA=")
+tile_set = SubResource("TileSet_kddjp")
+
+[node name="window" type="TileMapLayer" parent="Map/bedroom/walls" unique_id=1434000753]
+z_index = 10
+tile_map_data = PackedByteArray("AAANAAAAAQAAAAAAAAANAAEAAgAAAAAAAAA=")
+tile_set = SubResource("TileSet_0ru8o")
+
+[node name="window_night" type="TileMapLayer" parent="Map/bedroom/walls" unique_id=1434000754]
+visible = false
+z_index = 10
+tile_map_data = PackedByteArray("AAANAAAAAQAAAAAAAAANAAEAAgAAAAAAAAA=")
+tile_set = SubResource("TileSet_windownight")
+
+[node name="WindowDayNight" type="Node" parent="Map/bedroom/walls" unique_id=1434000755]
+script = ExtResource("37_daynightvis")
+day_node_path = NodePath("../window")
+night_node_path = NodePath("../window_night")
 
 [node name="Lights" type="Node2D" parent="." unique_id=960782942]
 
@@ -303,12 +457,13 @@ texture = ExtResource("16_okrt3")
 texture_scale = 0.25
 
 [node name="PointLight2D" type="PointLight2D" parent="Lights" unique_id=701721449]
-visible = false
-position = Vector2(109, 139)
-energy = 2.0
+position = Vector2(432.0699, 52.094883)
+rotation = 1.5707964
+scale = Vector2(0.1719319, 0.061657116)
+energy = 0.63
 shadow_enabled = true
-shadow_filter = 2
 texture = ExtResource("16_okrt3")
+texture_scale = 2.07
 
 [node name="PointLight2D2" type="PointLight2D" parent="Lights" unique_id=1433333987]
 visible = false
@@ -361,3 +516,6 @@ autoplay = true
 [node name="Music" type="AudioStreamPlayer2D" parent="." unique_id=1900000537]
 stream = ExtResource("19_20jni")
 volume_db = -12.636
+autoplay = true
+
+[editable path="Map/bedroom/walls/BehindWallTrigger"]

@@ -1,3 +1,3 @@
 extends Node
 
-var state := GameState.new()
+var state: GameState = GameState.new()

@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://dxgutfgk7jmuc"]
+
+[ext_resource type="Script" uid="uid://bbjfwmdej1jds" path="res://scripts/ui/phone/Marketplace.gd" id="1_mkt"]
+[ext_resource type="Texture2D" uid="uid://dqka6hlrcsxi4" path="res://assets/ui/phone/icons/back_btn_icon.png" id="2_0gbf3"]
+
+[node name="Marketplace" type="Control" unique_id=1220676236]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_mkt")
+
+[node name="title" type="Label" parent="." unique_id=1853675172]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="vehicle_list" type="VBoxContainer" parent="." unique_id=670036976]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="vehicle_card" type="Panel" parent="vehicle_list" unique_id=1319033012]
+layout_mode = 2
+
+[node name="vehicle_img" type="TextureRect" parent="vehicle_list/vehicle_card" unique_id=1036233316]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="vehicle_name" type="Label" parent="vehicle_list/vehicle_card" unique_id=1330818099]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="price" type="Label" parent="vehicle_list/vehicle_card" unique_id=2052009625]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="buy_btn" type="Button" parent="vehicle_list/vehicle_card" unique_id=2037802901]
+visible = false
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="back_btn" type="Button" parent="." unique_id=1303060345]
+layout_mode = 0
+offset_right = 28.0
+offset_bottom = 28.0
+focus_mode = 0
+icon = ExtResource("2_0gbf3")
+flat = true
+expand_icon = true

@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://p8qd2lf7o4jh"]
+
+[ext_resource type="PackedScene" uid="uid://cubaqs8f0k7sa" path="res://scenes/ui/phone/HomeScreen.tscn" id="1_bvlut"]
+[ext_resource type="Script" uid="uid://b80ew1h6rr6jk" path="res://scripts/ui/phone/Phone.gd" id="1_mupyh"]
+[ext_resource type="Texture2D" uid="uid://ck4qjov3p62ap" path="res://assets/backgrounds/phone_bg_2.jpg" id="3_87wg6"]
+[ext_resource type="Texture2D" uid="uid://d22xxudbtk77" path="res://assets/ui/phone/phone_frame.png" id="3_l5nym"]
+
+[node name="Phone" type="CanvasLayer" unique_id=1712879036]
+script = ExtResource("1_mupyh")
+
+[node name="overlay" type="ColorRect" parent="." unique_id=438534239]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.13725491)
+
+[node name="phone_container" type="Control" parent="." unique_id=297065016]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -540.0
+offset_top = 100.0
+offset_right = -220.0
+offset_bottom = 739.99976
+grow_horizontal = 0
+
+[node name="phone_frame" type="TextureRect" parent="phone_container" unique_id=1166090925]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_l5nym")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="phone_background" type="TextureRect" parent="phone_container" unique_id=1960725283]
+modulate = Color(0.42749333, 0.42749298, 0.42749316, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 13.0
+offset_top = 21.0
+offset_right = -13.0
+offset_bottom = -29.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_87wg6")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="screen" type="MarginContainer" parent="phone_container" unique_id=97099288]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 45.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HomeScreen" parent="phone_container/screen" unique_id=98771056 instance=ExtResource("1_bvlut")]
+layout_mode = 2
