@@ -36,3 +36,18 @@ signal money_changed(amount: int)
 	SkillIds.TRANSMISION_CHASIS: 1,
 	SkillIds.TASACION: 1,
 }
+
+## EXP acumulada de cada habilidad hacia su próximo nivel. Se resetea a 0
+## cuando el nivel se compra en la Escuela. Ver SkillProgression.gd.
+@export var skill_exp: Dictionary[String, int] = {
+	SkillIds.LAVADO: 0,
+	SkillIds.MECANICA_GENERAL: 0,
+	SkillIds.DESMANTELADOR: 0,
+	SkillIds.TORQUE_HP: 0,
+	SkillIds.PINTURA: 0,
+	SkillIds.NEUMATICOS: 0,
+	SkillIds.ELECTRICIDAD: 0,
+	SkillIds.MOTOR: 0,
+	SkillIds.TRANSMISION_CHASIS: 0,
+	SkillIds.TASACION: 0,
+}
