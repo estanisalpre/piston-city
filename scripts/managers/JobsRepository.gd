@@ -249,6 +249,7 @@ const JOB_TEMPLATES := {
 
 static func get_all_jobs() -> Array[JobData]:
 	var jobs: Array[JobData] = []
+	var npc_counter := 0
 
 	for skill_id in JOB_TEMPLATES:
 		var levels: Array = JOB_TEMPLATES[skill_id]
@@ -266,6 +267,10 @@ static func get_all_jobs() -> Array[JobData]:
 				job.required_level = level
 				job.reward_money = rewards.money
 				job.reward_exp = rewards.exp
+				# Reparto parejo entre los NPCs del roster — siempre el
+				# mismo NPC para el mismo id de encargo.
+				job.npc_id = NpcRoster.ALL[npc_counter % NpcRoster.ALL.size()]
+				npc_counter += 1
 				jobs.append(job)
 
 	return jobs

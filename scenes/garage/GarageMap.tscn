@@ -46,6 +46,7 @@
 [ext_resource type="Script" uid="uid://dke5pxo3gn4y6" path="res://scripts/world/JobEncounterSpawner.gd" id="41_jobspawner"]
 [ext_resource type="PackedScene" path="res://scenes/vehicles/JobVehicle.tscn" id="42_jobvehicle"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/Client.tscn" id="43_client"]
+[ext_resource type="Texture2D" uid="uid://lgyw07a46vg2" path="res://assets/sprites/vehicles/concepts/wheels/tire_v2.png" id="44_avj37"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pik3s"]
 texture = ExtResource("1_57cdy")
@@ -376,6 +377,15 @@ texture_region_size = Vector2i(32, 32)
 tile_size = Vector2i(32, 32)
 sources/0 = SubResource("TileSetAtlasSource_lugbs")
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s272m"]
+texture = ExtResource("44_avj37")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_hplta"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_s272m")
+
 [node name="GarageMap" type="Node2D" unique_id=874395224]
 
 [node name="Map" type="Node2D" parent="." unique_id=1021077905]
@@ -517,7 +527,14 @@ vehicle_scene = ExtResource("42_jobvehicle")
 client_scene = ExtResource("43_client")
 
 [node name="concept_v1" type="TileMapLayer" parent="Map/vehicles" unique_id=1518791088]
+tile_map_data = PackedByteArray("AAAKAAYAAAAAAAAAAAAKAAcAAAAAAAEAAAALAAYAAAABAAAAAAALAAcAAAABAAEAAAAMAAYAAAACAAAAAAAMAAcAAAACAAEAAAANAAYAAAADAAAAAAANAAcAAAADAAEAAAA=")
 tile_set = SubResource("TileSet_krpui")
+
+[node name="wheels" type="Node2D" parent="Map/vehicles" unique_id=1583146034]
+
+[node name="wheels" type="TileMapLayer" parent="Map/vehicles/wheels" unique_id=1713013452]
+tile_map_data = PackedByteArray("AAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAABA=")
+tile_set = SubResource("TileSet_hplta")
 
 [node name="Lights" type="Node2D" parent="." unique_id=960782942]
 

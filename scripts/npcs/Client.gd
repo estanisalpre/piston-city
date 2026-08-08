@@ -1,26 +1,26 @@
 extends CharacterBody2D
 
 ## NPC genérico de cliente (ver docs/habilidades-y-escuela.md sección 8).
-## Sabe: caminar hacia un punto puntual (walk_to), patrullar sin parar
-## entre los puntos de un recorrido (start_route_wandering), y esperar
-## parado a que el jugador se acerque (wait_for_player) — el spawn, el
-## diálogo y el resto del flujo del encargo se conectan desde afuera.
+## Tiene dos formas de moverse, que nunca se mezclan:
+##
+## - "Local": walk_to()/wait_for_player(), para las coreografías
+##   puntuales dentro del garage (caminar hasta el auto, esperar al
+##   jugador). El propio Client calcula el movimiento cuadro a cuadro.
+## - "Espejo": mirror_npc(), para cuando lo estás viendo caminar por la
+##   ciudad. El movimiento real lo calcula NpcDirector todo el tiempo
+##   (exista o no este Node) — acá solo se copia su posición y se
+##   elige la animación según hacia dónde se mueve.
 
 const WALK_SPEED := 40.0
 const ARRIVAL_DISTANCE := 2.0
 const PLAYER_APPROACH_DISTANCE := 32.0
 
-## Cuánto antes de la hora de retiro corta la patrulla y vuelve al
-## punto 0 del recorrido (la puerta del taller) — ver
-## _should_return_to_workshop.
-const APPROACH_WINDOW_MINUTES := 10.0
-
 signal arrived
 signal player_approached
 
-## Con qué encargo se relaciona este cliente mientras patrulla — lo
-## setea CityWandererSpawner. Sirve para guardar/recordar su progreso
-## (Game.state.wanderer_progress) y para saber cuándo volver al taller.
+## Con qué encargo se relaciona este cliente ahora mismo (si tiene) —
+## lo setea quien lo instancia. Solo informativo/lectura para quien lo
+## necesite mostrar.
 @export var job_id: String = ""
 
 @onready var sprite: Sprite2D = $Sprite2D
@@ -28,14 +28,15 @@ signal player_approached
 
 var _target_position := Vector2.ZERO
 var _walking := false
-
-var _route_points: Array[Vector2] = []
-var _route_index := 0
-var _route_direction := 1  # 1 = hacia el final del recorrido, -1 = hacia el punto 0 (la puerta)
-var _route_returning := false
-var _patrolling := false
-
 var _waiting_for_player := false
+
+var _mirroring_npc_id := ""
+var _mirror_last_position := Vector2.ZERO
+
+## Cambia el dibujo sin tocar nada de la animación — todos los atlas de
+## NpcRoster comparten la misma grilla (3x6, frames de 32x32).
+func set_appearance(texture: Texture2D) -> void:
+	sprite.texture = texture
 
 func walk_to(point: Vector2) -> void:
 	_target_position = point
@@ -59,78 +60,31 @@ func _check_player_proximity() -> void:
 		_waiting_for_player = false
 		player_approached.emit()
 
-## Patrulla sin parar entre "points" (el punto 0 es siempre la puerta
-## del taller): va del primero al último y vuelve, en bucle, para
-## siempre — pensado para el cliente mientras su auto se está
-## reparando (ver CityWandererSpawner). "start_index"/"start_direction"
-## permiten retomar un recorrido ya empezado (al volver a entrar al
-## CityMap). Nunca se mezcla con walk_to() suelto: un NPC o hace un
-## encargo puntual, o patrulla, no las dos cosas.
-func start_route_wandering(points: Array[Vector2], start_index: int, start_direction: int) -> void:
-	if points.size() < 2:
-		return
+## Este Node se limita a mostrar dónde dice NpcDirector que está
+## npc_id — nunca decide el movimiento por su cuenta. Ver
+## CityWandererSpawner.
+func mirror_npc(npc_id: String) -> void:
+	_mirroring_npc_id = npc_id
+	_mirror_last_position = NpcDirector.get_position(npc_id)
+	global_position = _mirror_last_position
 
-	_route_points = points
-	_route_index = clampi(start_index, 0, points.size() - 1)
-	_route_direction = start_direction
-	_route_returning = false
-	_patrolling = true
+func _sync_mirrored_position() -> void:
+	var new_position: Vector2 = NpcDirector.get_position(_mirroring_npc_id)
+	var movement: Vector2 = new_position - _mirror_last_position
 
-	arrived.connect(_on_route_arrived)
-	walk_to(_route_points[_route_index])
+	global_position = new_position
+	_mirror_last_position = new_position
 
-func _on_route_arrived() -> void:
-	if not _patrolling:
-		return
-
-	if _route_returning and _route_index == 0:
-		queue_free()  # llegó a la puerta del taller, entra y desaparece
-		return
-
-	_report_progress()
-
-	if not _route_returning and _should_return_to_workshop():
-		_route_returning = true
-		_route_direction = -1
-
-	if _route_returning:
-		if _route_index == 0:
-			queue_free()
-			return
-		_walk_to_route_index(_route_index - 1)
-		return
-
-	var next_index := _route_index + _route_direction
-	if next_index >= _route_points.size():
-		_route_direction = -1
-		next_index = _route_points.size() - 2
-	elif next_index < 0:
-		_route_direction = 1
-		next_index = 1
-
-	_walk_to_route_index(next_index)
-
-func _walk_to_route_index(index: int) -> void:
-	_route_index = index
-	walk_to(_route_points[index])
-
-func _report_progress() -> void:
-	var progress: Dictionary = Game.state.wanderer_progress.get(job_id, {})
-	progress["index"] = _route_index
-	progress["dir"] = _route_direction
-	Game.state.wanderer_progress[job_id] = progress
-	Game.state.wanderer_updated_at[job_id] = TimeManager.get_total_minutes()
-
-## Si falta poco (o ya pasó) para que lo estén esperando de vuelta en
-## el taller, corta la patrulla y vuelve al punto 0.
-func _should_return_to_workshop() -> bool:
-	if not Game.state.pending_pickups.has(job_id):
-		return false
-
-	var arrival: float = Game.state.pending_pickups[job_id]
-	return TimeManager.get_total_minutes() >= arrival - APPROACH_WINDOW_MINUTES
+	if movement.length() > 0.01:
+		_play_walk(movement)
+	else:
+		_play_idle()
 
 func _physics_process(_delta: float) -> void:
+	if _mirroring_npc_id != "":
+		_sync_mirrored_position()
+		return
+
 	if _waiting_for_player:
 		_check_player_proximity()
 

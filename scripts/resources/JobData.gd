@@ -12,3 +12,8 @@ class_name JobData
 @export var required_level: int = 1
 @export var reward_money: int
 @export var reward_exp: int
+
+## Qué NPC trae este encargo (y, a futuro, con qué vehículo propio) —
+## ver NpcRoster/NpcDirector. Siempre el mismo NPC para el mismo id de
+## encargo.
+@export var npc_id: String = ""
