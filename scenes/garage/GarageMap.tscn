@@ -42,6 +42,10 @@
 [ext_resource type="Script" uid="uid://crrnm26m5omnk" path="res://scripts/world/DayNightVisibility.gd" id="37_daynightvis"]
 [ext_resource type="Script" uid="uid://c72gg8lcnhfct" path="res://scripts/world/BedTrigger.gd" id="38_bedtrigger"]
 [ext_resource type="PackedScene" uid="uid://dwxq4h1door01" path="res://scenes/world/DoorTrigger.tscn" id="39_doortrigger"]
+[ext_resource type="Texture2D" uid="uid://dwtdqar5p036s" path="res://assets/sprites/vehicles/concepts/concept_v1.png" id="40_yb3if"]
+[ext_resource type="Script" uid="uid://dke5pxo3gn4y6" path="res://scripts/world/JobEncounterSpawner.gd" id="41_jobspawner"]
+[ext_resource type="PackedScene" path="res://scenes/vehicles/JobVehicle.tscn" id="42_jobvehicle"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/Client.tscn" id="43_client"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pik3s"]
 texture = ExtResource("1_57cdy")
@@ -356,6 +360,22 @@ tile_size = Vector2i(32, 32)
 sources/1 = SubResource("TileSetAtlasSource_wtopnight")
 sources/2 = SubResource("TileSetAtlasSource_wbotnight")
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lugbs"]
+texture = ExtResource("40_yb3if")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_krpui"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_lugbs")
+
 [node name="GarageMap" type="Node2D" unique_id=874395224]
 
 [node name="Map" type="Node2D" parent="." unique_id=1021077905]
@@ -424,6 +444,9 @@ shape = SubResource("RectangleShape2D_doortrigger")
 [node name="PlayerSpawn" type="Marker2D" parent="Map/doors" unique_id=1716435692]
 position = Vector2(243, 305)
 
+[node name="ClientSpawn" type="Marker2D" parent="Map/doors" unique_id=2144475303]
+position = Vector2(243, 305)
+
 [node name="bedroom" type="Node2D" parent="Map" unique_id=982641270]
 
 [node name="bed" type="TileMapLayer" parent="Map/bedroom" unique_id=1177536075]
@@ -476,6 +499,25 @@ tile_set = SubResource("TileSet_windownight")
 script = ExtResource("37_daynightvis")
 day_node_path = NodePath("../window")
 night_node_path = NodePath("../window_night")
+
+[node name="vehicles" type="Node2D" parent="Map" unique_id=702624216]
+
+[node name="ParkingSpot1" type="Marker2D" parent="Map/vehicles" unique_id=1241005021]
+position = Vector2(94, 264)
+
+[node name="ParkingSpot2" type="Marker2D" parent="Map/vehicles" unique_id=594380003]
+position = Vector2(96, 199)
+
+[node name="JobEncounterSpawner" type="Node2D" parent="Map/vehicles" unique_id=1134871154]
+position = Vector2(240, 252)
+script = ExtResource("41_jobspawner")
+parking_spots = Array[NodePath]([NodePath("../ParkingSpot1"), NodePath("../ParkingSpot2")])
+client_spawn_point = NodePath("../../doors/ClientSpawn")
+vehicle_scene = ExtResource("42_jobvehicle")
+client_scene = ExtResource("43_client")
+
+[node name="concept_v1" type="TileMapLayer" parent="Map/vehicles" unique_id=1518791088]
+tile_set = SubResource("TileSet_krpui")
 
 [node name="Lights" type="Node2D" parent="." unique_id=960782942]
 

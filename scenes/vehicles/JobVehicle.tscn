@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/vehicles/JobVehicle.gd" id="1_jobvehicle"]
+[ext_resource type="Texture2D" uid="uid://dwtdqar5p036s" path="res://assets/sprites/vehicles/concepts/concept_v1.png" id="2_atlas"]
+
+[node name="JobVehicle" type="Node2D"]
+z_index = 10
+script = ExtResource("1_jobvehicle")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_atlas")

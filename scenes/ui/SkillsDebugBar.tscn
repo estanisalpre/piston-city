@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://dq6vw3kqx4y2j"]
+
+[ext_resource type="Script" path="res://scripts/ui/SkillsDebugBar.gd" id="1_skillsdebugbar"]
+
+[node name="SkillsDebugBar" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_skillsdebugbar")
+
+[node name="Bar" type="PanelContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 24.0
+offset_bottom = 48.0
+grow_horizontal = 2
+
+[node name="Row" type="HBoxContainer" parent="Bar"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="Bar/Row"]
+layout_mode = 2
+text = "SKILLS -"
+
+[node name="SkillOption" type="OptionButton" parent="Bar/Row"]
+layout_mode = 2
+focus_mode = 0
+
+[node name="StatusLabel" type="Label" parent="Bar/Row"]
+layout_mode = 2
+text = "Nivel 1 — EXP 0/100"
+
+[node name="ExpUpButton" type="Button" parent="Bar/Row"]
+layout_mode = 2
+focus_mode = 0
+text = "+EXP"
+
+[node name="ExpDownButton" type="Button" parent="Bar/Row"]
+layout_mode = 2
+focus_mode = 0
+text = "-EXP"
+
+[node name="LevelUpButton" type="Button" parent="Bar/Row"]
+layout_mode = 2
+focus_mode = 0
+text = "Subir nivel"
+
+[node name="LevelDownButton" type="Button" parent="Bar/Row"]
+layout_mode = 2
+focus_mode = 0
+text = "Bajar nivel"
+
+[node name="ClearJobsButton" type="Button" parent="Bar/Row"]
+layout_mode = 2
+focus_mode = 0
+text = "Limpiar trabajos"

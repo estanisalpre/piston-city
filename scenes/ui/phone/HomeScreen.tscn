@@ -5,6 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://ppb6lvcorq62" path="res://assets/ui/phone/icons/marketplace_icon.png" id="3_4ktyb"]
 [ext_resource type="PackedScene" uid="uid://dxgutfgk7jmuc" path="res://scenes/ui/phone/apps/Marketplace.tscn" id="3_marketplace"]
 [ext_resource type="PackedScene" path="res://scenes/ui/phone/apps/Jobs.tscn" id="4_jobs"]
+[ext_resource type="PackedScene" path="res://scenes/ui/phone/apps/Skills.tscn" id="5_skills"]
+[ext_resource type="PackedScene" path="res://scenes/ui/phone/apps/Messages.tscn" id="6_messages"]
 
 [node name="HomeScreen" type="Control" unique_id=98771056]
 layout_mode = 3
@@ -37,3 +39,17 @@ theme_override_font_sizes/font_size = 9
 app_name = "Trabajos"
 app_icon = ExtResource("3_4ktyb")
 app_scene = ExtResource("4_jobs")
+
+[node name="Skills" parent="apps_grid" instance=ExtResource("2_appicon")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 9
+app_name = "Habilidades"
+app_icon = ExtResource("3_4ktyb")
+app_scene = ExtResource("5_skills")
+
+[node name="Messages" parent="apps_grid" instance=ExtResource("2_appicon")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 9
+app_name = "Mensajes"
+app_icon = ExtResource("3_4ktyb")
+app_scene = ExtResource("6_messages")

@@ -117,6 +117,12 @@ func advance_to_next_morning() -> void:
 	_last_is_day = not is_daytime()
 	_emit_day_phase_if_changed()
 
+## Minuto de juego absoluto (día*1440 + hora del día), útil para
+## agendar cosas a futuro (ver JobsManager/JobEncounterSpawner) sin
+## tener que lidiar con el cruce de medianoche a mano.
+func get_total_minutes() -> float:
+	return Game.state.day * MINUTES_PER_DAY + Game.state.time_of_day
+
 func get_hour() -> int:
 	return int(Game.state.time_of_day / 60.0)
 

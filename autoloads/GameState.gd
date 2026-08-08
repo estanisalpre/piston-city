@@ -51,3 +51,42 @@ signal money_changed(amount: int)
 	SkillIds.TRANSMISION_CHASIS: 0,
 	SkillIds.TASACION: 0,
 }
+
+## Trabajos aceptados y todavía no entregados: job_id -> día límite
+## (Game.state.day en el que vencen). Si un job_id no está acá, está
+## disponible para aceptar. Ver JobsManager.
+@export var active_jobs: Dictionary[String, int] = {}
+
+## job_id -> minuto absoluto de juego (día*1440 + time_of_day) en el
+## que el NPC/auto de la entrega van a aparecer en el garage. Se borra
+## apenas se dispara ese encuentro. Ver JobsManager/JobEncounterSpawner.
+@export var scheduled_deliveries: Dictionary[String, float] = {}
+
+## job_id -> minuto absoluto de juego en el que el cliente viene a
+## retirar el auto ya terminado (respeta el horario del taller, ver
+## JobsManager._compute_pickup_arrival). Un job_id presente acá ya no
+## está en active_jobs — el pago recién ocurre cuando el NPC llega.
+@export var pending_pickups: Dictionary[String, float] = {}
+
+## job_id -> {"route": String, "index": int, "dir": int} — en qué
+## recorrido de patrulla (ver CityWandererSpawner) está el cliente de
+## ese encargo, en qué punto del recorrido, y para qué lado camina.
+## Ver Client.gd.
+@export var wanderer_progress: Dictionary[String, Dictionary] = {}
+
+## job_id -> minuto absoluto de juego en el que wanderer_progress[job_id]
+## fue verdad por última vez. Al volver a entrar al CityMap, se usa
+## para "adelantar" la caminata simulada el tiempo que pasó mientras no
+## se veía — así se siente que deambuló solo, no que quedó pausado.
+@export var wanderer_updated_at: Dictionary[String, float] = {}
+
+## job_id -> true mientras el NPC de ese encargo está en medio de un
+## encuentro real dentro del garage (entrega o retiro). Mientras esté
+## acá, CityWandererSpawner no debe crear una copia deambulando en la
+## ciudad — el NPC es uno solo. Ver JobEncounterSpawner.
+@export var npc_busy_in_garage: Dictionary[String, bool] = {}
+
+## Bandeja de mensajes (reclamos de clientes, etc). Cada entrada:
+## {"title": String, "body": String, "day": int, "read": bool}.
+## Ver MessagesCenter.
+@export var messages: Array[Dictionary] = []

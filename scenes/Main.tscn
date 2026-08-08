@@ -10,8 +10,10 @@
 [ext_resource type="Shader" uid="uid://d3qnjfqt1eq51" path="res://shaders/heat_haze.gdshader" id="8_heatshader"]
 [ext_resource type="Script" uid="uid://caes704l7sjcm" path="res://scripts/world/HeatHaze.gd" id="9_heathaze"]
 [ext_resource type="PackedScene" uid="uid://c8vhpq0mxr6yl" path="res://scenes/ui/DebugBar.tscn" id="10_debugbar"]
-[ext_resource type="PackedScene" path="res://scenes/ui/SleepModal.tscn" id="11_sleepmodal"]
-[ext_resource type="PackedScene" path="res://scenes/ui/SleepTransition.tscn" id="12_sleeptrans"]
+[ext_resource type="PackedScene" uid="uid://dq6vw3kqx4y2j" path="res://scenes/ui/SkillsDebugBar.tscn" id="10_skillsdebugbar"]
+[ext_resource type="PackedScene" uid="uid://bqf1lsxk4h6yw" path="res://scenes/ui/SleepModal.tscn" id="11_sleepmodal"]
+[ext_resource type="PackedScene" uid="uid://d0y1lqf2r3kpg" path="res://scenes/ui/SleepTransition.tscn" id="12_sleeptrans"]
+[ext_resource type="PackedScene" path="res://scenes/ui/DialogueModal.tscn" id="13_dialoguemodal"]
 
 [sub_resource type="Animation" id="Animation_0ge4i"]
 length = 0.001
@@ -105,7 +107,17 @@ script = ExtResource("9_heathaze")
 visible = false
 
 [node name="DebugBar" parent="UI" unique_id=1502938471 instance=ExtResource("10_debugbar")]
+offset = Vector2(0, 30)
+scale = Vector2(0.5, 0.5)
+transform = Transform2D(0.5, 0, 0, 0.5, 0, 30)
 
-[node name="SleepModal" parent="UI" instance=ExtResource("11_sleepmodal")]
+[node name="SkillsDebugBar" parent="UI" unique_id=1999773526 instance=ExtResource("10_skillsdebugbar")]
+offset = Vector2(0, 35)
+scale = Vector2(0.5, 0.5)
+transform = Transform2D(0.5, 0, 0, 0.5, 0, 35)
 
-[node name="SleepTransition" parent="UI" instance=ExtResource("12_sleeptrans")]
+[node name="SleepModal" parent="UI" unique_id=1066409971 instance=ExtResource("11_sleepmodal")]
+
+[node name="SleepTransition" parent="UI" unique_id=450042378 instance=ExtResource("12_sleeptrans")]
+
+[node name="DialogueModal" parent="UI" instance=ExtResource("13_dialoguemodal")]

@@ -27,6 +27,8 @@
 [ext_resource type="Texture2D" uid="uid://xkhg1gap55fv" path="res://assets/sprites/city/asphalt.png" id="24_kiyng"]
 [ext_resource type="Texture2D" uid="uid://cjhrqtjypw3p8" path="res://assets/sprites/city/buildings/res_1_96x96.png" id="26_kiyng"]
 [ext_resource type="Texture2D" uid="uid://bu8i65htebsp5" path="res://assets/sprites/city/grass_center.png" id="27_0hahf"]
+[ext_resource type="Script" uid="uid://cc6icmre6g7ex" path="res://scripts/world/CityWandererSpawner.gd" id="90_citywanderer"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/Client.tscn" id="91_client"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7j1l0"]
 texture = ExtResource("27_0hahf")
@@ -668,6 +670,26 @@ offset_top = -57.0
 offset_right = -1800.0
 offset_bottom = -34.0
 text = "peaje"
+
+[node name="WanderRoutes" type="Node2D" parent="."]
+
+[node name="Route1" type="Node2D" parent="WanderRoutes"]
+
+[node name="b_point" type="Marker2D" parent="WanderRoutes/Route1"]
+position = Vector2(309, 158)
+
+[node name="c_point" type="Marker2D" parent="WanderRoutes/Route1"]
+position = Vector2(349, 158)
+
+[node name="d_point" type="Marker2D" parent="WanderRoutes/Route1"]
+position = Vector2(389, 158)
+
+[node name="CityWandererSpawner" type="Node2D" parent="." unique_id=1627736562]
+position = Vector2(265, 170)
+script = ExtResource("90_citywanderer")
+routes_path = NodePath("../WanderRoutes")
+anchor_point_path = NodePath("../Map/outside_garage/PlayerSpawn")
+client_scene = ExtResource("91_client")
 
 [editable path="Map/outside_garage/ExitParkingDoorTrigger"]
 [editable path="Map/WallBehindTrigger"]

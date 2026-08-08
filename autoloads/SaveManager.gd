@@ -61,5 +61,12 @@ func load_game() -> void:
 		Game.state.day = loaded_state.day
 		Game.state.time_of_day = loaded_state.time_of_day
 		Game.state.skill_levels = loaded_state.skill_levels
+		Game.state.skill_exp = loaded_state.skill_exp
+		Game.state.active_jobs = loaded_state.active_jobs
+		Game.state.scheduled_deliveries = loaded_state.scheduled_deliveries
+		Game.state.pending_pickups = loaded_state.pending_pickups
+		Game.state.wanderer_progress = loaded_state.wanderer_progress
+		Game.state.wanderer_updated_at = loaded_state.wanderer_updated_at
+		Game.state.messages = loaded_state.messages
 		Game.state.current_map_path = loaded_state.current_map_path
 		Game.state.player_position = loaded_state.player_position

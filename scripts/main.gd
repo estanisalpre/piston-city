@@ -12,6 +12,15 @@ func _unhandled_input(event):
 	if event.is_action_pressed("phone_toggle"):
 		phone.toggle()
 
+	# Si el click llegó hasta acá (no lo absorbió ningún control de UI),
+	# es que fue afuera de cualquier barra de debug — le sacamos el foco
+	# a lo que sea que lo tuviera (ej. el campo de texto de un SpinBox),
+	# para que Tab/Escape vuelvan a funcionar normal.
+	if event is InputEventMouseButton and event.pressed:
+		var focused := get_viewport().gui_get_focus_owner()
+		if focused:
+			focused.release_focus()
+
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		SaveManager.quit_game()

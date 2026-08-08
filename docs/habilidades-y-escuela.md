@@ -316,3 +316,102 @@ Algunos casos de **E** (ej. Mecánica General nivel 3, "diagnosticar ruidos") no
 ### Qué NO se dibuja todavía
 
 Ningún nivel de esta sección necesita animación del `Player` en el mundo ni sprites de personaje haciendo la tarea — todo pasa en el overlay del minijuego, sobre sprites estáticos de la pieza/vehículo. Esto es deliberado: permite validar las 50 interacciones con arte mínimo (2-4 sprites por trabajo) antes de invertir en animaciones más costosas.
+
+---
+
+## 8. Flujo completo de un encargo en el mundo (aceptar → entregar)
+
+> Definido el 2026-08-08. Esto es la versión **completa** del ciclo de vida de un encargo — mucho más allá de lo que ya funciona hoy en código (aceptar/completar desde el celular, ver `Jobs.gd`/`JobsManager.gd`). Ese flujo simplificado de hoy queda como el "modo rápido" del MVP hasta que se construya todo lo de acá abajo. Ningún paso de esta sección está implementado todavía.
+
+### Resumen de los 6 pasos
+
+| Paso | Dónde pasa | Qué hace el jugador | Qué hace el juego |
+|---|---|---|---|
+| 1 | Celular, app Trabajos | Toca "Aceptar" | Reserva el encargo (no arranca el plazo de 7 días todavía) |
+| 2 | Garage, mundo | Se acerca al NPC y espera a que termine de hablar | Spawnea el auto + el NPC, corre el diálogo, y **recién ahí** arranca la cuenta de 7 días |
+| 3 | Garage, mundo | Se acerca al auto | Se despliega el menú de compartimentos, filtrado por lo que su nivel de habilidad le permite hacer |
+| 4 | Garage, mundo | Elige libremente qué hacerle al auto | No lo guía ni lo bloquea — el jugador puede tocar piezas que no le pidieron |
+| 5 | Garage, mundo | Resuelve el minijuego de cada tarea que eligió | El minijuego (patrones A-E, sección 7) **es** el test de calidad de esa tarea puntual |
+| 6 | Celular + Garage | Toca "Avisar al vendedor" cuando cree que terminó | El NPC vuelve, inspecciona, y paga o se enoja según lo que realmente se hizo |
+
+### Paso 1 — Aceptar (celular)
+
+Igual a lo que ya existe hoy (`JobsManager.accept_job`), con un cambio importante: aceptar **reserva** el encargo (deja de aparecer en "Disponibles"), pero el contador de 7 días **no arranca todavía** — arranca al final del Paso 2. Hoy en código arranca apenas se acepta; ese comportamiento actual queda como el "modo rápido" mencionado arriba, hasta que se construya el Paso 2.
+
+### Paso 2 — Llegada del auto y del cliente
+
+1. El auto aparece en uno de **2 lugares fijos de estacionamiento** dentro del garage (dos posiciones predefinidas). Si los dos están ocupados, el auto va a un **estacionamiento exterior** (ficticio por ahora, 10 lugares) — ver detalle abajo.
+2. Un NPC aparece caminando desde la puerta del garage hacia el jugador.
+3. El jugador se acerca y se dispara un diálogo — **el jugador nunca habla**, solo mira/reacciona a lo que el NPC va diciendo (una serie de líneas de texto que avanzan solas o con un toque para continuar, sin opciones de respuesta).
+4. Terminado el diálogo, el NPC camina de vuelta a la puerta del garage y desaparece (despawn).
+5. **Recién en este momento** arranca la cuenta de 7 días (`Game.state.active_jobs[job_id] = día_actual + 7`, igual que hoy pero disparado por este evento en vez de por el "Aceptar" del celular).
+6. Hasta que este paso no termina, el auto está en el garage pero **no se puede trabajar** — el menú del Paso 3 no se abre todavía.
+
+#### Estacionamiento exterior (cuando los 2 lugares del garage están ocupados)
+
+Definido el 2026-08-08. Si al llegar un auto nuevo los 2 lugares internos ya están ocupados (por otros encargos en curso, o por autos propios del jugador), el auto se estaciona afuera del garage, en un lote con **10 lugares** (ficticio por ahora — no hace falta dibujarlo/mapearlo todavía, alcanza con que el dato "este auto está afuera, lugar N" exista).
+
+Puntos clave:
+
+- El plazo de 7 días **corre igual** esté el auto adentro o afuera — estacionarlo afuera no lo "pausa".
+- El jugador **decide el orden** en el que trae los autos de afuera hacia los 2 lugares internos para trabajarlos — el juego no prioriza por él. Si dejó un auto afuera 7 días sin nunca haberlo pasado adentro a trabajarlo, vence igual que cualquier otro (sin pago, mensaje de cliente enojado).
+- Con 2 lugares internos + 10 externos, el límite real de encargos "en curso" a la vez es 12. Si ese límite también se llena, hay que decidir qué pasa con un encargo aceptado nuevo — **queda pendiente**, pero no es bloqueante (con 12 en simultáneo alcanza y sobra para el MVP).
+- El auto no necesita "moverse" visualmente del exterior al interior con una animación propia todavía — alcanza con que el jugador elija desde algún lado (a definir: ¿un menú simple? ¿acercarse al lote exterior?) qué auto de afuera pasa a ocupar un lugar interno libre.
+
+### Paso 3 — Menú de compartimentos del vehículo
+
+Al acercarse al auto (ya con el diálogo de llegada terminado), se despliega un menú en la parte inferior de la pantalla con las tareas disponibles para ese vehículo. Las opciones salen agrupadas por las 10 habilidades (igual naming que en el resto del juego), y dentro de cada una **solo aparecen las tareas de los niveles que el jugador ya tiene** en esa habilidad (mismo dato, `Game.state.skill_levels`, que ya usa la app de Trabajos). Es decir: el menú no sabe ni le importa cuál era el encargo aceptado — muestra todo lo que el jugador *sabe hacer*, sobre ese auto.
+
+### Paso 4 — Sin guía ni bloqueo
+
+El juego no resalta ni sugiere cuál es la tarea "correcta" (la que corresponde al encargo aceptado). El jugador puede:
+
+- Hacer exactamente la tarea pedida (lo esperable).
+- Hacer la tarea pedida **y además** tocar otras piezas de más.
+- Directamente hacer una tarea que no tiene nada que ver con el encargo.
+
+Ninguna de estas opciones se bloquea en el momento — la consecuencia de haber tocado algo que no correspondía se resuelve recién en el Paso 6, cuando el cliente inspecciona.
+
+### Paso 5 — El minijuego es el test
+
+Cada tarea que el jugador elige hacer dispara el minijuego que le corresponde según la tabla de la sección 7 (ej. cambiar un neumático = patrón B+C+B). Resolver bien el minijuego = la tarea queda "bien hecha". Fallarlo (ej. no frenar la aguja en la zona correcta) = la tarea queda "mal hecha", aunque haya sido la tarea correcta que pedía el encargo.
+
+Con esto, cada pieza tocada durante el Paso 4 termina con uno de tres estados:
+- **No tocada** (no aplica).
+- **Bien hecha** (minijuego superado).
+- **Mal hecha** (minijuego fallado, o la tarea no correspondía al encargo).
+
+### Paso 6 — Avisar al vendedor (ya no es "Completar" instantáneo)
+
+El botón que hoy dice "Completar" en `Jobs.gd` deja de pagar al toque — pasa a decir **"Avisar al vendedor"** y solo dispara el evento de inspección:
+
+1. El jugador toca "Avisar al vendedor" cuando cree que terminó (puede estar bien, mal, o a medio hacer — el juego no valida nada en este momento).
+2. Más tarde ese mismo día (u horas de juego después), el NPC vuelve caminando al garage.
+3. Se dispara otro diálogo de una sola vía (el jugador solo mira):
+   - Si el auto quedó bien (se hizo la tarea pedida, y quedó "bien hecha", sin piezas de más tocadas y detectadas) → línea de satisfacción, se paga `reward_money` + `reward_exp` de la habilidad del encargo, el auto se lo lleva (desaparece, libera el lugar de estacionamiento).
+   - Si el auto quedó mal (tarea no correspondida y detectada, o tarea correspondida pero mal hecha y detectada) → línea de enojo, el NPC se lleva el auto **sin pagar** (mismo principio ya implementado: lo que el jugador haya gastado no se devuelve), y el encargo se borra de `active_jobs`.
+4. **Al día siguiente**, si el resultado fue malo, le llega un mensaje furioso a la app Mensajes (reusa `MessagesCenter`, igual que el mensaje de vencimiento por los 7 días) amenazando con una demanda y diciendo que no va a volver a traerle un auto.
+
+#### Detección de piezas no pedidas (¿el cliente siempre se entera?)
+
+No siempre — la chance de que el cliente note que se tocó algo que no le pidieron escala con el **nivel del propio encargo** (`job.required_level`), no con ninguna habilidad del jugador. La idea: un cliente que pide un trabajo de nivel 5 es más exigente/entendido que uno que pide un cambio de aceite básico.
+
+| Nivel del encargo | Chance de detectar manipulación no pedida |
+|---|---|
+| 1 | 30% |
+| 2 | 47,5% |
+| 3 | 65% |
+| 4 | 82,5% |
+| 5 | 100% |
+
+Valores provisorios (mismo criterio que el resto del documento — se rebalancean con la economía real). Una tarea **mal hecha** (fallaste el minijuego) de la habilidad correcta se evalúa con esta misma tabla, usando el nivel de esa tarea específica.
+
+### Qué hace falta construir para que esto funcione (nada de esto existe hoy)
+
+- **NPC con IA simple de caminar hacia un punto** (garage → jugador → garage) y despawn — no existe ningún NPC en el juego todavía, solo el `Player`.
+- **Sistema de diálogo de una sola vía** (texto que avanza solo o al toque, sin opciones de respuesta) — no existe ningún sistema de diálogo en el proyecto.
+- **2 marcadores fijos de estacionamiento** en `GarageMap.tscn` (`Marker2D`, mismo patrón que `SpawnPlayer`), más el **estacionamiento exterior ficticio de 10 lugares** (por ahora solo como dato — `job_id → lugar`, sin mapa propio) y la forma de elegir qué auto de afuera pasar adentro.
+- **Estado por-vehículo-en-trabajo**: qué piezas se tocaron y con qué resultado (bien/mal hecha) durante el Paso 4-5. Esto es un dato nuevo, separado del sistema de vehículos modulares (`car_body`/`hood`/etc.) que todavía no existe (roadmap punto 6) — para este flujo alcanza con un registro simple por encargo activo, no hace falta el vehículo modular completo todavía.
+- **Menú de compartimentos** filtrado por `skill_levels` (UI nueva, en el mundo, no en el celular).
+- **`JobsManager` necesita más estados** que el actual `active_jobs[job_id] = día_límite`: hoy un encargo aceptado ya cuenta como "en progreso" con el reloj corriendo; con este flujo hace falta distinguir "esperando que llegue el NPC", "en progreso (auto trabajable, adentro o afuera)" y "esperando inspección" antes de resolver el pago.
+- **Definir qué pasa si se llenan los 12 lugares en total** (2 internos + 10 externos) y llega un encargo nuevo aceptado — pendiente, no bloqueante para el MVP.

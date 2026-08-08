@@ -1,22 +1,22 @@
-[gd_scene format=3 uid="uid://cg5tfmstmuhmb"]
+[gd_scene format=3 uid="uid://bqx8f3n1h5j2m"]
 
-[ext_resource type="Script" uid="uid://c0pcfdh4jw58g" path="res://scripts/ui/phone/Jobs.gd" id="1_jobs"]
+[ext_resource type="Script" path="res://scripts/ui/phone/Skills.gd" id="1_skills"]
 [ext_resource type="Texture2D" uid="uid://dqka6hlrcsxi4" path="res://assets/ui/phone/icons/back_btn_icon.png" id="2_back"]
 
-[node name="Jobs" type="Control" unique_id=1257733631]
+[node name="Skills" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_jobs")
+script = ExtResource("1_skills")
 
-[node name="title" type="Label" parent="." unique_id=325751493]
+[node name="title" type="Label" parent="."]
 layout_mode = 0
 offset_left = 16.0
 offset_right = 56.0
 offset_bottom = 12.0
 theme_override_font_sizes/font_size = 7
-text = "Trabajos"
+text = "Habilidades"
 
-[node name="job_scroll" type="ScrollContainer" parent="."]
+[node name="skill_scroll" type="ScrollContainer" parent="."]
 layout_mode = 0
 clip_contents = true
 anchors_preset = 15
@@ -27,12 +27,12 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
 
-[node name="job_list" type="VBoxContainer" parent="job_scroll" unique_id=428386114]
+[node name="skill_list" type="VBoxContainer" parent="skill_scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
-[node name="back_btn" type="Button" parent="." unique_id=562711359]
+[node name="back_btn" type="Button" parent="."]
 layout_mode = 0
 offset_left = 1.0
 offset_top = -2.0

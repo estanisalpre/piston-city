@@ -39,6 +39,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="phone_background" type="TextureRect" parent="phone_container" unique_id=1960725283]
+visible = false
 modulate = Color(0.42749333, 0.42749298, 0.42749316, 1)
 layout_mode = 1
 anchors_preset = -1

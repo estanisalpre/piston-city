@@ -21,6 +21,7 @@ Game="*uid://b6yj45f562k83"
 SaveManager="*res://autoloads/SaveManager.gd"
 TimeManager="*res://autoloads/TimeManager.gd"
 SleepManager="*res://autoloads/SleepManager.gd"
+JobsManager="*res://autoloads/JobsManager.gd"
 
 [display]
 
