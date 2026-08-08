@@ -33,10 +33,23 @@ func has_save() -> bool:
 	return FileAccess.file_exists(SAVE_PATH)
 
 func save_game() -> void:
+	_capture_world_state()
+
 	var error := ResourceSaver.save(Game.state, SAVE_PATH)
 
 	if error != OK:
 		push_error("No se pudo guardar la partida: %s" % error)
+
+## Antes de guardar, le pregunta al mundo dónde está el jugador y en qué mapa
+## (mismo patrón de "buscar por grupo" que ya usan BedTrigger/DoorTrigger).
+func _capture_world_state() -> void:
+	var player := get_tree().get_first_node_in_group("player")
+	var world_manager := get_tree().get_first_node_in_group("world_manager")
+
+	if player:
+		Game.state.player_position = player.global_position
+	if world_manager:
+		Game.state.current_map_path = world_manager.get_current_map_path()
 
 func load_game() -> void:
 	var loaded_state := load(SAVE_PATH) as GameState
@@ -47,3 +60,6 @@ func load_game() -> void:
 		Game.state.selected_vehicle = loaded_state.selected_vehicle
 		Game.state.day = loaded_state.day
 		Game.state.time_of_day = loaded_state.time_of_day
+		Game.state.skill_levels = loaded_state.skill_levels
+		Game.state.current_map_path = loaded_state.current_map_path
+		Game.state.player_position = loaded_state.player_position

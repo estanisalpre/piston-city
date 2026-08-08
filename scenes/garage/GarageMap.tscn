@@ -41,6 +41,7 @@
 [ext_resource type="Texture2D" uid="uid://cdqqr2pvxgskd" path="res://assets/sprites/garage/walls/bedroom/window_bottom_night.png" id="36_wbotnight"]
 [ext_resource type="Script" uid="uid://crrnm26m5omnk" path="res://scripts/world/DayNightVisibility.gd" id="37_daynightvis"]
 [ext_resource type="Script" uid="uid://c72gg8lcnhfct" path="res://scripts/world/BedTrigger.gd" id="38_bedtrigger"]
+[ext_resource type="PackedScene" uid="uid://dwxq4h1door01" path="res://scenes/world/DoorTrigger.tscn" id="39_doortrigger"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pik3s"]
 texture = ExtResource("1_57cdy")
@@ -259,6 +260,9 @@ sources/1 = SubResource("TileSetAtlasSource_co3ap")
 sources/2 = SubResource("TileSetAtlasSource_bqv7a")
 sources/3 = SubResource("TileSetAtlasSource_6enqx")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_doortrigger"]
+size = Vector2(150, 79)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1paue"]
 texture = ExtResource("24_n2gec")
 texture_region_size = Vector2i(32, 32)
@@ -409,6 +413,17 @@ z_index = 40
 tile_map_data = PackedByteArray("AAAFAAsAAAAAAAAAAAAFAAoAAQAAAAAAAAAJAAsAAAAAAAAAABAJAAoAAQAAAAAAABAGAAoAAgAAAAAAAAAHAAoAAgAAAAAAAAAIAAoAAgAAAAAAAAAGAAsAAwAAAAAAAAAHAAsAAwAAAAAAAAAIAAsAAwAAAAAAAAA=")
 tile_set = SubResource("TileSet_8evni")
 
+[node name="ExitParkingDoorTrigger" parent="Map/doors" unique_id=512326614 instance=ExtResource("39_doortrigger")]
+position = Vector2(240, 350)
+target_map_path = "res://scenes/city/CityMap.tscn"
+
+[node name="CollisionShape2D" parent="Map/doors/ExitParkingDoorTrigger" index="0"]
+position = Vector2(3, -0.5)
+shape = SubResource("RectangleShape2D_doortrigger")
+
+[node name="PlayerSpawn" type="Marker2D" parent="Map/doors" unique_id=1716435692]
+position = Vector2(243, 305)
+
 [node name="bedroom" type="Node2D" parent="Map" unique_id=982641270]
 
 [node name="bed" type="TileMapLayer" parent="Map/bedroom" unique_id=1177536075]
@@ -535,4 +550,5 @@ stream = ExtResource("19_20jni")
 volume_db = -12.636
 autoplay = true
 
+[editable path="Map/doors/ExitParkingDoorTrigger"]
 [editable path="Map/bedroom/walls/BehindWallTrigger"]

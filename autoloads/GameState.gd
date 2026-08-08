@@ -15,3 +15,24 @@ signal money_changed(amount: int)
 @export var day := 1
 
 @export var time_of_day := 480.0
+
+## "" significa "partida nueva" — Main.gd usa esto para saber si tiene que
+## restaurar la última ubicación o dejar el spawn por defecto (la cama).
+@export var current_map_path := ""
+
+@export var player_position := Vector2.ZERO
+
+## Nivel actual de cada habilidad (1 a 5). Todas empiezan en 1 —
+## ver docs/habilidades-y-escuela.md para qué desbloquea cada nivel.
+@export var skill_levels: Dictionary[String, int] = {
+	SkillIds.LAVADO: 1,
+	SkillIds.MECANICA_GENERAL: 1,
+	SkillIds.DESMANTELADOR: 1,
+	SkillIds.TORQUE_HP: 1,
+	SkillIds.PINTURA: 1,
+	SkillIds.NEUMATICOS: 1,
+	SkillIds.ELECTRICIDAD: 1,
+	SkillIds.MOTOR: 1,
+	SkillIds.TRANSMISION_CHASIS: 1,
+	SkillIds.TASACION: 1,
+}

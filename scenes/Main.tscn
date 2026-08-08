@@ -63,7 +63,6 @@ script = ExtResource("7_daynight")
 [node name="World" type="Node2D" parent="." unique_id=652165696]
 
 [node name="GarageMap" parent="World" unique_id=300000020 instance=ExtResource("2_garage")]
-position = Vector2(656, 456)
 
 [node name="SpawnPlayer" type="Marker2D" parent="World/GarageMap" unique_id=75041335]
 position = Vector2(302, 84)
