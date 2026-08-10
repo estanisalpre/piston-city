@@ -83,6 +83,11 @@ signal money_changed(amount: int)
 ## neumáticos cada semana.
 @export var job_cooldowns: Dictionary[String, int] = {}
 
+## Stock de piezas del taller: part_id (String libre, ej. "neumatico")
+## -> cantidad. Nunca es mochila del jugador — todo lo comprado entra
+## directo acá. Ver PartsInventory.
+@export var parts: Dictionary[String, int] = {}
+
 ## npc_id -> snapshot de NpcDirector en el momento de guardar
 ## ({route, index, dir, position, mode, job_id, wait_remaining}) — sin
 ## importar en qué modo estaba (patrullando, camino al taller, de

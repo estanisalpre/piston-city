@@ -25,6 +25,7 @@ signal player_approached
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var id_label: Label = $IdLabel
 
 var _target_position := Vector2.ZERO
 var _walking := false
@@ -37,6 +38,12 @@ var _mirror_last_position := Vector2.ZERO
 ## NpcRoster comparten la misma grilla (3x6, frames de 32x32).
 func set_appearance(texture: Texture2D) -> void:
 	sprite.texture = texture
+
+## Cartelito debajo del sprite para reconocer al NPC mientras se van
+## armando rutas (ver NpcRoster.ALL) — muestra solo el número
+## ("npc_01" -> "01"), sin depender de tener nombre/atlas propio.
+func set_debug_id(npc_id: String) -> void:
+	id_label.text = npc_id.trim_prefix("npc_")
 
 func walk_to(point: Vector2) -> void:
 	_target_position = point

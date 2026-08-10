@@ -108,6 +108,7 @@ func _spawn_client(npc_id: String, job_id: String) -> void:
 	var client: CharacterBody2D = client_scene.instantiate()
 	add_child(client)
 	client.set_appearance(NpcRoster.get_texture(npc_id))
+	client.set_debug_id(npc_id)
 	client.job_id = job_id
 	_clients[npc_id] = {"client": client, "phase": ""}
 

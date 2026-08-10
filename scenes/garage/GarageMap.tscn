@@ -536,6 +536,8 @@ tile_set = SubResource("TileSet_krpui")
 tile_map_data = PackedByteArray("AAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAABA=")
 tile_set = SubResource("TileSet_hplta")
 
+[node name="tires_section" type="Node2D" parent="Map" unique_id=591852782]
+
 [node name="Lights" type="Node2D" parent="." unique_id=960782942]
 
 [node name="ExitDoorLight" type="PointLight2D" parent="Lights" unique_id=2007843590]

@@ -47,6 +47,7 @@ const CITY_MAP_PATH := "res://scenes/city/CityMap.tscn"
 const ROUTES_CONTAINER_NAME := "WanderRoutes"
 const ANCHOR_NODE_PATH := "Map/outside_garage/PlayerSpawn"
 const HOMES_CONTAINER_NAME := "homes"
+const WORKPLACES_CONTAINER_NAME := "Workplaces"
 
 const GARAGE_MAP_PATH := "res://scenes/garage/GarageMap.tscn"
 const GARAGE_SPAWNER_NODE_PATH := "Map/vehicles/JobEncounterSpawner"
@@ -81,6 +82,9 @@ var _job_spots: Dictionary = {}  # job_id (String) -> spot_index (int)
 var _homes: Dictionary = {}  # npc_id (String) -> Vector2
 var _home_wake_hours: Dictionary = {}  # npc_id (String) -> float (0-24)
 
+var _workplaces: Dictionary = {}  # npc_id (String) -> Vector2
+var _close_hours: Dictionary = {}  # npc_id (String) -> float (0-24)
+
 ## Mapa de NavigationServer2D armado a mano (ver _load_navigation) con el
 ## NavigationPolygon de CityMap.tscn — RID() (inválido) si esa escena
 ## todavía no tiene un NavigationRegion2D horneado. Usado "headless": sin
@@ -97,6 +101,9 @@ func _ready() -> void:
 
 	_load_homes()
 	print("[NpcDirector] casas cargadas: %s" % [_homes])
+
+	_load_workplaces()
+	print("[NpcDirector] negocios cargados: %s" % [_workplaces])
 
 	_load_garage_layout()
 	_load_navigation()
@@ -163,6 +170,26 @@ func _load_homes() -> void:
 
 	if _homes.is_empty():
 		push_warning("NpcDirector: no encontré ninguna casa en Map/%s de CityMap.tscn (¿falta guardar la escena, o el contenedor no se llama exactamente así?) — ningún NPC va a tener ciclo de dormir/despertar." % HOMES_CONTAINER_NAME)
+
+## Mismo truco que _load_homes, pero para los negocios (NpcWorkplace.gd)
+## — un Marker2D por NPC bajo Map/Workplaces, con su propio npc_id y
+## close_hour. Un NPC sin negocio configurado ahí simplemente sigue el
+## ciclo normal (casa -> ruta random -> casa), sin pasar por acá.
+func _load_workplaces() -> void:
+	var city_scene: PackedScene = load(CITY_MAP_PATH)
+	var city: Node = city_scene.instantiate()
+
+	var container: Node = city.find_child(WORKPLACES_CONTAINER_NAME, true, false)
+
+	if container:
+		for workplace_node in container.get_children():
+			var workplace_npc_id: Variant = workplace_node.get("npc_id")
+			if workplace_npc_id != null and workplace_npc_id != "":
+				_workplaces[workplace_npc_id] = workplace_node.global_position
+				var close: Variant = workplace_node.get("close_hour")
+				_close_hours[workplace_npc_id] = close if close != null else 17.0
+
+	city.free()
 
 ## Mismo truco que _load_routes, pero para leer del garage dónde está
 ## la puerta de entrada y los lugares de estacionamiento — los mismos
@@ -252,6 +279,14 @@ func _restore_or_init_npc(npc_id: String) -> void:
 		return
 
 	if route_name != "" and _routes.has(route_name):
+		if _route_reservations.has(route_name):
+			# Otro npc_id restaurado antes en este mismo arranque (ver orden
+			# de NpcRoster.ALL) ya reclamó esta ruta — pasa con guardados de
+			# sesiones con distinta cantidad de NPCs activos. Nunca dejar dos
+			# dueños de la misma ruta: este NPC arranca de cero, compitiendo
+			# por una ruta libre como cualquiera.
+			_init_npc(npc_id)
+			return
 		_route_reservations[route_name] = npc_id
 
 	_npc_state[npc_id] = {
@@ -285,6 +320,8 @@ func _points_for_restored_mode(
 			return [position, _garage_door_position]  # solo importa points[1], el índice queda fijo en 1
 		"to_home":
 			return [_homes.get(npc_id, position)]
+		"to_work":
+			return [_workplaces.get(npc_id, position)]
 		"patrol", "to_workshop", "to_route":
 			return _routes.get(route_name, [])
 		_:
@@ -456,24 +493,56 @@ func _on_minute_changed(_hour: int, _minute: int) -> void:
 			print("[NPC] %s: son las %s, corta patrulla y va para casa" % [_log_name(npc_id), _fmt_minute(minute_of_day)])
 			_start_heading_home(npc_id, state)
 		elif state.mode == "at_home" and _is_awake_hour(minute_of_day, _home_wake_hours[npc_id]):
-			print("[NPC] %s: son las %s, se despierta y sale para una ruta" % [_log_name(npc_id), _fmt_minute(minute_of_day)])
+			if _workplaces.has(npc_id):
+				print("[NPC] %s: son las %s, se despierta y sale para el negocio" % [_log_name(npc_id), _fmt_minute(minute_of_day)])
+				_start_heading_to_work(npc_id, state)
+			else:
+				print("[NPC] %s: son las %s, se despierta y sale para una ruta" % [_log_name(npc_id), _fmt_minute(minute_of_day)])
+				_start_heading_to_route(npc_id, state)
+		elif state.mode == "at_work" and minute_of_day >= _close_hours[npc_id] * 60.0:
+			print("[NPC] %s: son las %s, cierra el negocio y sale para una ruta" % [_log_name(npc_id), _fmt_minute(minute_of_day)])
 			_start_heading_to_route(npc_id, state)
 		else:
 			print("[NPC] %s: hora=%s modo=%s (nada que hacer)" % [_log_name(npc_id), _fmt_minute(minute_of_day), state.mode])
 
-## Lo llama el botón "Regresar a casa" de DebugBar — manda a todos los
-## NPCs que estén patrullando tranquilos a su casa ya mismo, sin esperar
-## a HEAD_HOME_HOUR. No interrumpe a los que estén en un encargo (mismo
-## criterio que _on_minute_changed) ni a los que ya no tengan casa
-## configurada.
+## Lo llama el botón "Regresar a casa" de DebugBar — sin importar dónde
+## esté cada NPC (patrullando, en el negocio, a mitad de un encargo, lo
+## que sea), lo teletransporta directo a su casa, sin caminar y sin
+## esperar a HEAD_HOME_HOUR. Un NPC sin casa configurada no tiene a
+## dónde volver, así que directamente desaparece del mapa ("off_duty").
+## Es una herramienta de testeo (para no tener que esperar a que
+## vuelvan solos) — si algún NPC estaba a mitad de un encargo en el
+## garage, esto lo corta de golpe.
 func debug_send_all_home() -> void:
 	for npc_id in NpcRoster.ALL:
-		if not _homes.has(npc_id):
-			continue
+		_release_route(npc_id)
 
-		var state: Dictionary = _npc_state.get(npc_id, {})
-		if not state.is_empty() and state.mode == "patrol":
-			_start_heading_home(npc_id, state)
+		if _homes.has(npc_id):
+			_npc_state[npc_id] = {
+				"route": "",
+				"points": [],
+				"index": 0,
+				"dir": 1,
+				"position": _homes[npc_id],
+				"mode": "at_home",
+				"job_id": "",
+				"wait_remaining": 0.0,
+				"_wait_consumed": false,
+				"nav_path": [],
+			}
+		else:
+			_npc_state[npc_id] = {
+				"route": "",
+				"points": [],
+				"index": 0,
+				"dir": 1,
+				"position": Vector2.ZERO,
+				"mode": "off_duty",
+				"job_id": "",
+				"wait_remaining": 0.0,
+				"_wait_consumed": false,
+				"nav_path": [],
+			}
 
 func _log_name(npc_id: String) -> String:
 	return "%s (%s)" % [NpcRoster.get_display_name(npc_id), npc_id]
@@ -504,19 +573,39 @@ func _start_heading_home(npc_id: String, state: Dictionary) -> void:
 	state._wait_consumed = false
 	state.nav_path = []
 
+## Igual que _start_heading_home, pero hacia el negocio del NPC — solo
+## se llama para npc_ids que tengan un NpcWorkplace configurado (ver
+## _on_minute_changed).
+func _start_heading_to_work(npc_id: String, state: Dictionary) -> void:
+	print("[NPC] %s: arranca a caminar al negocio, desde %s hacia %s" % [_log_name(npc_id), state.position, _workplaces[npc_id]])
+	_release_route(npc_id)
+
+	state.route = ""
+	state.points = [_workplaces[npc_id]]
+	state.waits = []
+	state.index = 0
+	state.dir = 1
+	state.mode = "to_work"
+	state.wait_remaining = 0.0
+	state._wait_consumed = false
+	state.nav_path = []
+
 ## Elige una ruta al azar (nunca la del taller) y camina, con
-## pathfinding real, hasta el punto de esa ruta más cercano a la
-## casa — no arranca siempre desde b_point, sino de donde le quede más
-## a mano. Si en ese instante no hay ninguna ruta libre, no hace nada:
-## sigue "at_home" y se reintenta solo el próximo minuto.
+## pathfinding real, hasta el punto de esa ruta más cercano a donde
+## esté el NPC ahora mismo (casa o negocio, según de dónde venga) — no
+## arranca siempre desde b_point, sino de donde le quede más a mano. Si
+## en ese instante no hay ninguna ruta libre, no hace nada: sigue en su
+## modo actual ("at_home"/"at_work") y se reintenta solo el próximo
+## minuto — con solo 3 rutas cargadas hoy, esto puede tardar hasta que
+## otro NPC libere la suya.
 func _start_heading_to_route(npc_id: String, state: Dictionary) -> void:
 	var route_name := _reserve_random_route(npc_id)
 	if route_name == "":
-		print("[NPC] %s: se quiso despertar pero no había ninguna ruta libre, sigue en casa" % _log_name(npc_id))
+		print("[NPC] %s: no había ninguna ruta libre todavía, sigue en %s" % [_log_name(npc_id), state.mode])
 		return
 
 	var points: Array = _routes[route_name]
-	var nearest_index := _nearest_point_index(points, _homes[npc_id])
+	var nearest_index := _nearest_point_index(points, state.position)
 	print("[NPC] %s: elige la ruta %s, va hacia el punto más cercano (índice %d)" % [_log_name(npc_id), route_name, nearest_index])
 
 	state.route = route_name
@@ -577,8 +666,8 @@ func _process(delta: float) -> void:
 
 func _step_npc(npc_id: String, delta: float) -> void:
 	var state: Dictionary = _npc_state[npc_id]
-	if state.mode in ["waiting_at_door", "off_duty", "at_home"]:
-		return  # "waiting_at_door": lo maneja la escena del garage. "off_duty"/"at_home": no se mueve, no se muestra en ningún lado.
+	if state.mode in ["waiting_at_door", "off_duty", "at_home", "at_work"]:
+		return  # "waiting_at_door": lo maneja la escena del garage. "off_duty"/"at_home"/"at_work": no se mueve, no se muestra en ningún lado.
 
 	if state.mode == "patrol" and state.wait_remaining > 0.0:
 		# Parado en un NpcRouteWaitPoint — cuenta minutos de JUEGO, no
@@ -609,7 +698,7 @@ func _step_npc(npc_id: String, delta: float) -> void:
 ## tramos del garage son saltos fijos de 2 puntos en un espacio chico,
 ## sin necesidad de navmesh ahí). Si no hay _nav_map válido o la
 ## consulta no devuelve nada, también cae en línea recta.
-const CITY_NAV_MODES := ["patrol", "to_workshop", "to_home", "to_route"]
+const CITY_NAV_MODES := ["patrol", "to_workshop", "to_home", "to_route", "to_work"]
 
 func _begin_travel_to(state: Dictionary, target: Vector2) -> void:
 	if _nav_map == RID() or not state.mode in CITY_NAV_MODES:
@@ -642,6 +731,11 @@ func _on_point_reached(npc_id: String, state: Dictionary) -> void:
 	if state.mode == "to_home":
 		print("[NPC] %s: llegó a su casa, queda invisible hasta despertar" % _log_name(npc_id))
 		state.mode = "at_home"
+		return
+
+	if state.mode == "to_work":
+		print("[NPC] %s: llegó al negocio, queda invisible hasta cerrar" % _log_name(npc_id))
+		state.mode = "at_work"
 		return
 
 	if state.mode == "to_route":

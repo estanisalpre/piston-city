@@ -12,7 +12,7 @@ extends Node2D
 ## dos son a propósito invisibles en cualquier mapa. Así nunca hay dos
 ## copias del mismo NPC en el mapa a la vez.
 
-const VISIBLE_MODES := ["patrol", "to_workshop", "to_home", "to_route"]
+const VISIBLE_MODES := ["patrol", "to_workshop", "to_home", "to_route", "to_work"]
 
 @export var client_scene: PackedScene
 
@@ -35,6 +35,7 @@ func _spawn_instance(npc_id: String) -> void:
 	var client: CharacterBody2D = client_scene.instantiate()
 	add_child(client)
 	client.set_appearance(NpcRoster.get_texture(npc_id))
+	client.set_debug_id(npc_id)
 	client.job_id = NpcDirector.get_job_id(npc_id)
 	client.mirror_npc(npc_id)
 	_instances[npc_id] = client
