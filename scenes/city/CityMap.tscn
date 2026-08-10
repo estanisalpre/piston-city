@@ -449,6 +449,7 @@ tile_map_data = PackedByteArray("AADg/wIAAAAAAAAAAADg/wMAAAAAAAEAAADg/wQAAAAAAAI
 tile_set = SubResource("TileSet_0ru8o")
 
 [node name="collisions" type="StaticBody2D" parent="Map" unique_id=1713243037]
+visible = false
 
 [node name="central_residences" type="CollisionPolygon2D" parent="Map/collisions" unique_id=1947146689]
 polygon = PackedVector2Array(-262, 316, 835, 317, 835, 516, 194, 513, 192, 803, -260, 802)
