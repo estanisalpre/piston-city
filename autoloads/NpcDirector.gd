@@ -83,6 +83,7 @@ var _homes: Dictionary = {}  # npc_id (String) -> Vector2
 var _home_wake_hours: Dictionary = {}  # npc_id (String) -> float (0-24)
 
 var _workplaces: Dictionary = {}  # npc_id (String) -> Vector2
+var _open_hours: Dictionary = {}  # npc_id (String) -> float (0-24)
 var _close_hours: Dictionary = {}  # npc_id (String) -> float (0-24)
 
 ## Mapa de NavigationServer2D armado a mano (ver _load_navigation) con el
@@ -186,10 +187,23 @@ func _load_workplaces() -> void:
 			var workplace_npc_id: Variant = workplace_node.get("npc_id")
 			if workplace_npc_id != null and workplace_npc_id != "":
 				_workplaces[workplace_npc_id] = workplace_node.global_position
+				var open: Variant = workplace_node.get("open_hour")
 				var close: Variant = workplace_node.get("close_hour")
+				_open_hours[workplace_npc_id] = open if open != null else 8.0
 				_close_hours[workplace_npc_id] = close if close != null else 17.0
 
 	city.free()
+
+## Lo llama cualquier puerta con horario (ver DoorTrigger.schedule_npc_id)
+## antes de dejar pasar al jugador — sin NpcWorkplace configurado para
+## ese npc_id, no hay horario que respetar, así que devuelve false
+## (más seguro que dejar pasar siempre por un dato faltante).
+func is_workplace_open(npc_id: String) -> bool:
+	if not _open_hours.has(npc_id):
+		return false
+
+	var minute_of_day := fmod(TimeManager.get_total_minutes(), TimeManager.MINUTES_PER_DAY)
+	return minute_of_day >= _open_hours[npc_id] * 60.0 and minute_of_day < _close_hours[npc_id] * 60.0
 
 ## Mismo truco que _load_routes, pero para leer del garage dónde está
 ## la puerta de entrada y los lugares de estacionamiento — los mismos

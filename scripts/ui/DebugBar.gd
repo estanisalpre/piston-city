@@ -6,6 +6,9 @@ extends CanvasLayer
 @onready var minute_spin: SpinBox = $Bar/Row/MinuteSpin
 @onready var apply_button: Button = $Bar/Row/ApplyButton
 @onready var send_home_button: Button = $Bar/Row/SendHomeButton
+@onready var add_tire_button: Button = $Bar/Row/AddTireButton
+@onready var remove_tire_button: Button = $Bar/Row/RemoveTireButton
+@onready var respawn_garage_button: Button = $Bar/Row/RespawnGarageButton
 
 func _ready() -> void:
 	for season_name in TimeManager.SEASON_NAMES:
@@ -18,6 +21,9 @@ func _ready() -> void:
 
 	apply_button.pressed.connect(_on_apply_pressed)
 	send_home_button.pressed.connect(_on_send_home_pressed)
+	add_tire_button.pressed.connect(_on_add_tire_pressed)
+	remove_tire_button.pressed.connect(_on_remove_tire_pressed)
+	respawn_garage_button.pressed.connect(_on_respawn_garage_pressed)
 
 	# El SpinBox tiene un LineEdit interno propio que sí puede agarrar
 	# el foco de teclado aunque el SpinBox tenga focus_mode = 0.
@@ -34,3 +40,15 @@ func _on_apply_pressed() -> void:
 
 func _on_send_home_pressed() -> void:
 	NpcDirector.debug_send_all_home()
+
+func _on_add_tire_pressed() -> void:
+	PartsInventory.add_part("neumatico", 1)
+	print("neumatico: %d" % PartsInventory.get_quantity("neumatico"))
+
+func _on_remove_tire_pressed() -> void:
+	PartsInventory.remove_part("neumatico", 1)
+	print("neumatico: %d" % PartsInventory.get_quantity("neumatico"))
+
+func _on_respawn_garage_pressed() -> void:
+	var world_manager = get_tree().get_first_node_in_group("world_manager")
+	world_manager.travel_to(load("res://scenes/garage/GarageMap.tscn"), "PlayerSpawn")

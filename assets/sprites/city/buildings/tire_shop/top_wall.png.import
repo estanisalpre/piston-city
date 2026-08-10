@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhsbjokv3uahm"
-path="res://.godot/imported/wall_front.png-f061a83b5acdb7b975ffc55373accc74.ctex"
+uid="uid://b5gly8m7k6u1l"
+path="res://.godot/imported/top_wall.png-9a9f56fcf72344750711de30bf934c47.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/garage/tires_section/wall_front.png"
-dest_files=["res://.godot/imported/wall_front.png-f061a83b5acdb7b975ffc55373accc74.ctex"]
+source_file="res://assets/sprites/city/buildings/tire_shop/top_wall.png"
+dest_files=["res://.godot/imported/top_wall.png-9a9f56fcf72344750711de30bf934c47.ctex"]
 
 [params]
 

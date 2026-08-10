@@ -14,6 +14,13 @@ extends Area2D
 @export_file("*.tscn") var target_map_path: String
 @export var spawn_marker_name := "PlayerSpawn"
 
+## Vacío (por defecto): la puerta viaja siempre, sin horario, igual que
+## hasta ahora. Con un npc_id acá (el mismo que usa NpcRoster.ALL), antes
+## de viajar chequea NpcDirector.is_workplace_open(npc_id) — si ese NPC
+## tiene un NpcWorkplace configurado y está cerrado, no viaja: muestra
+## un cartel avisando en vez de entrar.
+@export var schedule_npc_id: String = ""
+
 var _player_in_range := false
 
 func _ready() -> void:
@@ -35,5 +42,10 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		if schedule_npc_id != "" and not NpcDirector.is_workplace_open(schedule_npc_id):
+			var dialogue := get_tree().get_first_node_in_group("dialogue_modal")
+			dialogue.show_lines(["Está cerrado. Volvé en el horario de atención."])
+			return
+
 		var world_manager = get_tree().get_first_node_in_group("world_manager")
 		world_manager.travel_to(load(target_map_path), spawn_marker_name)
