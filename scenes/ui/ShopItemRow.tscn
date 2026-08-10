@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ShopItemRow.gd" id="1_shopitemrow"]
+
+[node name="ShopItemRow" type="HBoxContainer"]
+theme_override_constants/separation = 10
+script = ExtResource("1_shopitemrow")
+
+[node name="Icon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Info" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="Info"]
+layout_mode = 2
+
+[node name="StockLabel" type="Label" parent="Info"]
+layout_mode = 2
+
+[node name="BuyButton" type="Button" parent="."]
+layout_mode = 2
+focus_mode = 0
+text = "Comprar"

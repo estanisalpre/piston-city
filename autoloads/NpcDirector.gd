@@ -205,6 +205,14 @@ func is_workplace_open(npc_id: String) -> bool:
 	var minute_of_day := fmod(TimeManager.get_total_minutes(), TimeManager.MINUTES_PER_DAY)
 	return minute_of_day >= _open_hours[npc_id] * 60.0 and minute_of_day < _close_hours[npc_id] * 60.0
 
+## Para mostrar el horario en un cartel (ver DoorTrigger) — 0.0 si ese
+## npc_id no tiene NpcWorkplace configurado.
+func get_open_hour(npc_id: String) -> float:
+	return _open_hours.get(npc_id, 0.0)
+
+func get_close_hour(npc_id: String) -> float:
+	return _close_hours.get(npc_id, 0.0)
+
 ## Mismo truco que _load_routes, pero para leer del garage dónde está
 ## la puerta de entrada y los lugares de estacionamiento — los mismos
 ## NodePath que ya usa JobEncounterSpawner (export vars leídas desde su

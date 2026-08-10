@@ -14,6 +14,8 @@
 [ext_resource type="PackedScene" uid="uid://bqf1lsxk4h6yw" path="res://scenes/ui/SleepModal.tscn" id="11_sleepmodal"]
 [ext_resource type="PackedScene" uid="uid://d0y1lqf2r3kpg" path="res://scenes/ui/SleepTransition.tscn" id="12_sleeptrans"]
 [ext_resource type="PackedScene" path="res://scenes/ui/DialogueModal.tscn" id="13_dialoguemodal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/OptionsModal.tscn" id="14_optionsmodal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PurchaseModal.tscn" id="15_purchasemodal"]
 
 [sub_resource type="Animation" id="Animation_0ge4i"]
 length = 0.001
@@ -121,3 +123,7 @@ transform = Transform2D(0.5, 0, 0, 0.5, 0, 35)
 [node name="SleepTransition" parent="UI" unique_id=450042378 instance=ExtResource("12_sleeptrans")]
 
 [node name="DialogueModal" parent="UI" instance=ExtResource("13_dialoguemodal")]
+
+[node name="OptionsModal" parent="UI" instance=ExtResource("14_optionsmodal")]
+
+[node name="PurchaseModal" parent="UI" instance=ExtResource("15_purchasemodal")]

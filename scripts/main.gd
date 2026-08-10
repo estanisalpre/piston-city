@@ -46,7 +46,16 @@ func _restore_last_location() -> void:
 
 ## Saca el mapa actual y pone el de destino en su lugar, sin tocar Entities
 ## (el Player nunca se destruye, solo se reposiciona en el marcador de spawn).
+## Diferido a propósito: quien llama a esto casi siempre lo hace desde un
+## callback de físicas (Area2D.body_entered de una puerta/salida) — tocar
+## el árbol ahí mismo (queue_free + add_child) rompe con "Can't change
+## this state while flushing queries". call_deferred lo corre apenas
+## termina el paso de física actual, sin que cada puerta tenga que
+## saberlo.
 func travel_to(target_map: PackedScene, spawn_marker_name: String) -> void:
+	call_deferred("_travel_to_deferred", target_map, spawn_marker_name)
+
+func _travel_to_deferred(target_map: PackedScene, spawn_marker_name: String) -> void:
 	var new_map := _swap_map(target_map)
 
 	var spawn_marker := new_map.find_child(spawn_marker_name, true, false)

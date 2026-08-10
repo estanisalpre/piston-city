@@ -1,7 +1,9 @@
 [gd_scene format=4 uid="uid://bsqffhx7cpav7"]
 
 [ext_resource type="Texture2D" uid="uid://hqogdkqsngij" path="res://assets/backgrounds/dark-background_32x32.png" id="1_miia2"]
+[ext_resource type="Script" uid="uid://pog7kdrtgaw0" path="res://scripts/world/ShopCounter.gd" id="1_q7xgn"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/Client.tscn" id="1_tyd0b"]
+[ext_resource type="Script" uid="uid://dl855r55sbquc" path="res://scripts/resources/ShopItem.gd" id="2_ldjsh"]
 [ext_resource type="Texture2D" uid="uid://b5gly8m7k6u1l" path="res://assets/sprites/city/buildings/tire_shop/top_wall.png" id="2_w7r4c"]
 [ext_resource type="Texture2D" uid="uid://cj6qaaoj84t3l" path="res://assets/sprites/city/buildings/tire_shop/wall_border.png" id="3_seyra"]
 [ext_resource type="Texture2D" uid="uid://wivvcjtkmovt" path="res://assets/sprites/garage/floor/floor_2.png" id="4_w7r4c"]
@@ -10,6 +12,14 @@
 [ext_resource type="Texture2D" uid="uid://edpmookr36o4" path="res://assets/sprites/doors/exit_door/door_bottom.png" id="7_8rug8"]
 [ext_resource type="Texture2D" uid="uid://cwpm2wy0x170g" path="res://assets/sprites/doors/exit_door/door_top.png" id="8_jq6et"]
 [ext_resource type="PackedScene" path="res://scenes/world/AutoExitTrigger.tscn" id="10_uvry8"]
+[ext_resource type="PackedScene" path="res://scenes/world/NpcInteraction.tscn" id="13_ldjsh"]
+
+[sub_resource type="Resource" id="Resource_u5bk5"]
+script = ExtResource("2_ldjsh")
+part_id = "neumatico"
+display_name = "Neumático"
+price = 500
+icon = ExtResource("6_exd2w")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m6mqb"]
 texture = ExtResource("1_miia2")
@@ -102,7 +112,15 @@ sources/3 = SubResource("TileSetAtlasSource_uvry8")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q7xgn"]
 size = Vector2(58, 29)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t7d1p"]
+size = Vector2(74, 68)
+
 [node name="TireShop" type="Node2D" unique_id=1077638540]
+script = ExtResource("1_q7xgn")
+shop_title = "Comprar neumáticos"
+buy_option_label = "Comprar neumáticos"
+items = Array[ExtResource("2_ldjsh")]([SubResource("Resource_u5bk5")])
+npc_interaction_path = NodePath("Map/NpcInteraction")
 
 [node name="Map" type="Node2D" parent="." unique_id=279330116]
 
@@ -176,4 +194,11 @@ spawn_marker_name = "TireShopSpawn"
 position = Vector2(4, 1.5)
 shape = SubResource("RectangleShape2D_q7xgn")
 
+[node name="NpcInteraction" parent="Map" unique_id=1934370269 instance=ExtResource("13_ldjsh")]
+
+[node name="CollisionShape2D" parent="Map/NpcInteraction" index="0"]
+position = Vector2(288, 200)
+shape = SubResource("RectangleShape2D_t7d1p")
+
 [editable path="Map/AutoExitTrigger"]
+[editable path="Map/NpcInteraction"]
