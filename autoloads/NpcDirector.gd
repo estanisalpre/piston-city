@@ -41,7 +41,7 @@ extends Node
 
 ## Debe coincidir con Client.gd (que reproduce visualmente este mismo
 ## movimiento cuando la escena está a la vista).
-const WALK_SPEED := 80.0
+const WALK_SPEED := 80.0 # cambiar a 40.0 cuando ya no testiemos npcs
 
 const CITY_MAP_PATH := "res://scenes/city/CityMap.tscn"
 const ROUTES_CONTAINER_NAME := "WanderRoutes"
