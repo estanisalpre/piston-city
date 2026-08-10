@@ -1,33 +1,40 @@
 extends Node2D
 
-## Conecta NpcDirector con la escena del garage. Cuando el NPC de un
-## encargo llega a la puerta del taller (NpcDirector.npc_arrived_at_workshop
-## — que se dispara sin importar qué mapa esté cargado en ese momento),
-## corre el encuentro visual correspondiente:
+## Conecta NpcDirector con la escena del garage. El movimiento del NPC
+## (afuera y adentro del garage, incluyendo la caminata de vuelta a la
+## puerta al terminar) siempre lo calcula NpcDirector, exista o no esta
+## escena — este script solo lo refleja:
 ##
-## 1. Entrega: aparece el auto (con fundido entrecortado) y el NPC
-##    camina hasta el auto y espera ahí — no persigue al jugador, lo
-##    espera. Cuando el jugador se acerca a 32px: diálogo de llegada,
-##    se va — recién ahí arranca el plazo de 7 días
-##    (JobsManager.start_job_clock) y NpcDirector lo pone de vuelta a
-##    patrullar, ya mismo.
-## 2. Retiro: si el taller está en horario, el mismo NPC espera junto
-##    al auto igual que en la entrega. Cuando el jugador se acerca:
-##    diálogo de agradecimiento, paga (JobsManager.finish_pickup),
-##    camina hasta el auto y desaparece (no se muestra que sube), y
-##    unos segundos después el auto se va con el mismo fundido, al
-##    revés — y NpcDirector lo pone de vuelta a patrullar.
+## - Mientras el NPC está en modo "entering_garage", "waiting_at_door"
+##   o "leaving_garage" (ver NpcDirector), acá se muestra un Client en
+##   modo espejo (caminando) o parado esperando al jugador, según
+##   corresponda. Si el NPC ya venía en alguno de esos tramos antes de
+##   que esta escena existiera, aparece tal cual está, sin repetir
+##   ninguna animación desde cero. Al volver a "patrol" (ya afuera),
+##   el Client se borra solo.
+## - El auto del encargo (JobVehicle) se crea la primera vez que se lo
+##   necesita, en el lugar que NpcDirector le asignó a ese job_id, y
+##   sigue existiendo (Game.state.active_jobs/pending_pickups) aunque
+##   se recargue el garage.
 ##
-## Si el NPC llega mientras este garage no estaba cargado, o llega
-## fuera de horario para un retiro, se queda esperando en NpcDirector
-## (modo "waiting_at_door") — al cargar esta escena (o en el próximo
-## chequeo de horario) se retoma el encuentro, nunca se resuelve solo.
+## Encuentro (entrega o retiro): cuando el jugador se acerca a 32px del
+## NPC que espera, se dispara el diálogo correspondiente. En cuanto
+## termina, el encargo queda resuelto de una — JobsManager.start_job_clock
+## o finish_pickup — antes de cualquier animación de salida, así que el
+## encargo nunca queda "a medio resolver" si el jugador sale del garage
+## antes de que termine:
+## - Entrega: el NPC vuelve caminando a la puerta (NpcDirector.
+##   start_leaving_garage) — puramente cosmético, se ve o no.
+## - Retiro: el NPC se sube al auto (desaparece ahí mismo, no camina a
+##   la puerta) y unos segundos después el auto se va con el fundido —
+##   también puramente cosmético. Además queda "de franco"
+##   (NpcDirector.go_off_duty) hasta el otro día: no tiene sentido que
+##   lo cruces caminando el mismo día que te devolvió el auto.
 
 const POST_PICKUP_WAIT_SECONDS := 3.0
 
-## Offset desde el auto donde el NPC se para a esperar (no encima del
-## sprite del vehículo).
-const WAITING_OFFSET := Vector2(0, 24)
+const VISIBLE_MODES := ["entering_garage", "waiting_at_door", "leaving_garage"]
+const MIRRORED_MODES := ["entering_garage", "leaving_garage"]
 
 const PICKUP_GREETINGS := [
 	["Qué bueno que pudiste arreglarlo.", "Gracias, acá está tu pago."],
@@ -35,146 +42,103 @@ const PICKUP_GREETINGS := [
 	["Excelente trabajo, se nota.", "Acá tenés, muchas gracias."],
 ]
 
+## Estas dos exports las sigue leyendo NpcDirector (instanciando esta
+## escena en memoria, sin agregarla al árbol) para saber dónde está la
+## puerta y los lugares de estacionamiento — es la única razón por la
+## que siguen viviendo acá y no se leen directo en este script.
 @export var parking_spots: Array[NodePath] = []
 @export var client_spawn_point: NodePath
 @export var vehicle_scene: PackedScene
 @export var client_scene: PackedScene
 
-var _pending_arrivals: Array[Dictionary] = []  # {npc_id, job_id}, en el orden en que llegaron
-var _busy := false
-var _occupied_spots: Dictionary = {}  # spot_index (int) -> job_id (String)
+var _clients: Dictionary = {}  # npc_id (String) -> {client: Node, phase: String}
 var _job_vehicles: Dictionary = {}  # job_id (String) -> vehicle instance
 
 func _ready() -> void:
 	JobsManager.job_expired.connect(_free_job_vehicle)
 	JobsManager.jobs_cleared.connect(_reset)
-	NpcDirector.npc_arrived_at_workshop.connect(_on_npc_arrived_at_workshop)
-	TimeManager.minute_changed.connect(_on_minute_changed)  # para reintentar cuando abre el taller
 
 	_restore_parked_vehicles()
-	_restore_waiting_arrivals()
 
 ## El Node del auto no se guarda solo — Game.state sí persistió qué
 ## encargos están en curso o esperando retiro, así que los recreamos acá.
 func _restore_parked_vehicles() -> void:
 	for job_id in Game.state.active_jobs.keys():
 		if Game.state.active_jobs[job_id] != JobsManager.RESERVED:
-			_ensure_vehicle_exists(job_id)
+			_ensure_vehicle_exists(job_id, false)
 
 	for job_id in Game.state.pending_pickups.keys():
-		_ensure_vehicle_exists(job_id)
+		_ensure_vehicle_exists(job_id, false)
 
-## Si algún NPC ya estaba parado en la puerta (llegó mientras este
-## garage no estaba cargado), retoma el encuentro ahora.
-func _restore_waiting_arrivals() -> void:
+func _process(_delta: float) -> void:
 	for npc_id in NpcRoster.ALL:
-		if NpcDirector.get_mode(npc_id) == "waiting_at_door":
-			var job_id := NpcDirector.get_job_id(npc_id)
-			if job_id != "":
-				_queue_arrival(npc_id, job_id)
+		var mode := NpcDirector.get_mode(npc_id)
+		var job_id := NpcDirector.get_job_id(npc_id)
 
-	_process_pending_arrivals()
+		if VISIBLE_MODES.has(mode) and job_id != "":
+			_sync_client(npc_id, job_id, mode)
+		elif _clients.has(npc_id):
+			_despawn_client(npc_id)
 
-func _ensure_vehicle_exists(job_id: String) -> void:
-	if _job_vehicles.has(job_id):
-		return
+func _sync_client(npc_id: String, job_id: String, mode: String) -> void:
+	var first_sighting := not _clients.has(npc_id)
+	if first_sighting:
+		_spawn_client(npc_id, job_id)
+		# Recién ahora vemos a este auto por primera vez esta carga del
+		# garage: si el NPC todavía está entrando, es la llegada en vivo
+		# (fundido); si ya estaba esperando, ya estaba ahí hace rato.
+		_ensure_vehicle_exists(job_id, mode == "entering_garage")
 
-	var spot_index := _find_free_spot()
-	if spot_index == -1:
-		return
+	var entry: Dictionary = _clients[npc_id]
+	if entry.phase == mode:
+		return  # ya está en la fase correcta, no repetir la transición
 
-	var vehicle := _spawn_vehicle_at(job_id, spot_index)
-	vehicle.show_parked()
+	entry.phase = mode
+	if mode == "waiting_at_door":
+		entry.client.stop_mirroring()
+		entry.client.global_position = NpcDirector.get_position(npc_id)
+		entry.client.player_approached.connect(
+			_on_client_approached.bind(npc_id, job_id), CONNECT_ONE_SHOT
+		)
+		entry.client.wait_for_player()
+	elif MIRRORED_MODES.has(mode):
+		entry.client.mirror_npc(npc_id)
 
-func _spawn_vehicle_at(job_id: String, spot_index: int) -> Node2D:
-	var spot: Node2D = get_node(parking_spots[spot_index])
-	var vehicle: Node2D = vehicle_scene.instantiate()
-	vehicle.job_id = job_id
-	add_child(vehicle)
-	vehicle.global_position = spot.global_position
-
-	_occupied_spots[spot_index] = job_id
-	_job_vehicles[job_id] = vehicle
-	return vehicle
-
-func _find_free_spot() -> int:
-	for i in parking_spots.size():
-		if not _occupied_spots.has(i):
-			return i
-	return -1
-
-func _spot_position_for_job(job_id: String) -> Variant:
-	for spot_index in _occupied_spots.keys():
-		if _occupied_spots[spot_index] == job_id:
-			var spot: Node2D = get_node(parking_spots[spot_index])
-			return spot.global_position
-	return null
-
-func _on_npc_arrived_at_workshop(npc_id: String, job_id: String) -> void:
-	_queue_arrival(npc_id, job_id)
-	_process_pending_arrivals()
-
-## Reintenta la cola cada minuto de juego — hace falta para el caso de
-## un retiro que llegó fuera de horario: el NPC ya está parado en la
-## puerta (NpcDirector), solo falta que abra el taller.
-func _on_minute_changed(_hour: int, _minute: int) -> void:
-	_process_pending_arrivals()
-
-func _queue_arrival(npc_id: String, job_id: String) -> void:
-	for item in _pending_arrivals:
-		if item.npc_id == npc_id:
-			return  # ya está en la cola
-
-	_pending_arrivals.append({"npc_id": npc_id, "job_id": job_id})
-
-func _process_pending_arrivals() -> void:
-	if _busy or _pending_arrivals.is_empty():
-		return
-
-	var item: Dictionary = _pending_arrivals[0]
-	var job_id: String = item.job_id
-	var npc_id: String = item.npc_id
-	var is_pickup := Game.state.pending_pickups.has(job_id)
-
-	if is_pickup:
-		if not JobsManager.is_shop_open_now():
-			return  # espera parado en la puerta a que abra; se reintenta cada minuto
-
-		_pending_arrivals.pop_front()
-		_busy = true
-		_run_pickup_encounter(npc_id, job_id)
-		return
-
-	var spot_index := _find_free_spot()
-	if spot_index == -1:
-		return  # no hay lugar libre todavía; se reintenta cuando se libere uno
-
-	_pending_arrivals.pop_front()
-	_busy = true
-	_run_delivery_encounter(npc_id, job_id, spot_index)
-
-# --- Entrega ---------------------------------------------------------
-
-func _run_delivery_encounter(npc_id: String, job_id: String, spot_index: int) -> void:
-	var vehicle := _spawn_vehicle_at(job_id, spot_index)
-	vehicle.play_arrival_fade()
-
-	var spawn_point: Node2D = get_node(client_spawn_point)
+func _spawn_client(npc_id: String, job_id: String) -> void:
 	var client: CharacterBody2D = client_scene.instantiate()
 	add_child(client)
 	client.set_appearance(NpcRoster.get_texture(npc_id))
-	client.global_position = spawn_point.global_position
 	client.job_id = job_id
+	_clients[npc_id] = {"client": client, "phase": ""}
 
-	client.arrived.connect(client.wait_for_player, CONNECT_ONE_SHOT)
-	client.player_approached.connect(
-		_on_delivery_client_approached.bind(client, spawn_point, npc_id, job_id), CONNECT_ONE_SHOT
-	)
-	client.walk_to(vehicle.global_position + WAITING_OFFSET)
+func _despawn_client(npc_id: String) -> void:
+	_clients[npc_id].client.queue_free()
+	_clients.erase(npc_id)
 
-func _on_delivery_client_approached(
-	client: CharacterBody2D, spawn_point: Node2D, npc_id: String, job_id: String
-) -> void:
+func _ensure_vehicle_exists(job_id: String, arriving: bool) -> void:
+	if _job_vehicles.has(job_id):
+		return
+
+	var vehicle: Node2D = vehicle_scene.instantiate()
+	vehicle.job_id = job_id
+	add_child(vehicle)
+	vehicle.global_position = NpcDirector.get_job_spot_position(job_id)
+	_job_vehicles[job_id] = vehicle
+
+	if arriving:
+		vehicle.play_arrival_fade()
+	else:
+		vehicle.show_parked()
+
+# --- Encuentro (diálogo) -------------------------------------------------
+
+func _on_client_approached(npc_id: String, job_id: String) -> void:
+	if Game.state.pending_pickups.has(job_id):
+		_run_pickup_dialogue(npc_id, job_id)
+	else:
+		_run_delivery_dialogue(npc_id, job_id)
+
+func _run_delivery_dialogue(npc_id: String, job_id: String) -> void:
 	var job := JobsRepository.get_job(job_id)
 	var job_title := job.title if job else "el trabajo"
 
@@ -188,42 +152,11 @@ func _on_delivery_client_approached(
 	dialogue.show_lines(lines)
 	await dialogue.finished
 
-	client.arrived.connect(_on_delivery_client_left.bind(client, npc_id, job_id), CONNECT_ONE_SHOT)
-	client.walk_to(spawn_point.global_position)
-
-func _on_delivery_client_left(client: CharacterBody2D, npc_id: String, job_id: String) -> void:
-	client.queue_free()
 	JobsManager.start_job_clock(job_id)
-	NpcDirector.resume_patrol(npc_id)  # sigue su vida ya mismo, se vea o no
+	NpcDirector.start_leaving_garage(npc_id)  # vuelve a la puerta, se vea o no
+	# El auto se queda estacionado, esperando a que lo entregues.
 
-	_busy = false
-	_process_pending_arrivals()
-
-# --- Retiro ------------------------------------------------------------
-
-func _run_pickup_encounter(npc_id: String, job_id: String) -> void:
-	var spawn_point: Node2D = get_node(client_spawn_point)
-	var client: CharacterBody2D = client_scene.instantiate()
-	add_child(client)
-	client.set_appearance(NpcRoster.get_texture(npc_id))
-	client.global_position = spawn_point.global_position
-	client.job_id = job_id
-
-	var vehicle_spot_position: Variant = _spot_position_for_job(job_id)
-	var waiting_point: Vector2 = (
-		vehicle_spot_position + WAITING_OFFSET if vehicle_spot_position != null
-		else spawn_point.global_position
-	)
-
-	client.arrived.connect(client.wait_for_player, CONNECT_ONE_SHOT)
-	client.player_approached.connect(
-		_on_pickup_client_approached.bind(client, spawn_point, npc_id, job_id), CONNECT_ONE_SHOT
-	)
-	client.walk_to(waiting_point)
-
-func _on_pickup_client_approached(
-	client: CharacterBody2D, spawn_point: Node2D, npc_id: String, job_id: String
-) -> void:
+func _run_pickup_dialogue(npc_id: String, job_id: String) -> void:
 	var greeting: Array = PICKUP_GREETINGS[randi() % PICKUP_GREETINGS.size()]
 	var lines: Array[String] = []
 	for line in greeting:
@@ -234,44 +167,36 @@ func _on_pickup_client_approached(
 	await dialogue.finished
 
 	JobsManager.finish_pickup(job_id)
+	NpcDirector.go_off_duty(npc_id)  # se sube al auto y no vuelve hasta el otro día
+	NpcDirector.release_job_spot(job_id)  # el lugar queda libre ya mismo
+	_depart_vehicle(job_id)
 
-	var vehicle_spot_position: Variant = _spot_position_for_job(job_id)
-	var walk_target: Vector2 = vehicle_spot_position if vehicle_spot_position != null else spawn_point.global_position
-
-	client.arrived.connect(_on_pickup_client_left.bind(client, npc_id, job_id), CONNECT_ONE_SHOT)
-	client.walk_to(walk_target)
-
-## Al llegar al auto, el cliente "se sube" sin que lo mostremos —
-## simplemente desaparece — y unos segundos después el auto se va.
-func _on_pickup_client_left(client: CharacterBody2D, npc_id: String, job_id: String) -> void:
-	client.queue_free()
-
+## El auto se va con el fundido entrecortado al revés, unos segundos
+## después de pagado — puramente cosmético: si el jugador sale del
+## garage antes de que termine, el auto simplemente desaparece con la
+## escena (el encargo ya quedó resuelto arriba, antes de este await).
+func _depart_vehicle(job_id: String) -> void:
 	await get_tree().create_timer(POST_PICKUP_WAIT_SECONDS).timeout
 
 	var vehicle: Node2D = _job_vehicles.get(job_id)
 	if vehicle:
 		_job_vehicles.erase(job_id)
-		_free_spot_for_job(job_id)
 		vehicle.play_departure_fade()  # se autodestruye al terminar el fundido
-
-	NpcDirector.resume_patrol(npc_id)  # sigue su vida ya mismo, se vea o no
-
-	_busy = false
-	_process_pending_arrivals()
 
 # --- Debug / vencimiento ------------------------------------------------
 
-## Debug: borra cualquier auto/NPC que haya spawneado y la cola de
-## llegadas, para que el estado del mundo quede igual de limpio que el
-## de Game.state tras JobsManager.clear_all_jobs().
+## Debug: borra cualquier auto/NPC que haya spawneado, para que el
+## estado del mundo quede igual de limpio que el de Game.state tras
+## JobsManager.clear_all_jobs().
 func _reset() -> void:
+	for job_id in _job_vehicles.keys():
+		NpcDirector.release_job_spot(job_id)
+
 	for child in get_children():
 		child.queue_free()
 
-	_pending_arrivals.clear()
-	_occupied_spots.clear()
+	_clients.clear()
 	_job_vehicles.clear()
-	_busy = false
 
 func _free_job_vehicle(job_id: String) -> void:
 	var vehicle: Node2D = _job_vehicles.get(job_id)
@@ -279,11 +204,4 @@ func _free_job_vehicle(job_id: String) -> void:
 		vehicle.queue_free()
 		_job_vehicles.erase(job_id)
 
-	_free_spot_for_job(job_id)
-	_process_pending_arrivals()
-
-func _free_spot_for_job(job_id: String) -> void:
-	for spot_index in _occupied_spots.keys():
-		if _occupied_spots[spot_index] == job_id:
-			_occupied_spots.erase(spot_index)
-			break
+	NpcDirector.release_job_spot(job_id)

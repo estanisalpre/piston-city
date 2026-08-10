@@ -272,6 +272,22 @@ Componentes ya construidos, pensados para no repetir trabajo cuando aparezca un 
 
 **Nota:** el cambio es un corte binario (no un fundido/cross-fade). Si en algún momento se quiere una transición suave entre las dos texturas, hay que resolverlo aparte (por ejemplo con un shader o un `Tween` de opacidad) — hoy no existe.
 
+## Puntos de espera en las rutas de NPCs (ej. que se quede en un café)
+
+**Qué resuelve:** que un NPC, en su rutina normal (`NpcDirector`, modo `"patrol"`), se quede parado un rato en algún punto intermedio de su ruta (ej. un café) antes de seguir camino — configurable a mano desde el Inspector, sin tocar código por cada punto nuevo.
+
+**Dónde está:**
+- `scripts/world/NpcRouteWaitPoint.gd` — script reusable (`extends Marker2D`), un solo campo exportado: `wait_minutes`.
+- `NpcDirector._load_routes()` lee ese valor de cada punto al arrancar (si el punto no tiene el script, vale `0`, no espera) y lo aplica solo en modo `"patrol"` — si al NPC lo llaman por un encargo, la espera se corta sola y va derecho al taller.
+
+**Cómo usarlo en un punto de ruta (sin tocar código):**
+1. En `CityMap.tscn`, seleccioná el `Marker2D` de la ruta (`WanderRoutes/RouteX/b_point`, `c_point`, etc.) donde querés que se quede parado.
+2. En el Inspector, en **Script**, asignale `scripts/world/NpcRouteWaitPoint.gd`.
+3. Completá **Wait Minutes** con cuántos minutos de juego querés que se quede ahí.
+4. Listo — no hace falta reiniciar rutas ni tocar `NpcDirector`.
+
+**Nota:** el tiempo es de juego (vía `TimeManager`), no tiempo real — si le ponés un valor muy alto, el NPC se puede quedar ahí bastante rato de juego, es esperado.
+
 ---
 
 # Arquitectura

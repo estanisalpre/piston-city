@@ -1,16 +1,18 @@
 extends Node2D
 
 ## Muestra en el CityMap a cualquier NPC (ver NpcRoster) cuyo estado en
-## NpcDirector diga que está patrullando o caminando hacia el taller —
-## nunca decide el movimiento por su cuenta, solo instancia un Client
-## por cada uno y lo deja en modo "espejo" (ver Client.mirror_npc).
+## NpcDirector diga que está caminando por la ciudad (patrullando, yendo
+## al taller, yendo a o volviendo de su casa) — nunca decide el
+## movimiento por su cuenta, solo instancia un Client por cada uno y lo
+## deja en modo "espejo" (ver Client.mirror_npc).
 ##
-## Si un NPC ya está esperando en la puerta del taller o en medio de un
-## encuentro (modo "waiting_at_door"), no se muestra acá — eso lo
-## maneja JobEncounterSpawner. Así nunca hay dos copias del mismo NPC
-## en el mapa a la vez.
+## Si un NPC ya entró al garage (modos "entering_garage" o
+## "waiting_at_door"), no se muestra acá — eso lo maneja
+## JobEncounterSpawner. Tampoco si está "at_home" o "off_duty" — esos
+## dos son a propósito invisibles en cualquier mapa. Así nunca hay dos
+## copias del mismo NPC en el mapa a la vez.
 
-const VISIBLE_MODES := ["patrol", "to_workshop"]
+const VISIBLE_MODES := ["patrol", "to_workshop", "to_home", "to_route"]
 
 @export var client_scene: PackedScene
 

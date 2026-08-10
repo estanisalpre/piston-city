@@ -19,6 +19,16 @@ const TEXTURES := {
 	"npc_02": "res://assets/sprites/npcs/atlas_npc_v2.png",
 }
 
+## Nombre para mostrar (ej. en la app de Trabajos del celular). Al sumar
+## un NPC nuevo, agregalo acá también.
+const NAMES := {
+	"npc_01": "Martín",
+	"npc_02": "Rocío",
+}
+
 static func get_texture(npc_id: String) -> Texture2D:
 	var path: String = TEXTURES.get(npc_id, TEXTURES.values()[0])
 	return load(path)
+
+static func get_display_name(npc_id: String) -> String:
+	return NAMES.get(npc_id, npc_id)

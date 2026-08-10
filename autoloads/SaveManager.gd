@@ -2,6 +2,11 @@ extends Node
 
 signal autosave_triggered
 
+## Lo escucha Hud para mostrar el aviso de "guardando" antes de salir —
+## se emite ANTES de guardar de verdad, para que el aviso llegue a
+## dibujarse un frame antes de que la ventana se cierre.
+signal quit_save_started
+
 const SAVE_PATH := "user://savegame.tres"
 const AUTOSAVE_INTERVAL := 10.0
 
@@ -25,7 +30,16 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		save_game()
 
+## Async a propósito: Hud necesita al menos un par de frames para
+## dibujar el aviso de "guardando" antes de que la ventana se cierre de
+## golpe — si no, save_game()+quit() pasan en el mismo frame y nunca se
+## llega a ver nada.
 func quit_game() -> void:
+	quit_save_started.emit()
+
+	await get_tree().process_frame
+	await get_tree().process_frame
+
 	save_game()
 	get_tree().quit()
 
@@ -51,6 +65,8 @@ func _capture_world_state() -> void:
 	if world_manager:
 		Game.state.current_map_path = world_manager.get_current_map_path()
 
+	NpcDirector.capture_snapshot()
+
 func load_game() -> void:
 	var loaded_state := load(SAVE_PATH) as GameState
 
@@ -67,3 +83,6 @@ func load_game() -> void:
 		Game.state.messages = loaded_state.messages
 		Game.state.current_map_path = loaded_state.current_map_path
 		Game.state.player_position = loaded_state.player_position
+		Game.state.npc_cooldowns = loaded_state.npc_cooldowns
+		Game.state.job_cooldowns = loaded_state.job_cooldowns
+		Game.state.npc_snapshots = loaded_state.npc_snapshots

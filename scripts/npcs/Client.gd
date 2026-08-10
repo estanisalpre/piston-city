@@ -68,6 +68,13 @@ func mirror_npc(npc_id: String) -> void:
 	_mirror_last_position = NpcDirector.get_position(npc_id)
 	global_position = _mirror_last_position
 
+## Corta el modo espejo para pasar a control local (walk_to/wait_for_player)
+## — se usa cuando NpcDirector dice que el NPC ya llegó y se quedó
+## quieto, así de acá en más lo maneja este Node (por ejemplo para
+## esperar al jugador, que el modo espejo no chequea).
+func stop_mirroring() -> void:
+	_mirroring_npc_id = ""
+
 func _sync_mirrored_position() -> void:
 	var new_position: Vector2 = NpcDirector.get_position(_mirroring_npc_id)
 	var movement: Vector2 = new_position - _mirror_last_position

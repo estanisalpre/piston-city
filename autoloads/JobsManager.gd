@@ -6,7 +6,11 @@ extends Node
 ## aceptar -> el NPC de ese encargo (NpcRoster/NpcDirector) corta lo que
 ## esté haciendo y camina al taller, tarde lo que tarde -> se trabaja
 ## -> "Avisar al vendedor" -> el mismo NPC vuelve (respetando el
-## horario del taller para el encuentro) -> retiro y pago.
+## horario del taller para el encuentro) -> retiro y pago. Al pagar,
+## ese NPC se toma el día (NpcDirector.go_off_duty) y quedan dos
+## enfriamientos en Game.state: el NPC no trae trabajos nuevos por
+## NPC_JOB_COOLDOWN_DAYS, y ESE encargo puntual no se repite hasta
+## JOB_REPEAT_COOLDOWN_DAYS (ver JobsRepository.is_job_available).
 ##
 ## La app "Trabajos" del celular y JobEncounterSpawner (el mundo) solo
 ## llaman a estas funciones, nunca tocan Game.state.active_jobs /
@@ -15,6 +19,16 @@ extends Node
 
 const DEADLINE_DAYS := 7
 const RESERVED := -1
+
+## Al completar un retiro, ese NPC no ofrece trabajos nuevos por esta
+## cantidad de días (sigue viviendo su vida en el mundo, solo no trae
+## un encargo nuevo enseguida).
+const NPC_JOB_COOLDOWN_DAYS := 7
+
+## Al completar un retiro, ESE encargo puntual (ej. "Cambio de
+## neumáticos") no vuelve a aparecer hasta pasado esto — 28 días x 4
+## estaciones (ver TimeManager) = 1 año de juego.
+const JOB_REPEAT_COOLDOWN_DAYS := 112
 
 ## Horario fijo del taller — solo importa para el encuentro de retiro
 ## (el NPC puede caminar de vuelta a cualquier hora, pero no toca la
@@ -69,6 +83,8 @@ func finish_pickup(job_id: String) -> void:
 	if job:
 		Game.state.money += job.reward_money
 		SkillProgression.add_exp(job.required_skill, job.reward_exp)
+		Game.state.npc_cooldowns[job.npc_id] = Game.state.day + NPC_JOB_COOLDOWN_DAYS
+		Game.state.job_cooldowns[job_id] = Game.state.day + JOB_REPEAT_COOLDOWN_DAYS
 
 	job_completed.emit(job_id)
 

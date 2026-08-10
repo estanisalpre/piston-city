@@ -27,6 +27,8 @@
 [ext_resource type="Texture2D" uid="uid://xkhg1gap55fv" path="res://assets/sprites/city/asphalt.png" id="24_kiyng"]
 [ext_resource type="Texture2D" uid="uid://cjhrqtjypw3p8" path="res://assets/sprites/city/buildings/res_1_96x96.png" id="26_kiyng"]
 [ext_resource type="Texture2D" uid="uid://bu8i65htebsp5" path="res://assets/sprites/city/grass_center.png" id="27_0hahf"]
+[ext_resource type="Script" uid="uid://cyh340703spm5" path="res://scripts/world/NpcHome.gd" id="28_bhnsj"]
+[ext_resource type="Script" uid="uid://4dkekmxoy5ap" path="res://scripts/world/NpcRouteWaitPoint.gd" id="28_n0cps"]
 [ext_resource type="Script" uid="uid://cc6icmre6g7ex" path="res://scripts/world/CityWandererSpawner.gd" id="90_citywanderer"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/Client.tscn" id="91_client"]
 
@@ -292,9 +294,40 @@ texture = ExtResource("26_kiyng")
 [sub_resource type="TileSet" id="TileSet_0ru8o"]
 sources/0 = SubResource("TileSetAtlasSource_ibucr")
 
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_kh5iw"]
+vertices = PackedVector2Array(-401.9297, 171.99219, -396.0703, 171.89844, -274.9297, 173.10156, -271.0703, 176.02344, -268.89844, 182.02344, -270.10156, 300, -272.03906, 305.9922, -1855.9766, 2261.0234, 1104.1016, -99.10156, 1097.7109, -99.03125, 719, -97.96875, 714.2031, -99.10156, 718, -105, 1099, -105, 1106.0469, -104.89844, 712.60156, 185.89844, 593, 187.10156, 583.10156, 179.97656, 589, 173.97656, 596.9219, 173.78906, 710, 176.21875, 717.9297, 184.02344, 722.89844, -451.03125, 715.1797, -454.1875, 721.15625, -456, 1232.1406, -456, 1226.1094, -450.10156, 1093.7969, -449.96875, 67, 12.96875, 589, 19.007813, -269.9297, 17.992188, -267.10938, 14.03125, 847.1094, 193, 965.8906, 194.78125, 855.3281, 197.21094, 1239.1016, 23.882813, 1228.2969, -97.89844, 1224.7109, 23, 1227.0469, -106.10156, 1225.9531, -335.14063, 1244.7031, 26.0625, 719.0703, 27.023438, 1102.8984, 23, 1101.2969, 22.96875, 719, 24.03125, 1234, 299.10938, 1235.3203, 341.3203, 1230.7266, 307.90625, 1222.3203, 189, 1235, 161.64063, 1235, 201, 1224.7031, 182.97656, 1448.1094, 193, 1455.8203, 183.65625, 1455, 229, 1446.8984, 305.39844, 1456, 283.1875, 1456, 317.60156, 1224.8984, -339.9297, 710, 21.78125, 711.7969, 21, 1426.2891, 182.67969, 1414.3906, 193, 1412.4063, 161.3125, 1425.2969, 150, 1393.3125, 150, 1381.9609, 160.28906, -276.0703, 13.8984375, 1377.8984, 124.796875, 1392.2891, 117.671875, 1371.8828, 116.99219, 1371.8828, 117, 1289.6875, 117.67969, 1267.5938, 127.203125, 1259.1016, 118.6875, 1424, 319.60938, 1415, 307.39063, 1415, 337.39063, 1424, 350.3203, 1393, 351.3203, 1383, 339.39063, 1383, 372, 1393, 381.64063, 1267.3125, 372, 1372.6328, 383, 1255.7031, 383, 1254.7109, 350.34375, 1266.3125, 340.3125, 1226.7266, 349.34375, 1225.7266, 313.07813, 978.3906, 310.07813, 973.89844, 310.90625, 973.60156, 189, 967.1094, 307.3203, 964.0469, 312.89063, 976.10156, 534, 962.9531, 530.77344, 853.85156, 314.10938, 857.14844, 533.22656, 845, 526.0469, 845, 307.0078, 851.65625, 303.6797, 845.8906, 301, 717.4219, 304.10156, 726.5469, 301, 593, 302.89844, 720.4219, 193, 711.8203, -639.89844, 718.14844, -647.0625, 586.0078, -647.9297, 592.0625, -641.10156, 587.02344, -105, 590.9375, -451.79688, 589.8906, -334.28906, 592.89844, 21, 598.0703, 24.210938, 1102.8984, -448.89844, 1104.1094, -327.96875, 1099, -324, 1096.2031, -329.0625, 1104.9531, -321.96875, 718, -324, 715, -105.1875, 715, -322.8125, 712.89844, -330.71094, 714.1094, -450.39844, 724.10156, -326.9375, 594.10156, -97.89844, 1374.9219, 533, 1592.0625, 535.96875, 1581.6328, 822.9375, 1224.0313, 534, 591.9531, -325.20313, 593.0469, -102.796875, -403.0703, 17.976563, -394.9297, 15.1015625, 1944, 824.96094, 1944, 2268.9688, 201.92969, 813.02344, 987.97656, -1261.0234, 987.96094, -1247.9922, 206.97656, -1250.0313, -637.10156, -1264.9688, -265.89063, -96.0625, -644.1094, -600.96875, 209.02344, -105, 67, -93.9375, 203.92969, 523.03906, -269.96094, 811.97656, 1289.7422, 116.03125, 1256.0781, 150, 1265.5625, 159.60156, 1225.7031, 150, 581.89844, 300, -1421, 173.00781, -1852.0078, -604.96094, -1421, 20.023438, 591.10156, -445.6172)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4, 5, 6, 7), PackedInt32Array(8, 9, 10, 11, 12, 13, 14), PackedInt32Array(15, 16, 17, 18, 19, 20, 21), PackedInt32Array(22, 23, 24, 25, 26, 27), PackedInt32Array(28, 29, 30, 31), PackedInt32Array(32, 33, 34), PackedInt32Array(25, 35, 36), PackedInt32Array(37, 36, 35), PackedInt32Array(25, 36, 38, 39, 26), PackedInt32Array(37, 35, 40, 41, 42), PackedInt32Array(43, 42, 41, 44), PackedInt32Array(45, 46, 47, 48), PackedInt32Array(49, 50, 45, 48, 51), PackedInt32Array(52, 53, 54, 55), PackedInt32Array(55, 54, 56, 57), PackedInt32Array(58, 26, 39), PackedInt32Array(3, 18, 17, 4), PackedInt32Array(44, 41, 21, 20, 59, 60), PackedInt32Array(61, 53, 52, 62), PackedInt32Array(61, 62, 63, 64), PackedInt32Array(65, 64, 63, 66), PackedInt32Array(30, 3, 2, 67), PackedInt32Array(65, 66, 68, 69), PackedInt32Array(70, 69, 68, 71), PackedInt32Array(72, 71, 68, 73, 74), PackedInt32Array(55, 57, 75, 76), PackedInt32Array(77, 76, 75, 78), PackedInt32Array(77, 78, 79, 80), PackedInt32Array(81, 80, 79, 82), PackedInt32Array(83, 81, 82, 84, 85), PackedInt32Array(83, 85, 86, 87), PackedInt32Array(46, 87, 86, 88), PackedInt32Array(46, 88, 89, 47), PackedInt32Array(90, 47, 89, 91), PackedInt32Array(92, 90, 91, 93, 33), PackedInt32Array(94, 93, 91, 95, 96), PackedInt32Array(97, 98, 99, 100, 101), PackedInt32Array(101, 93, 94, 97), PackedInt32Array(102, 101, 100, 103, 104), PackedInt32Array(103, 100, 6, 105), PackedInt32Array(102, 32, 34, 101), PackedInt32Array(106, 104, 103, 15, 21), PackedInt32Array(24, 23, 107, 108), PackedInt32Array(109, 108, 107, 110), PackedInt32Array(111, 109, 110, 112, 113), PackedInt32Array(60, 11, 10, 44), PackedInt32Array(114, 60, 59, 115), PackedInt32Array(38, 36, 8, 14), PackedInt32Array(116, 117, 118, 119, 27), PackedInt32Array(117, 58, 39, 120, 118), PackedInt32Array(121, 12, 122, 123), PackedInt32Array(124, 125, 23, 22, 126, 121, 123), PackedInt32Array(115, 19, 18, 29, 114), PackedInt32Array(127, 114, 29), PackedInt32Array(128, 129, 130, 7, 131), PackedInt32Array(120, 14, 13, 118), PackedInt32Array(119, 118, 121, 126), PackedInt32Array(124, 123, 132, 113), PackedInt32Array(8, 42, 43, 9), PackedInt32Array(133, 122, 12, 11, 127), PackedInt32Array(1, 0, 134, 135), PackedInt32Array(136, 137, 7, 130), PackedInt32Array(95, 131, 7), PackedInt32Array(96, 95, 7, 98), PackedInt32Array(99, 98, 7, 138), PackedInt32Array(139, 140, 141, 142), PackedInt32Array(143, 144, 142, 141, 145, 146), PackedInt32Array(138, 147, 99), PackedInt32Array(148, 138, 7), PackedInt32Array(133, 127, 29, 28, 146, 145, 111), PackedInt32Array(72, 149, 71), PackedInt32Array(150, 74, 73, 151), PackedInt32Array(150, 151, 49, 152), PackedInt32Array(51, 152, 49), PackedInt32Array(21, 51, 48, 92), PackedInt32Array(21, 92, 33, 32), PackedInt32Array(21, 32, 106), PackedInt32Array(153, 17, 16, 105), PackedInt32Array(153, 105, 6, 5), PackedInt32Array(31, 30, 67, 143), PackedInt32Array(143, 67, 135, 144), PackedInt32Array(6, 148, 7), PackedInt32Array(154, 0, 7), PackedInt32Array(154, 7, 155, 156), PackedInt32Array(134, 156, 155, 144, 135), PackedInt32Array(132, 133, 111, 113), PackedInt32Array(157, 113, 112), PackedInt32Array(125, 157, 112, 23), PackedInt32Array(27, 26, 116)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-1862, -615, -654, -611, -647, -1275, 998, -1271, 997, -668, 1954, -672, 1954, 840, 1954, 2279, -1866, 2271), PackedVector2Array(-260, 28, -261, 166, 579, 164, 579, 29), PackedVector2Array(-262, 316, -260, 802, 192, 803, 194, 513, 835, 516, 835, 317), PackedVector2Array(-1411, 30, -1411, 163, -412, 162, -413, 28), PackedVector2Array(-386, 162, -285, 163, -286, 24, -385, 25), PackedVector2Array(-259, 192, -260, 290, 572, 290, 573, 190), PackedVector2Array(607, 164, 700, 166, 700, 32, 608, 34), PackedVector2Array(603, 197, 603, 293, 707, 294, 703, 196), PackedVector2Array(731, 203, 736, 291, 836, 291, 837, 203), PackedVector2Array(729, 37, 728, 174, 1215, 173, 1216, 140, 1247, 140, 1250, 109, 1280, 108, 1281, 77, 1279, 36), PackedVector2Array(865, 207, 862, 294, 957, 297, 956, 205), PackedVector2Array(-256, -86, -257, 4, 57, 3, 57, -84), PackedVector2Array(984, 199, 988, 300, 1220, 298, 1213, 199), PackedVector2Array(864, 324, 867, 523, 953, 521, 954, 323), PackedVector2Array(984, 321, 986, 524, 1224, 524, 1375, 523, 1594, 526, 1948, 523, 1950, -664, 985, -655, 989, -1238, 217, -1240, 219, -115, 577, -115, 576, -658, 728, -657, 731, -466, 1242, -466, 1249, 17, 1285, 31, 1287, 106, 1372, 107, 1402, 108, 1403, 140, 1435, 140, 1436, 173, 1466, 174, 1465, 229, 1466, 283, 1466, 327, 1434, 329, 1434, 360, 1403, 361, 1403, 391, 1373, 393, 1277, 393, 1246, 393, 1245, 360, 1217, 359, 1216, 323), PackedVector2Array(1245, 201, 1244, 299, 1245, 331, 1276, 330, 1277, 362, 1373, 362, 1373, 330, 1405, 328, 1405, 298, 1437, 296, 1438, 203, 1405, 203, 1403, 171, 1373, 170, 1369, 135, 1277, 137, 1275, 169, 1245, 171), PackedVector2Array(728, -314, 728, -115, 1089, -115, 1089, -314), PackedVector2Array(1602, 538, 1592, 813, 1950, 815, 1948, 532), PackedVector2Array(602, -631, 601, -462, 705, -464, 702, -630), PackedVector2Array(733, -441, 734, -337, 1086, -339, 1084, -440), PackedVector2Array(1113, -439, 1114, -339, 1215, -349, 1216, -440), PackedVector2Array(1115, -313, 1116, -115, 1217, -116, 1216, -324), PackedVector2Array(1114, -89, 1113, 13, 1215, 13, 1218, -88), PackedVector2Array(729, -88, 729, 14, 1091, 13, 1088, -89), PackedVector2Array(604, -88, 603, 11, 702, 11, 704, -89), PackedVector2Array(602, -315, 603, -113, 705, -115, 705, -313), PackedVector2Array(601, -436, 600, -344, 703, -341, 704, -440)])
+
 [node name="CityMap" type="Node2D" unique_id=890607974]
 
 [node name="Map" type="Node2D" parent="." unique_id=483728725]
+
+[node name="WanderRoutes" type="Node2D" parent="Map" unique_id=1042890572]
+
+[node name="Route1" type="Node2D" parent="Map/WanderRoutes" unique_id=687382271]
+
+[node name="b_point" type="Marker2D" parent="Map/WanderRoutes/Route1" unique_id=1801791762]
+position = Vector2(592, 172)
+
+[node name="c_point" type="Marker2D" parent="Map/WanderRoutes/Route1" unique_id=1145912722]
+position = Vector2(591, 16)
+script = ExtResource("28_n0cps")
+
+[node name="d_point" type="Marker2D" parent="Map/WanderRoutes/Route1" unique_id=1814197567]
+position = Vector2(-271, 18)
+
+[node name="Route2" type="Node2D" parent="Map/WanderRoutes" unique_id=1298842070]
+
+[node name="b_point" type="Marker2D" parent="Map/WanderRoutes/Route2" unique_id=1699868978]
+position = Vector2(155, 182)
+
+[node name="c_point" type="Marker2D" parent="Map/WanderRoutes/Route2" unique_id=1141304857]
+position = Vector2(1454, 246)
+script = ExtResource("28_n0cps")
+
+[node name="d_point" type="Marker2D" parent="Map/WanderRoutes/Route2" unique_id=370675247]
+position = Vector2(1579, 533)
 
 [node name="grass" type="Node2D" parent="Map" unique_id=775443880]
 
@@ -358,6 +391,17 @@ position = Vector2(271, 98)
 [node name="buildings" type="TileMapLayer" parent="Map" unique_id=1455743697]
 tile_map_data = PackedByteArray("AADg/wIAAAAAAAAAAADg/wMAAAAAAAEAAADg/wQAAAAAAAIAAADg/wUAAAAAAAMAAADg/wYAAAAAAAQAAADg/wcAAAAAAAUAAADg/wgAAAAAAAYAAADg/wkAAAAAAAcAAADh/wIAAAABAAAAAADh/wMAAAABAAEAAADh/wQAAAABAAIAAADh/wUAAAABAAMAAADh/wYAAAABAAQAAADh/wcAAAABAAUAAADh/wgAAAABAAYAAADh/wkAAAABAAcAAADi/wIAAAACAAAAAADi/wMAAAACAAEAAADi/wQAAAACAAIAAADi/wUAAAACAAMAAADi/wYAAAACAAQAAADi/wcAAAACAAUAAADi/wgAAAACAAYAAADi/wkAAAACAAcAAADj/wIAAAADAAAAAADj/wMAAAADAAEAAADj/wQAAAADAAIAAADj/wUAAAADAAMAAADj/wYAAAADAAQAAADj/wcAAAADAAUAAADj/wgAAAADAAYAAADj/wkAAAADAAcAAADk/wIAAAAEAAAAAADk/wMAAAAEAAEAAADk/wQAAAAEAAIAAADk/wUAAAAEAAMAAADk/wYAAAAEAAQAAADk/wcAAAAEAAUAAADk/wgAAAAEAAYAAADk/wkAAAAEAAcAAADl/wIAAAAFAAAAAADl/wMAAAAFAAEAAADl/wQAAAAFAAIAAADl/wUAAAAFAAMAAADl/wYAAAAFAAQAAADl/wcAAAAFAAUAAADl/wgAAAAFAAYAAADl/wkAAAAFAAcAAADw/yoAAAAAAAAAAADw/ysAAAAAAAEAAADw/ywAAAAAAAIAAADw/y0AAAAAAAMAAADw/y4AAAAAAAQAAADw/y8AAAAAAAUAAADw/zAAAAAAAAYAAADw/zEAAAAAAAcAAADx/yoAAAABAAAAAADx/ysAAAABAAEAAADx/ywAAAABAAIAAADx/y0AAAABAAMAAADx/y4AAAABAAQAAADx/y8AAAABAAUAAADx/zAAAAABAAYAAADx/zEAAAABAAcAAADy/yoAAAACAAAAAADy/ysAAAACAAEAAADy/ywAAAACAAIAAADy/y0AAAACAAMAAADy/y4AAAACAAQAAADy/y8AAAACAAUAAADy/zAAAAACAAYAAADy/zEAAAACAAcAAADz/yoAAAADAAAAAADz/ysAAAADAAEAAADz/ywAAAADAAIAAADz/y0AAAADAAMAAADz/y4AAAADAAQAAADz/y8AAAADAAUAAADz/zAAAAADAAYAAADz/zEAAAADAAcAAAD0/yoAAAAEAAAAAAD0/ysAAAAEAAEAAAD0/ywAAAAEAAIAAAD0/y0AAAAEAAMAAAD0/y4AAAAEAAQAAAD0/y8AAAAEAAUAAAD0/zAAAAAEAAYAAAD0/zEAAAAEAAcAAAD1/yoAAAAFAAAAAAD1/ysAAAAFAAEAAAD1/ywAAAAFAAIAAAD1/y0AAAAFAAMAAAD1/y4AAAAFAAQAAAD1/y8AAAAFAAUAAAD1/zAAAAAFAAYAAAD1/zEAAAAFAAcAAADw/ycAAAAAAAAAAADw/ygAAAAAAAEAAADw/ykAAAAAAAIAAADx/ycAAAABAAAAAADx/ygAAAABAAEAAADx/ykAAAABAAIAAADy/ycAAAACAAAAAADy/ygAAAACAAEAAADy/ykAAAACAAIAAADz/ycAAAADAAAAAADz/ygAAAADAAEAAADz/ykAAAADAAIAAAD0/ycAAAAEAAAAAAD0/ygAAAAEAAEAAAD0/ykAAAAEAAIAAAD1/ycAAAAFAAAAAAD1/ygAAAAFAAEAAAD1/ykAAAAFAAIAAADw/yQAAAAAAAAAAADw/yUAAAAAAAEAAADw/yYAAAAAAAIAAADx/yQAAAABAAAAAADx/yUAAAABAAEAAADx/yYAAAABAAIAAADy/yQAAAACAAAAAADy/yUAAAACAAEAAADy/yYAAAACAAIAAADz/yQAAAADAAAAAADz/yUAAAADAAEAAADz/yYAAAADAAIAAAD0/yQAAAAEAAAAAAD0/yUAAAAEAAEAAAD0/yYAAAAEAAIAAAD1/yQAAAAFAAAAAAD1/yUAAAAFAAEAAAD1/yYAAAAFAAIAAADw/yEAAAAAAAAAAADw/yIAAAAAAAEAAADw/yMAAAAAAAIAAADx/yEAAAABAAAAAADx/yIAAAABAAEAAADx/yMAAAABAAIAAADy/yEAAAACAAAAAADy/yIAAAACAAEAAADy/yMAAAACAAIAAADz/yEAAAADAAAAAADz/yIAAAADAAEAAADz/yMAAAADAAIAAAD0/yEAAAAEAAAAAAD0/yIAAAAEAAEAAAD0/yMAAAAEAAIAAAD1/yEAAAAFAAAAAAD1/yIAAAAFAAEAAAD1/yMAAAAFAAIAAADw/x4AAAAAAAAAAADw/x8AAAAAAAEAAADw/yAAAAAAAAIAAADx/x4AAAABAAAAAADx/x8AAAABAAEAAADx/yAAAAABAAIAAADy/x4AAAACAAAAAADy/x8AAAACAAEAAADy/yAAAAACAAIAAADz/x4AAAADAAAAAADz/x8AAAADAAEAAADz/yAAAAADAAIAAAD0/x4AAAAEAAAAAAD0/x8AAAAEAAEAAAD0/yAAAAAEAAIAAAD1/x4AAAAFAAAAAAD1/x8AAAAFAAEAAAD1/yAAAAAFAAIAAADw/xsAAAAAAAAAAADw/xwAAAAAAAEAAADw/x0AAAAAAAIAAADx/xsAAAABAAAAAADx/xwAAAABAAEAAADx/x0AAAABAAIAAADy/xsAAAACAAAAAADy/xwAAAACAAEAAADy/x0AAAACAAIAAADz/xsAAAADAAAAAADz/xwAAAADAAEAAADz/x0AAAADAAIAAAD0/xsAAAAEAAAAAAD0/xwAAAAEAAEAAAD0/x0AAAAEAAIAAAD1/xsAAAAFAAAAAAD1/xwAAAAFAAEAAAD1/x0AAAAFAAIAAADw/xgAAAAAAAAAAADw/xkAAAAAAAEAAADw/xoAAAAAAAIAAADx/xgAAAABAAAAAADx/xkAAAABAAEAAADx/xoAAAABAAIAAADy/xgAAAACAAAAAADy/xkAAAACAAEAAADy/xoAAAACAAIAAADz/xgAAAADAAAAAADz/xkAAAADAAEAAADz/xoAAAADAAIAAAD0/xgAAAAEAAAAAAD0/xkAAAAEAAEAAAD0/xoAAAAEAAIAAAD1/xgAAAAFAAAAAAD1/xkAAAAFAAEAAAD1/xoAAAAFAAIAAADw/xUAAAAAAAAAAADw/xYAAAAAAAEAAADw/xcAAAAAAAIAAADx/xUAAAABAAAAAADx/xYAAAABAAEAAADx/xcAAAABAAIAAADy/xUAAAACAAAAAADy/xYAAAACAAEAAADy/xcAAAACAAIAAADz/xUAAAADAAAAAADz/xYAAAADAAEAAADz/xcAAAADAAIAAAD0/xUAAAAEAAAAAAD0/xYAAAAEAAEAAAD0/xcAAAAEAAIAAAD1/xUAAAAFAAAAAAD1/xYAAAAFAAEAAAD1/xcAAAAFAAIAAAA=")
 tile_set = SubResource("TileSet_0ru8o")
+
+[node name="collisions" type="StaticBody2D" parent="Map" unique_id=1713243037]
+
+[node name="central_residences" type="CollisionPolygon2D" parent="Map/collisions" unique_id=1947146689]
+polygon = PackedVector2Array(-262, 316, 835, 317, 835, 516, 194, 513, 192, 803, -260, 802)
+
+[node name="garage_block" type="CollisionPolygon2D" parent="Map/collisions" unique_id=1194995820]
+polygon = PackedVector2Array(-260, 28, 579, 29, 579, 164, -261, 166)
+
+[node name="residences_block_01" type="CollisionPolygon2D" parent="Map/collisions" unique_id=2067053710]
+polygon = PackedVector2Array(-1411, 30, -413, 28, -412, 162, -1411, 163)
 
 [node name="etiquetas-mapa" type="Node2D" parent="Map" unique_id=2014893909]
 
@@ -671,62 +715,24 @@ offset_right = -1800.0
 offset_bottom = -34.0
 text = "peaje"
 
-[node name="WanderRoutes" type="Node2D" parent="." unique_id=1042890572]
+[node name="navigation_region" type="Node2D" parent="Map" unique_id=286876079]
 
-[node name="Route1" type="Node2D" parent="WanderRoutes" unique_id=687382271]
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="Map/navigation_region" unique_id=2062574752]
+position = Vector2(3, -10)
+navigation_polygon = SubResource("NavigationPolygon_kh5iw")
 
-[node name="b_point" type="Marker2D" parent="WanderRoutes/Route1" unique_id=1801791762]
-position = Vector2(592, 172)
+[node name="homes" type="Node2D" parent="Map" unique_id=1865171989]
 
-[node name="c_point" type="Marker2D" parent="WanderRoutes/Route1" unique_id=1145912722]
-position = Vector2(591, 10)
+[node name="npc_01" type="Marker2D" parent="Map/homes" unique_id=328596763]
+position = Vector2(-463, 147)
+script = ExtResource("28_bhnsj")
+npc_id = "npc_01"
 
-[node name="d_point" type="Marker2D" parent="WanderRoutes/Route1" unique_id=1814197567]
-position = Vector2(1226, 11)
-
-[node name="Route2" type="Node2D" parent="WanderRoutes" unique_id=1298842070]
-
-[node name="b_point" type="Marker2D" parent="WanderRoutes/Route2" unique_id=1699868978]
-position = Vector2(-277, 178)
-
-[node name="c_point" type="Marker2D" parent="WanderRoutes/Route2" unique_id=1141304857]
-position = Vector2(-278, 10)
-
-[node name="d_point" type="Marker2D" parent="WanderRoutes/Route2" unique_id=370675247]
-position = Vector2(577, 25)
-
-[node name="Route3" type="Node2D" parent="WanderRoutes" unique_id=1241580723]
-
-[node name="b_point" type="Marker2D" parent="WanderRoutes/Route3" unique_id=1196794305]
-position = Vector2(-261, 173)
-
-[node name="c_point" type="Marker2D" parent="WanderRoutes/Route3" unique_id=914527740]
-position = Vector2(-284, 302)
-
-[node name="d_point" type="Marker2D" parent="WanderRoutes/Route3" unique_id=443328419]
-position = Vector2(-411, 298)
-
-[node name="Route4" type="Node2D" parent="WanderRoutes" unique_id=1084296977]
-
-[node name="b_point" type="Marker2D" parent="WanderRoutes/Route4" unique_id=1309825005]
-position = Vector2(-240, 184)
-
-[node name="c_point" type="Marker2D" parent="WanderRoutes/Route4" unique_id=1673038961]
-position = Vector2(-247, 302)
-
-[node name="d_point" type="Marker2D" parent="WanderRoutes/Route4" unique_id=2019881091]
-position = Vector2(846, 298)
-
-[node name="Route5" type="Node2D" parent="WanderRoutes" unique_id=763232996]
-
-[node name="b_point" type="Marker2D" parent="WanderRoutes/Route5" unique_id=1545546091]
-position = Vector2(-65, 183)
-
-[node name="c_point" type="Marker2D" parent="WanderRoutes/Route5" unique_id=1669660446]
-position = Vector2(567, 182)
-
-[node name="d_point" type="Marker2D" parent="WanderRoutes/Route5" unique_id=1150030602]
-position = Vector2(855, 184)
+[node name="npc_02" type="Marker2D" parent="Map/homes" unique_id=795830964]
+position = Vector2(-207, 785)
+script = ExtResource("28_bhnsj")
+npc_id = "npc_02"
+wake_hour = 7.0
 
 [node name="CityWandererSpawner" type="Node2D" parent="." unique_id=1627736562]
 position = Vector2(265, 170)

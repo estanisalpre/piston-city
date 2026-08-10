@@ -69,3 +69,25 @@ signal money_changed(amount: int)
 ## {"title": String, "body": String, "day": int, "read": bool}.
 ## Ver MessagesCenter.
 @export var messages: Array[Dictionary] = []
+
+## npc_id -> día (Game.state.day) a partir del cual ese NPC vuelve a
+## ofrecer trabajos nuevos en el celular — se pone al completar un
+## retiro (ver JobsManager.finish_pickup). No afecta ningún trabajo ya
+## en curso, solo cuáles aparecen como "Disponibles".
+@export var npc_cooldowns: Dictionary[String, int] = {}
+
+## job_id -> día a partir del cual ESE encargo puntual vuelve a
+## aparecer como disponible (para cualquier NPC) — se pone al completar
+## un retiro. Mucho más largo que npc_cooldowns (~1 año de juego): no
+## tiene sentido que el mismo cliente pida cambiar los mismos
+## neumáticos cada semana.
+@export var job_cooldowns: Dictionary[String, int] = {}
+
+## npc_id -> snapshot de NpcDirector en el momento de guardar
+## ({route, index, dir, position, mode, job_id, wait_remaining}) — sin
+## importar en qué modo estaba (patrullando, camino al taller, de
+## franco, lo que sea), así el mundo sigue exactamente desde ahí al
+## recargar en vez de resetear a todos a "patrol" desde cero. Untyped a
+## propósito (los valores no son todos del mismo tipo) — ver
+## NpcDirector.capture_snapshot() / _restore_or_init_npc().
+@export var npc_snapshots: Dictionary = {}

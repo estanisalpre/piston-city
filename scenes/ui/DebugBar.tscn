@@ -59,3 +59,8 @@ step = 5.0
 layout_mode = 2
 focus_mode = 0
 text = "Aplicar"
+
+[node name="SendHomeButton" type="Button" parent="Bar/Row"]
+layout_mode = 2
+focus_mode = 0
+text = "Regresar a casa"

@@ -44,7 +44,9 @@ func _make_job_texts(job: JobData, extra_line: String) -> VBoxContainer:
 	texts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var title_label := Label.new()
-	title_label.text = "%s\n$%d — %s" % [job.title, job.reward_money, extra_line]
+	title_label.text = "%s\nCliente: %s\n$%d — %s" % [
+		job.title, NpcRoster.get_display_name(job.npc_id), job.reward_money, extra_line
+	]
 	title_label.add_theme_font_size_override("font_size", 6)
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD
 	title_label.custom_minimum_size.x = 0

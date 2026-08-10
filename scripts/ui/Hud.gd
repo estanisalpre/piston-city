@@ -9,6 +9,7 @@ func _ready() -> void:
 	_on_money_changed(Game.state.money)
 
 	SaveManager.autosave_triggered.connect(_on_autosave_triggered)
+	SaveManager.quit_save_started.connect(_on_quit_save_started)
 
 	TimeManager.minute_changed.connect(_on_minute_changed)
 	_on_minute_changed(TimeManager.get_hour(), TimeManager.get_minute())
@@ -25,6 +26,7 @@ func _on_minute_changed(hour: int, minute: int) -> void:
 	time_label.text = "%s:%s - Día %s, %s" % [hour_text, minute_text, day_text, season_text]
 
 func _on_autosave_triggered() -> void:
+	autosave_label.text = "Guardando tu taller..."
 	autosave_label.modulate.a = 1.0
 	autosave_label.show()
 
@@ -32,3 +34,11 @@ func _on_autosave_triggered() -> void:
 	tween.tween_interval(1.5)
 	tween.tween_property(autosave_label, "modulate:a", 0.0, 0.5)
 	tween.tween_callback(autosave_label.hide)
+
+## SaveManager.quit_game() espera un par de frames después de esto antes
+## de guardar y cerrar de verdad — no hace falta ningún fade, la ventana
+## se cierra sola enseguida.
+func _on_quit_save_started() -> void:
+	autosave_label.text = "Guardando antes de salir..."
+	autosave_label.modulate.a = 1.0
+	autosave_label.show()

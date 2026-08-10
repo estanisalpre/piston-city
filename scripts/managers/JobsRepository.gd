@@ -277,7 +277,16 @@ static func get_all_jobs() -> Array[JobData]:
 
 static func is_job_available(job: JobData) -> bool:
 	var player_level: int = Game.state.skill_levels.get(job.required_skill, 1)
-	return player_level >= job.required_level
+	if player_level < job.required_level:
+		return false
+
+	if Game.state.day < Game.state.npc_cooldowns.get(job.npc_id, 0):
+		return false  # ese NPC no está ofreciendo trabajos nuevos todavía
+
+	if Game.state.day < Game.state.job_cooldowns.get(job.id, 0):
+		return false  # este encargo puntual ya se hizo hace poco
+
+	return true
 
 static func get_job(job_id: String) -> JobData:
 	for job in get_all_jobs():
