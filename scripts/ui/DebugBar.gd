@@ -9,6 +9,7 @@ extends CanvasLayer
 @onready var add_tire_button: Button = $Bar/Row/AddTireButton
 @onready var remove_tire_button: Button = $Bar/Row/RemoveTireButton
 @onready var respawn_garage_button: Button = $Bar/Row/RespawnGarageButton
+@onready var reset_all_button: Button = $Bar/Row/ResetAllButton
 
 func _ready() -> void:
 	for season_name in TimeManager.SEASON_NAMES:
@@ -24,6 +25,7 @@ func _ready() -> void:
 	add_tire_button.pressed.connect(_on_add_tire_pressed)
 	remove_tire_button.pressed.connect(_on_remove_tire_pressed)
 	respawn_garage_button.pressed.connect(_on_respawn_garage_pressed)
+	reset_all_button.pressed.connect(_on_reset_all_pressed)
 
 	# El SpinBox tiene un LineEdit interno propio que sí puede agarrar
 	# el foco de teclado aunque el SpinBox tenga focus_mode = 0.
@@ -52,3 +54,6 @@ func _on_remove_tire_pressed() -> void:
 func _on_respawn_garage_pressed() -> void:
 	var world_manager = get_tree().get_first_node_in_group("world_manager")
 	world_manager.travel_to(load("res://scenes/garage/GarageMap.tscn"), "PlayerSpawn")
+
+func _on_reset_all_pressed() -> void:
+	SaveManager.debug_reset_everything()

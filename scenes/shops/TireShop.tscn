@@ -21,6 +21,7 @@ part_id = "neumatico"
 display_name = "Neumático"
 price = 500
 icon = ExtResource("6_exd2w")
+storage_zone_id = "tire_shelf"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m6mqb"]
 texture = ExtResource("1_miia2")

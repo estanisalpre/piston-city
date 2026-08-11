@@ -620,6 +620,20 @@ func debug_send_all_home() -> void:
 				"nav_path": [],
 			}
 
+## Lo llama SaveManager.debug_reset_everything() — descarta el estado
+## en memoria de todos los NPCs (rutas reservadas, lugares de
+## encargos, todo) y los vuelve a inicializar de cero, como si el
+## juego recién hubiera arrancado. Asume que Game.state.npc_snapshots
+## ya está vacío (GameState.reset() ya corrió antes) — si no, cada uno
+## restauraría su snapshot viejo en vez de arrancar de cero.
+func debug_reset() -> void:
+	_npc_state.clear()
+	_route_reservations.clear()
+	_job_spots.clear()
+
+	for npc_id in NpcRoster.ALL:
+		_restore_or_init_npc(npc_id)
+
 func _log_name(npc_id: String) -> String:
 	return "%s (%s)" % [NpcRoster.get_display_name(npc_id), npc_id]
 

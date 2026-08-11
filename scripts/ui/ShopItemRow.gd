@@ -1,9 +1,10 @@
 extends HBoxContainer
 
-## Una fila del PurchaseModal — un producto (ShopItem), su stock actual
-## y el botón de compra. Se instancia una por producto, se descarta al
+## Una fila del PurchaseModal — un producto (ShopItem), el cupo
+## compartido de su estantería (ver PartsInventory.deposit_in_zone) y
+## el botón de compra. Se instancia una por producto, se descarta al
 ## cerrar el modal (ver PurchaseModal.open). Autónoma: escucha sola los
-## cambios de stock/plata, nadie de afuera necesita refrescarla.
+## cambios de esa estantería/plata, nadie de afuera necesita refrescarla.
 
 @onready var icon: TextureRect = $Icon
 @onready var name_label: Label = $Info/NameLabel
@@ -18,28 +19,30 @@ func setup(shop_item: ShopItem) -> void:
 	name_label.text = "%s — $%d" % [item.display_name, item.price]
 
 	buy_button.pressed.connect(_on_buy_pressed)
-	PartsInventory.part_changed.connect(_on_part_changed)
+	PartsInventory.slots_changed.connect(_on_slots_changed)
 	Game.state.money_changed.connect(_on_money_changed)
 
 	_refresh()
 
 func _on_buy_pressed() -> void:
-	if PartsInventory.get_quantity(item.part_id) >= item.capacity:
-		return
 	if Game.state.money < item.price:
 		return
 
-	Game.state.money -= item.price
-	PartsInventory.add_part(item.part_id, 1)
+	if not PartsInventory.deposit_in_zone(item.storage_zone_id, item.storage_capacity, item.part_id):
+		return  # sin lugar libre en esa estantería, sea cual sea la mezcla de tipos ya puestos
 
-func _on_part_changed(changed_part_id: String, _quantity: int) -> void:
-	if changed_part_id == item.part_id:
+	Game.state.money -= item.price
+
+func _on_slots_changed(changed_zone_id: String) -> void:
+	if changed_zone_id == item.storage_zone_id:
 		_refresh()
 
 func _on_money_changed(_amount: int) -> void:
 	_refresh()
 
 func _refresh() -> void:
-	var stock: int = PartsInventory.get_quantity(item.part_id)
-	stock_label.text = "%d/%d en el taller" % [stock, item.capacity]
-	buy_button.disabled = stock >= item.capacity or Game.state.money < item.price
+	var occupants: Array = PartsInventory.get_slots(item.storage_zone_id, item.storage_capacity)
+	var occupied: int = item.storage_capacity - occupants.count("")
+
+	stock_label.text = "%d/%d en el taller" % [occupied, item.storage_capacity]
+	buy_button.disabled = occupied >= item.storage_capacity or Game.state.money < item.price

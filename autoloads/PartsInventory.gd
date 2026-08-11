@@ -24,3 +24,42 @@ func remove_part(part_id: String, amount: int = 1) -> bool:
 
 func get_quantity(part_id: String) -> int:
 	return Game.state.parts.get(part_id, 0)
+
+# --- Estanterías con lugares físicos limitados -----------------------------
+#
+# Un "zone_id" (ej. "tire_shelf") es un mueble con "capacity" lugares en
+# fila. Cada lugar guarda "" (vacío) o el part_id puesto ahí — nuevos y
+# usados pueden convivir en el mismo mueble, cada uno en su propio
+# lugar, sin pisarse. Es la ÚNICA fuente de verdad de qué hay dónde,
+# vive en Game.state (no en el nodo de la escena) para que funcione
+# incluso comprando desde otro mapa (ej. la gomería) donde el mueble
+## real ni está cargado — PartStorageZone solo dibuja lo que diga acá.
+
+signal slots_changed(zone_id: String)
+
+func _ensure_slots(zone_id: String, capacity: int) -> void:
+	if not Game.state.storage_slots.has(zone_id):
+		var slots: Array = []
+		for i in capacity:
+			slots.append("")
+		Game.state.storage_slots[zone_id] = slots
+
+func get_slots(zone_id: String, capacity: int) -> Array:
+	_ensure_slots(zone_id, capacity)
+	return Game.state.storage_slots[zone_id]
+
+## Ocupa el primer lugar libre de esa estantería con part_id — sea
+## comprado en un local o traído a upa por el jugador, siempre pasa por
+## acá, así nunca hay más piezas físicas que lugares, sin importar la
+## mezcla de tipos que sean. Devuelve false (sin efecto) si no queda
+## ningún lugar libre.
+func deposit_in_zone(zone_id: String, capacity: int, part_id: String) -> bool:
+	var slots := get_slots(zone_id, capacity)
+	var empty_index: int = slots.find("")
+	if empty_index == -1:
+		return false
+
+	slots[empty_index] = part_id
+	add_part(part_id, 1)
+	slots_changed.emit(zone_id)
+	return true

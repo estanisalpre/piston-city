@@ -46,6 +46,24 @@ func quit_game() -> void:
 func has_save() -> bool:
 	return FileAccess.file_exists(SAVE_PATH)
 
+## Botón de debug "Resetear todo" — borra el archivo de guardado,
+## vuelve Game.state a los valores de una partida nueva (en el mismo
+## objeto, ver GameState.reset — reemplazarlo por uno nuevo rompía las
+## señales que ya tenía conectadas el HUD), resetea a los NPCs, y te
+## manda de vuelta al garage por el mismo camino que ya usan las
+## puertas (travel_to) — a propósito NO usa reload_current_scene(), que
+## en este proyecto llegó a duplicar el mapa en vez de reemplazarlo.
+## Pensado solo para testeo.
+func debug_reset_everything() -> void:
+	if has_save():
+		DirAccess.remove_absolute(SAVE_PATH)
+
+	Game.state.reset()
+	NpcDirector.debug_reset()
+
+	var world_manager := get_tree().get_first_node_in_group("world_manager")
+	world_manager.travel_to(load("res://scenes/garage/GarageMap.tscn"), "PlayerSpawn")
+
 func save_game() -> void:
 	_capture_world_state()
 
@@ -87,4 +105,7 @@ func load_game() -> void:
 		Game.state.job_cooldowns = loaded_state.job_cooldowns
 		Game.state.npc_snapshots = loaded_state.npc_snapshots
 		Game.state.parts = loaded_state.parts
+		Game.state.storage_slots = loaded_state.storage_slots
+		Game.state.dropped_parts = loaded_state.dropped_parts
+		Game.state.next_dropped_part_id = loaded_state.next_dropped_part_id
 		Game.state.job_repair_progress = loaded_state.job_repair_progress

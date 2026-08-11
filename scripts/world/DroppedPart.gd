@@ -9,10 +9,12 @@ extends Area2D
 
 var _part_id := ""
 var _icon: Texture2D
+var _record_id := -1
 
-func setup(part_id: String, icon: Texture2D) -> void:
+func setup(part_id: String, icon: Texture2D, record_id: int) -> void:
 	_part_id = part_id
 	_icon = icon
+	_record_id = record_id
 	sprite.texture = icon
 
 func _ready() -> void:
@@ -28,4 +30,5 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 
 	get_viewport().set_input_as_handled()
 	PlayerCarry.carry(_part_id, _icon)
+	PlayerCarry.remove_dropped_record(_record_id)
 	queue_free()

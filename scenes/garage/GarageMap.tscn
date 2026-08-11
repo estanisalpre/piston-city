@@ -50,7 +50,7 @@
 [ext_resource type="PackedScene" path="res://scenes/world/PartStorageZone.tscn" id="45_rxlga"]
 [ext_resource type="Texture2D" uid="uid://bj3to3rrkkrl4" path="res://assets/sprites/garage/tires_section/tire_wall_support.png" id="46_lugbs"]
 [ext_resource type="Texture2D" uid="uid://dljxa68uwp77g" path="res://assets/sprites/garage/tires_section/tire_front.png" id="46_s272m"]
-[ext_resource type="Texture2D" uid="uid://dr2agfef56rw1" path="res://assets/sprites/garage/tires_section/tire_front_old.png" id="48_s272m"]
+[ext_resource type="Texture2D" uid="uid://dr2agfef56rw1" path="res://assets/sprites/garage/tires_section/tire_front_old.png" id="47_s272m"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7uce2"]
 texture = ExtResource("1_57cdy")
@@ -414,9 +414,6 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_pt2vc")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7uce2"]
-size = Vector2(98, 36)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u5bk5"]
 size = Vector2(88, 97)
 
@@ -582,10 +579,13 @@ tile_map_data = PackedByteArray("AAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAABA=")
 tile_set = SubResource("TileSet_hplta")
 
 [node name="tires_section" type="Node2D" parent="Map" unique_id=591852782]
-z_index = 10
+z_index = 9
 
 [node name="PartStorageZone" parent="Map/tires_section" unique_id=1193428044 instance=ExtResource("45_rxlga")]
-part_id = "neumatico"
+part_icons = Dictionary[String, Texture2D]({
+"neumatico": ExtResource("46_s272m"),
+"neumatico_usado": ExtResource("47_s272m")
+})
 
 [node name="CollisionShape2D" parent="Map/tires_section/PartStorageZone" index="0"]
 position = Vector2(270.5, 64.25)
@@ -619,33 +619,6 @@ texture = ExtResource("46_s272m")
 visible = false
 position = Vector2(295, 36)
 texture = ExtResource("46_s272m")
-
-[node name="PartStorageZone2" parent="Map/tires_section" unique_id=1186308567 instance=ExtResource("45_rxlga")]
-part_id = "neumatico_usado"
-
-[node name="CollisionShape2D" parent="Map/tires_section/PartStorageZone2" index="0"]
-position = Vector2(271, 63)
-shape = SubResource("RectangleShape2D_7uce2")
-
-[node name="tire_1" type="Sprite2D" parent="Map/tires_section/PartStorageZone2" unique_id=584840622]
-position = Vector2(236, 36)
-texture = ExtResource("48_s272m")
-
-[node name="tire_2" type="Sprite2D" parent="Map/tires_section/PartStorageZone2" unique_id=1423167774]
-position = Vector2(249, 36)
-texture = ExtResource("48_s272m")
-
-[node name="tire_3" type="Sprite2D" parent="Map/tires_section/PartStorageZone2" unique_id=1465929952]
-position = Vector2(263, 36)
-texture = ExtResource("48_s272m")
-
-[node name="tire_4" type="Sprite2D" parent="Map/tires_section/PartStorageZone2" unique_id=998835496]
-position = Vector2(283, 36)
-texture = ExtResource("48_s272m")
-
-[node name="tire_5" type="Sprite2D" parent="Map/tires_section/PartStorageZone2" unique_id=570452383]
-position = Vector2(297, 36)
-texture = ExtResource("48_s272m")
 
 [node name="no_drop_zone" type="Area2D" parent="Map" unique_id=1610518790]
 position = Vector2(77, 94)
@@ -747,4 +720,3 @@ autoplay = true
 [editable path="Map/doors/ExitParkingDoorTrigger"]
 [editable path="Map/bedroom/walls/BehindWallTrigger"]
 [editable path="Map/tires_section/PartStorageZone"]
-[editable path="Map/tires_section/PartStorageZone2"]

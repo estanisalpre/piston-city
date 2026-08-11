@@ -61,13 +61,46 @@ func _finish_carry() -> void:
 	_icon = null
 	carry_changed.emit("", null)
 
+## Crea el DroppedPart Y guarda su registro en Game.state.dropped_parts
+## — sin esto, lo tirado en el piso desaparecía al guardar/cargar (ver
+## restore_dropped_parts, que lo llama main.gd cada vez que termina de
+## cargar un mapa).
 func _spawn_on_floor(at_position: Vector2) -> void:
-	var dropped := DroppedPartScene.instantiate()
-	dropped.global_position = at_position
-
-	# Recién acá terminan de existir los @onready del nodo (Sprite2D
-	# incluido) — setup() tiene que llamarse después de add_to_current_map,
-	# nunca antes.
 	var world_manager := get_tree().get_first_node_in_group("world_manager")
-	world_manager.add_to_current_map(dropped)
-	dropped.setup(_part_id, _icon)
+
+	var record := {
+		"id": Game.state.next_dropped_part_id,
+		"map_path": world_manager.get_current_map_path(),
+		"position": at_position,
+		"part_id": _part_id,
+		"icon": _icon,
+	}
+	Game.state.next_dropped_part_id += 1
+	Game.state.dropped_parts.append(record)
+
+	_instance_dropped_part(record, world_manager.add_to_current_map)
+
+func _instance_dropped_part(record: Dictionary, add_to_map: Callable) -> void:
+	var dropped := DroppedPartScene.instantiate()
+	dropped.global_position = record.position
+
+	# Recién al agregarlo a la escena existen los @onready del nodo
+	# (Sprite2D incluido) — setup() tiene que llamarse después, nunca antes.
+	add_to_map.call(dropped)
+	dropped.setup(record.part_id, record.icon, record.id)
+
+## Lo llama main.gd cada vez que termina de cargar un mapa (nuevo, o el
+## inicial al arrancar) — recrea ahí las piezas que hayan quedado
+## tiradas en ese mapa puntual en partidas/visitas anteriores.
+func restore_dropped_parts(map: Node, map_path: String) -> void:
+	for record in Game.state.dropped_parts:
+		if record.map_path == map_path:
+			_instance_dropped_part(record, map.add_child)
+
+## Lo llama DroppedPart al levantarse — saca su registro para que no
+## vuelva a aparecer la próxima vez que se cargue este mapa.
+func remove_dropped_record(id: int) -> void:
+	for i in Game.state.dropped_parts.size():
+		if Game.state.dropped_parts[i].id == id:
+			Game.state.dropped_parts.remove_at(i)
+			return

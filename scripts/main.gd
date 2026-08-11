@@ -4,9 +4,19 @@ extends Node2D
 @onready var world: Node2D = $World
 @onready var player: Node2D = $World/Entities/Player
 
+## Cuál es "el mapa actual" de verdad, llevado a mano — antes se
+## adivinaba recorriendo los hijos de World (el primero que no fuera
+## Entities), pero eso se rompió apenas World tuvo otro hijo permanente
+## además del mapa y Entities (ver FloorPlacementCursor): terminaba
+## confundiéndolo con el mapa actual, lo borraba por error, y el mapa
+## viejo de verdad nunca se borraba — quedaban los dos convividos.
+var _current_map: Node
+
 func _ready() -> void:
 	add_to_group("world_manager")
+	_current_map = world.get_node("GarageMap")
 	_restore_last_location()
+	PlayerCarry.restore_dropped_parts(_current_map, get_current_map_path())
 
 func _unhandled_input(event):
 	if event.is_action_pressed("phone_toggle"):
@@ -28,17 +38,15 @@ func _input(event):
 ## Ruta de escena del mapa actualmente cargado bajo World. SaveManager la lee
 ## para saber qué guardar como "dónde quedó el jugador".
 func get_current_map_path() -> String:
-	var current_map := _get_current_map_node()
-	return current_map.scene_file_path if current_map else ""
+	return _current_map.scene_file_path if _current_map else ""
 
 ## Lo usa PlayerCarry para dejar cosas tiradas en el piso (ej. una
-## pieza sin dónde guardarla) — quedan colgando del mapa actual, así
-## que desaparecen solas si cambiás de mapa (aceptable para algo
-## puramente decorativo).
+## pieza sin dónde guardarla) — quedan colgando del mapa actual. El
+## registro persistente (para que sigan ahí tras guardar/cargar) es
+## responsabilidad de PlayerCarry, no de esto.
 func add_to_current_map(node: Node2D) -> void:
-	var current_map := _get_current_map_node()
-	if current_map:
-		current_map.add_child(node)
+	if _current_map:
+		_current_map.add_child(node)
 
 ## Al arrancar: si hay partida guardada, vuelve exactamente a donde quedó
 ## (mapa + posición). Si es partida nueva (current_map_path == ""), se queda
@@ -66,30 +74,23 @@ func travel_to(target_map: PackedScene, spawn_marker_name: String) -> void:
 
 func _travel_to_deferred(target_map: PackedScene, spawn_marker_name: String) -> void:
 	var new_map := _swap_map(target_map)
+	PlayerCarry.restore_dropped_parts(new_map, new_map.scene_file_path)
 
 	var spawn_marker := new_map.find_child(spawn_marker_name, true, false)
 	if spawn_marker:
 		player.global_position = spawn_marker.global_position
 
-## Devuelve el mapa nuevo ya agregado a World. queue_free() no borra al mapa
-## viejo en el acto (recién al final del frame), así que hay que quedarse con
-## la referencia al nuevo en vez de volver a buscar "el mapa actual" después
-## de llamar a esta función — mientras tanto conviven los dos como hijos de
-## World y _get_current_map_node() podría devolver el que se está yendo.
+## Devuelve el mapa nuevo ya agregado a World. free() en vez de
+## queue_free() a propósito: esto ya corre diferido (ver
+## _travel_to_deferred), un momento seguro para tocar el árbol, así que
+## podemos borrar el mapa viejo al instante en vez de recién al final
+## del frame — sin esto, los dos mapas convivían un frame (o más) como
+## hijos de World, superpuestos, y a veces se llegaba a notar.
 func _swap_map(target_map: PackedScene) -> Node:
-	var current_map := _get_current_map_node()
-	if current_map:
-		current_map.queue_free()
+	if _current_map:
+		_current_map.free()
 
 	var new_map := target_map.instantiate()
 	world.add_child(new_map)
+	_current_map = new_map
 	return new_map
-
-func _get_current_map_node() -> Node:
-	var entities := player.get_parent()
-
-	for map_node in world.get_children():
-		if map_node != entities and not map_node.is_queued_for_deletion():
-			return map_node
-
-	return null

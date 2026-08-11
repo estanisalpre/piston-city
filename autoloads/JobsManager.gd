@@ -79,6 +79,7 @@ func is_shop_open_now() -> bool:
 func finish_pickup(job_id: String) -> void:
 	var job := JobsRepository.get_job(job_id)
 	Game.state.pending_pickups.erase(job_id)
+	Game.state.job_repair_progress.erase(job_id)
 
 	if job:
 		Game.state.money += job.reward_money
@@ -94,6 +95,7 @@ func finish_pickup(job_id: String) -> void:
 func clear_all_jobs() -> void:
 	Game.state.active_jobs.clear()
 	Game.state.pending_pickups.clear()
+	Game.state.job_repair_progress.clear()
 	jobs_cleared.emit()
 
 func _on_day_changed(current_day: int) -> void:
@@ -108,6 +110,7 @@ func _on_day_changed(current_day: int) -> void:
 func _expire_job(job_id: String) -> void:
 	var job := JobsRepository.get_job(job_id)
 	Game.state.active_jobs.erase(job_id)
+	Game.state.job_repair_progress.erase(job_id)
 	job_expired.emit(job_id)
 
 	if job:

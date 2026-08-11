@@ -79,3 +79,9 @@ text = "-1 neumático"
 layout_mode = 2
 focus_mode = 0
 text = "Respawnear en garage"
+
+[node name="ResetAllButton" type="Button" parent="Bar/Row"]
+layout_mode = 2
+focus_mode = 0
+text = "Resetear TODO"
+
