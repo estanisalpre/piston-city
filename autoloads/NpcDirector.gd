@@ -82,9 +82,15 @@ var _job_spots: Dictionary = {}  # job_id (String) -> spot_index (int)
 var _homes: Dictionary = {}  # npc_id (String) -> Vector2
 var _home_wake_hours: Dictionary = {}  # npc_id (String) -> float (0-24)
 
-var _workplaces: Dictionary = {}  # npc_id (String) -> Vector2
+var _workplaces: Dictionary = {}  # npc_id (String) -> Vector2 (puerta exterior, en CityMap)
 var _open_hours: Dictionary = {}  # npc_id (String) -> float (0-24)
 var _close_hours: Dictionary = {}  # npc_id (String) -> float (0-24)
+
+## Estas dos solo tienen entrada para los npc_id cuyo NpcWorkplace tenga
+## interior_scene_path configurado (ver NpcWorkplace.gd) — están en el
+## espacio de coordenadas de ESA escena interior, nunca el de CityMap.
+var _shop_entrances: Dictionary = {}  # npc_id (String) -> Vector2
+var _shop_counters: Dictionary = {}  # npc_id (String) -> Vector2
 
 ## Mapa de NavigationServer2D armado a mano (ver _load_navigation) con el
 ## NavigationPolygon de CityMap.tscn — RID() (inválido) si esa escena
@@ -192,7 +198,36 @@ func _load_workplaces() -> void:
 				_open_hours[workplace_npc_id] = open if open != null else 8.0
 				_close_hours[workplace_npc_id] = close if close != null else 17.0
 
+				_load_shop_interior(workplace_npc_id, workplace_node)
+
 	city.free()
+
+## Si el NpcWorkplace tiene interior_scene_path configurado, instancia
+## esa escena en memoria (mismo truco que _load_garage_layout) solo
+## para leer dónde están su entrada y su mostrador, y la descarta.
+## Sin esto, el npc_id sigue yendo directo a "at_work" (invisible) al
+## llegar a la puerta, como antes de que existiera esta función.
+func _load_shop_interior(npc_id: String, workplace_node: Node) -> void:
+	var interior_path: Variant = workplace_node.get("interior_scene_path")
+	if interior_path == null or interior_path == "":
+		return
+
+	var interior_scene: PackedScene = load(interior_path)
+	var interior: Node = interior_scene.instantiate()
+
+	var entrance_name: String = workplace_node.get("interior_entrance_marker_name")
+	var counter_name: String = workplace_node.get("counter_marker_name")
+
+	var entrance: Node2D = interior.find_child(entrance_name, true, false)
+	var counter: Node2D = interior.find_child(counter_name, true, false)
+
+	if entrance and counter:
+		_shop_entrances[npc_id] = entrance.global_position
+		_shop_counters[npc_id] = counter.global_position
+	else:
+		push_warning("NpcDirector: %s tiene interior_scene_path pero no encontré '%s' y/o '%s' ahí adentro — revisá los nombres de los markers." % [npc_id, entrance_name, counter_name])
+
+	interior.free()
 
 ## Lo llama cualquier puerta con horario (ver DoorTrigger.schedule_npc_id)
 ## antes de dejar pasar al jugador — sin NpcWorkplace configurado para
@@ -344,10 +379,14 @@ func _points_for_restored_mode(
 			return [_homes.get(npc_id, position)]
 		"to_work":
 			return [_workplaces.get(npc_id, position)]
+		"entering_workplace":
+			return [_shop_entrances.get(npc_id, position), _shop_counters.get(npc_id, position)]
+		"leaving_workplace":
+			return [position, _shop_entrances.get(npc_id, position)]
 		"patrol", "to_workshop", "to_route":
 			return _routes.get(route_name, [])
 		_:
-			return []  # "waiting_at_door"/"off_duty"/"at_home": no se mueven, no hace falta
+			return []  # "waiting_at_door"/"off_duty"/"at_home"/"at_work": no se mueven, no hace falta
 
 ## Lo llama SaveManager antes de guardar — vuelca el estado de cada NPC
 ## (sin importar el modo) a Game.state.npc_snapshots para que
@@ -522,8 +561,8 @@ func _on_minute_changed(_hour: int, _minute: int) -> void:
 				print("[NPC] %s: son las %s, se despierta y sale para una ruta" % [_log_name(npc_id), _fmt_minute(minute_of_day)])
 				_start_heading_to_route(npc_id, state)
 		elif state.mode == "at_work" and minute_of_day >= _close_hours[npc_id] * 60.0:
-			print("[NPC] %s: son las %s, cierra el negocio y sale para una ruta" % [_log_name(npc_id), _fmt_minute(minute_of_day)])
-			_start_heading_to_route(npc_id, state)
+			print("[NPC] %s: son las %s, cierra el negocio" % [_log_name(npc_id), _fmt_minute(minute_of_day)])
+			_start_leaving_workplace(npc_id, state)
 		else:
 			print("[NPC] %s: hora=%s modo=%s (nada que hacer)" % [_log_name(npc_id), _fmt_minute(minute_of_day), state.mode])
 
@@ -611,6 +650,39 @@ func _start_heading_to_work(npc_id: String, state: Dictionary) -> void:
 	state.wait_remaining = 0.0
 	state._wait_consumed = false
 	state.nav_path = []
+
+## Lo llama _on_point_reached cuando "to_work" llega a la puerta —
+## arranca la caminata interior hasta el mostrador (mismo espíritu que
+## _start_entering_garage). Si este npc_id no tiene interior configurado
+## (ver NpcWorkplace.interior_scene_path), va directo a "at_work" como
+## antes, sin caminata adentro.
+func _start_entering_workplace(npc_id: String, state: Dictionary) -> void:
+	if not _shop_entrances.has(npc_id):
+		state.mode = "at_work"
+		return
+
+	state.points = [_shop_entrances[npc_id], _shop_counters[npc_id]]
+	state.index = 1
+	state.dir = 1
+	state.position = _shop_entrances[npc_id]
+	state.mode = "entering_workplace"
+
+## Lo llama _on_minute_changed a la hora de cierre — camina del
+## mostrador de vuelta a la entrada del local (espacio de coordenadas
+## de la escena interior). Al llegar, retoma la rutina normal desde la
+## puerta EXTERIOR (ver _on_point_reached), no desde acá adentro.
+func _start_leaving_workplace(npc_id: String, state: Dictionary) -> void:
+	if not _shop_entrances.has(npc_id):
+		# Sin interior configurado, comportamiento de antes: directo a
+		# una ruta random, calculando "más cercano" desde la puerta.
+		state.position = _workplaces[npc_id]
+		_start_heading_to_route(npc_id, state)
+		return
+
+	state.points = [state.position, _shop_entrances[npc_id]]
+	state.index = 1
+	state.dir = 1
+	state.mode = "leaving_workplace"
 
 ## Elige una ruta al azar (nunca la del taller) y camina, con
 ## pathfinding real, hasta el punto de esa ruta más cercano a donde
@@ -756,8 +828,19 @@ func _on_point_reached(npc_id: String, state: Dictionary) -> void:
 		return
 
 	if state.mode == "to_work":
-		print("[NPC] %s: llegó al negocio, queda invisible hasta cerrar" % _log_name(npc_id))
+		print("[NPC] %s: llegó a la puerta del negocio, entra" % _log_name(npc_id))
+		_start_entering_workplace(npc_id, state)
+		return
+
+	if state.mode == "entering_workplace":
+		print("[NPC] %s: llegó al mostrador" % _log_name(npc_id))
 		state.mode = "at_work"
+		return
+
+	if state.mode == "leaving_workplace":
+		print("[NPC] %s: salió del negocio, retoma la rutina" % _log_name(npc_id))
+		state.position = _workplaces[npc_id]
+		_start_heading_to_route(npc_id, state)
 		return
 
 	if state.mode == "to_route":
