@@ -1,11 +1,47 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b683mhfka28re"]
 
-[ext_resource type="Script" path="res://scripts/vehicles/JobVehicle.gd" id="1_jobvehicle"]
+[ext_resource type="Script" uid="uid://dw74alhvjs1fl" path="res://scripts/vehicles/JobVehicle.gd" id="1_jobvehicle"]
 [ext_resource type="Texture2D" uid="uid://dwtdqar5p036s" path="res://assets/sprites/vehicles/concepts/concept_v1.png" id="2_atlas"]
+[ext_resource type="PackedScene" path="res://scenes/world/NpcInteraction.tscn" id="3_npcinteraction"]
+[ext_resource type="Script" uid="uid://bj64ryp8d1n56" path="res://scripts/vehicles/VehicleRepairMenu.gd" id="4_repairmenu"]
+[ext_resource type="Script" uid="uid://r0rwfbis0dnw" path="res://scripts/resources/RadialMenuItem.gd" id="5_xi4i1"]
+[ext_resource type="Texture2D" uid="uid://befpng7ucfv5m" path="res://assets/sprites/icons/remove_tire.png" id="6_5c7qk"]
+[ext_resource type="Texture2D" uid="uid://ns0yfkvjnxab" path="res://assets/sprites/vehicles/concepts/wheels/tire_v3.png" id="7_aied8"]
 
-[node name="JobVehicle" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jobvehicle"]
+size = Vector2(136, 60)
+
+[sub_resource type="Resource" id="Resource_lh3va"]
+script = ExtResource("5_xi4i1")
+id = "quitar_rueda"
+label = "Quitar rueda"
+icon = ExtResource("6_5c7qk")
+
+[sub_resource type="Resource" id="Resource_pu8bs"]
+script = ExtResource("5_xi4i1")
+id = "neumaticos"
+label = "Neumáticos"
+icon = ExtResource("7_aied8")
+children = Array[ExtResource("5_xi4i1")]([SubResource("Resource_lh3va")])
+
+[node name="JobVehicle" type="Node2D" unique_id=825636545]
 z_index = 10
 script = ExtResource("1_jobvehicle")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1743660265]
 texture = ExtResource("2_atlas")
+
+[node name="NpcInteraction" parent="." unique_id=1153208546 instance=ExtResource("3_npcinteraction")]
+
+[node name="CollisionShape2D" parent="NpcInteraction" index="0"]
+position = Vector2(3, 0)
+shape = SubResource("RectangleShape2D_jobvehicle")
+
+[node name="VehicleRepairMenu" type="Node2D" parent="." unique_id=1708102379]
+script = ExtResource("4_repairmenu")
+categories = Array[ExtResource("5_xi4i1")]([SubResource("Resource_pu8bs")])
+interaction_path = NodePath("../NpcInteraction")
+removed_part_id = "neumatico_usado"
+carried_part_icon = ExtResource("7_aied8")
+
+[editable path="NpcInteraction"]

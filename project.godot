@@ -24,6 +24,7 @@ SleepManager="*res://autoloads/SleepManager.gd"
 NpcDirector="*res://autoloads/NpcDirector.gd"
 JobsManager="*res://autoloads/JobsManager.gd"
 PartsInventory="*res://autoloads/PartsInventory.gd"
+PlayerCarry="*res://autoloads/PlayerCarry.gd"
 
 [display]
 

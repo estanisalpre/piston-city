@@ -9,21 +9,24 @@ class_name NpcRoster
 const ALL := [
 	"npc_01",
 	"npc_02",
+	"npc_03",
 ]
 
 ## Qué atlas de sprite usa cada NPC — mismo script (Client.gd) y misma
 ## grilla (96x192, 3x6, frames de 32x32) para todos, solo cambia el
 ## dibujo. Al sumar un NPC nuevo, agregalo acá con su propio atlas.
 const TEXTURES := {
-	"npc_01": "res://assets/sprites/npcs/atlas_npc_v1.png",
-	"npc_02": "res://assets/sprites/npcs/atlas_npc_v2.png",
+	"npc_01": "res://assets/sprites/npcs/mario/atlas_npc_mario.png",
+	"npc_02": "res://assets/sprites/npcs/atlas_npc_v1.png",
+	"npc_03": "res://assets/sprites/npcs/atlas_npc_v2.png",
 }
 
 ## Nombre para mostrar (ej. en la app de Trabajos del celular). Al sumar
 ## un NPC nuevo, agregalo acá también.
 const NAMES := {
-	"npc_01": "Martín",
+	"npc_01": "Mario",
 	"npc_02": "Rocío",
+	"npc_03": "Jhon",
 }
 
 static func get_texture(npc_id: String) -> Texture2D:

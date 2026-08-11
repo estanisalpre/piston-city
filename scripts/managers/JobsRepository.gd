@@ -163,8 +163,27 @@ const JOB_TEMPLATES := {
 	SkillIds.NEUMATICOS: [ # gomeria - tires_shop
 		[
 			# 1
-			{"title": "Cambio de neumáticos", "description": "Desmontar y montar un juego de neumáticos."},
+			{"title": "Cambio de neumáticos", "description": "Desmontar y montar un juego de neumáticos."}, 
 			{"title": "Montaje y desmontaje de rueda", "description": "Cambiar una rueda dañada por una nueva."},
+			# 1.2 = ¿Qué acción se hará?
+			# Nos dará 25 exp.
+			# Se acepta el trabajo por el celular.
+			# Se recibe el vehículo.
+			# Nos acercamos al vehículo y elegimos el ícono de "Neumáticos"
+			# Nos aparece otras opciones (tipo radial) que será: Quitar ruedas
+
+			# Quitar rueda nos lleva a mostrar la rueda con los tornillos. Tenemos que hacer lo siguiente:
+			# B + C + B — aflojar 4 tuercas en patrón estrella, 
+			# Aparece el personaje con sprite manos alzadas y encima el ícono de lo que agarró (neumático) 
+			# Tiene que ir a dejarlo al mismo lugar de donde cogió la otra rueda (si no la agarró aún no pasa nada). 
+			# Este lugar sería donde se ponen las ruedas en el garage. Esta rueda "usada" ocupa un lugar tambien. Si no tiene ruedas "nuevas", va a la gomeria a comprar (ya implementado)
+
+			# Deja la rueda con click derecho. Agarra una nueva (se desaparece del lugar de los neumáticos. Ahora la tiene encima de la cabeza otra vez).
+			# Camina al auto, click derecho y misma animación y sistema para colocar el neumático.
+			# Ya el vehiculo aparece con el neumático puesto. 
+			# Celular ahora sí aparece "Entregar vehículo" que hace lo mismo que "avisarle al...". 
+			# El npc empieza camino a buscar el carro.
+			# Mismo sistema entregando, obteniendo dinero, sumando exp a este nivel específico.
 		],
 		[
 			# 2
@@ -297,6 +316,18 @@ const JOB_TEMPLATES := {
 	],
 }
 
+## Filtro temporal de testeo — con un id acá, get_all_jobs() devuelve
+## SOLO ese encargo (ignora todos los demás), para probar una mecánica
+## puntual sin que el resto ensucie la lista del celular. Dejalo en ""
+## para volver a ver todos los encargos.
+const DEBUG_ONLY_JOB_ID := "neumaticos_lvl1_2"
+
+## Igual de temporal — fuerza qué NPC trae el encargo de prueba, para no
+## depender del horario de un NPC dueño de local mientras testeás (ver
+## JobsRepository.is_job_available/NpcDirector.is_workplace_open).
+## Dejalo en "" para volver al reparto automático de siempre.
+const DEBUG_FORCE_NPC_ID := "npc_02"
+
 static func get_all_jobs() -> Array[JobData]:
 	var jobs: Array[JobData] = []
 	var npc_counter := 0
@@ -311,6 +342,11 @@ static func get_all_jobs() -> Array[JobData]:
 				var template: Dictionary = variants[variant_index]
 				var job := JobData.new()
 				job.id = "%s_lvl%d_%d" % [skill_id, level, variant_index + 1]
+
+				if DEBUG_ONLY_JOB_ID != "" and job.id != DEBUG_ONLY_JOB_ID:
+					npc_counter += 1
+					continue
+
 				job.title = template.title
 				job.description = template.description
 				job.required_skill = skill_id
@@ -319,7 +355,7 @@ static func get_all_jobs() -> Array[JobData]:
 				job.reward_exp = rewards.exp
 				# Reparto parejo entre los NPCs del roster — siempre el
 				# mismo NPC para el mismo id de encargo.
-				job.npc_id = NpcRoster.ALL[npc_counter % NpcRoster.ALL.size()]
+				job.npc_id = DEBUG_FORCE_NPC_ID if DEBUG_FORCE_NPC_ID != "" else NpcRoster.ALL[npc_counter % NpcRoster.ALL.size()]
 				npc_counter += 1
 				jobs.append(job)
 
@@ -335,6 +371,9 @@ static func is_job_available(job: JobData) -> bool:
 
 	if Game.state.day < Game.state.job_cooldowns.get(job.id, 0):
 		return false  # este encargo puntual ya se hizo hace poco
+
+	if NpcDirector.is_workplace_open(job.npc_id):
+		return false  # está atendiendo su propio local ahora mismo, no puede salir a traerte un encargo
 
 	return true
 

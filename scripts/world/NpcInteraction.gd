@@ -30,4 +30,8 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		# Sin esto, el mismo click también le llegaría a _unhandled_input
+		# — ej. PlayerCarry lo interpretaría como "soltar la pieza que
+		# cargo" al mismo tiempo que se abre este menú.
+		get_viewport().set_input_as_handled()
 		interacted.emit()

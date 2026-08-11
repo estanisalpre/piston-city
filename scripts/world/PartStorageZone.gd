@@ -13,9 +13,9 @@ extends Area2D
 ## muestra los primeros N (según el stock actual en PartsInventory) y
 ## oculta el resto — nunca decide dónde van.
 ##
-## Todavía no hace nada más — agarrar la pieza y llevarla al auto es el
-## próximo paso, que va a leer player_in_range/part_id desde acá. Mismo
-## patrón de detección de cercanía que DoorTrigger/BedTrigger.
+## Además, cualquiera que esté cargando una pieza (ver PlayerCarry)
+## puede depositarla acá con try_deposit() — nunca decide cuándo
+## llamarlo, eso lo maneja PlayerCarry al soltar.
 
 @export var part_id: String = ""
 
@@ -27,10 +27,24 @@ extends Area2D
 var player_in_range := false
 
 func _ready() -> void:
+	add_to_group("part_storage_zone")
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	PartsInventory.part_changed.connect(_on_part_changed)
 	_refresh_slots()
+
+## Lo llama PlayerCarry al soltar — deposita solo si el jugador está
+## parado acá, la pieza coincide con esta zona, y todavía hay lugar.
+## Devuelve si lo pudo dejar (PlayerCarry decide qué hacer si no).
+func try_deposit(carried_part_id: String) -> bool:
+	if not player_in_range or carried_part_id != part_id:
+		return false
+
+	if PartsInventory.get_quantity(part_id) >= capacity:
+		return false
+
+	PartsInventory.add_part(part_id, 1)
+	return true
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):

@@ -16,6 +16,9 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/DialogueModal.tscn" id="13_dialoguemodal"]
 [ext_resource type="PackedScene" path="res://scenes/ui/OptionsModal.tscn" id="14_optionsmodal"]
 [ext_resource type="PackedScene" path="res://scenes/ui/PurchaseModal.tscn" id="15_purchasemodal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/RadialMenu.tscn" id="16_radialmenu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ButtonSequenceMinigame.tscn" id="17_buttonseq"]
+[ext_resource type="PackedScene" path="res://scenes/world/FloorPlacementCursor.tscn" id="18_floorcursor"]
 
 [sub_resource type="Animation" id="Animation_0ge4i"]
 length = 0.001
@@ -74,6 +77,8 @@ position = Vector2(302, 84)
 [node name="Entities" type="Node2D" parent="World" unique_id=1729540401]
 position = Vector2(108, 0)
 
+[node name="FloorPlacementCursor" parent="World" instance=ExtResource("18_floorcursor")]
+
 [node name="Player" parent="World/Entities" unique_id=300000021 instance=ExtResource("3_player")]
 position = Vector2(735, 551)
 
@@ -127,3 +132,7 @@ transform = Transform2D(0.5, 0, 0, 0.5, 0, 35)
 [node name="OptionsModal" parent="UI" instance=ExtResource("14_optionsmodal")]
 
 [node name="PurchaseModal" parent="UI" instance=ExtResource("15_purchasemodal")]
+
+[node name="RadialMenu" parent="UI" instance=ExtResource("16_radialmenu")]
+
+[node name="ButtonSequenceMinigame" parent="UI" instance=ExtResource("17_buttonseq")]

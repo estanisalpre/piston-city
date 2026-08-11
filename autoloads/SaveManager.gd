@@ -86,3 +86,5 @@ func load_game() -> void:
 		Game.state.npc_cooldowns = loaded_state.npc_cooldowns
 		Game.state.job_cooldowns = loaded_state.job_cooldowns
 		Game.state.npc_snapshots = loaded_state.npc_snapshots
+		Game.state.parts = loaded_state.parts
+		Game.state.job_repair_progress = loaded_state.job_repair_progress

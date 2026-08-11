@@ -31,6 +31,15 @@ func get_current_map_path() -> String:
 	var current_map := _get_current_map_node()
 	return current_map.scene_file_path if current_map else ""
 
+## Lo usa PlayerCarry para dejar cosas tiradas en el piso (ej. una
+## pieza sin dónde guardarla) — quedan colgando del mapa actual, así
+## que desaparecen solas si cambiás de mapa (aceptable para algo
+## puramente decorativo).
+func add_to_current_map(node: Node2D) -> void:
+	var current_map := _get_current_map_node()
+	if current_map:
+		current_map.add_child(node)
+
 ## Al arrancar: si hay partida guardada, vuelve exactamente a donde quedó
 ## (mapa + posición). Si es partida nueva (current_map_path == ""), se queda
 ## con el mapa que ya trae Main.tscn y aparece en la cama del garage.

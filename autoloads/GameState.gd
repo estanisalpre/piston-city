@@ -88,6 +88,13 @@ signal money_changed(amount: int)
 ## directo acá. Ver PartsInventory.
 @export var parts: Dictionary[String, int] = {}
 
+## job_id -> en qué paso de la reparación quedó ese encargo puntual
+## (String libre, ej. "" = todavía no arrancó, "wheel_removed" = ya le
+## sacó la rueda vieja). Vive en Game.state (no en el nodo del auto en
+## la escena) justamente para que sobreviva un guardado/cargado — ver
+## VehicleRepairMenu.
+@export var job_repair_progress: Dictionary[String, String] = {}
+
 ## npc_id -> snapshot de NpcDirector en el momento de guardar
 ## ({route, index, dir, position, mode, job_id, wait_remaining}) — sin
 ## importar en qué modo estaba (patrullando, camino al taller, de

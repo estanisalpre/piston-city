@@ -44,12 +44,13 @@
 [ext_resource type="PackedScene" uid="uid://dwxq4h1door01" path="res://scenes/world/DoorTrigger.tscn" id="39_doortrigger"]
 [ext_resource type="Texture2D" uid="uid://dwtdqar5p036s" path="res://assets/sprites/vehicles/concepts/concept_v1.png" id="40_yb3if"]
 [ext_resource type="Script" uid="uid://dke5pxo3gn4y6" path="res://scripts/world/JobEncounterSpawner.gd" id="41_jobspawner"]
-[ext_resource type="PackedScene" path="res://scenes/vehicles/JobVehicle.tscn" id="42_jobvehicle"]
+[ext_resource type="PackedScene" uid="uid://b683mhfka28re" path="res://scenes/vehicles/JobVehicle.tscn" id="42_jobvehicle"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/Client.tscn" id="43_client"]
 [ext_resource type="Texture2D" uid="uid://lgyw07a46vg2" path="res://assets/sprites/vehicles/concepts/wheels/tire_v2.png" id="44_avj37"]
 [ext_resource type="PackedScene" path="res://scenes/world/PartStorageZone.tscn" id="45_rxlga"]
 [ext_resource type="Texture2D" uid="uid://bj3to3rrkkrl4" path="res://assets/sprites/garage/tires_section/tire_wall_support.png" id="46_lugbs"]
 [ext_resource type="Texture2D" uid="uid://dljxa68uwp77g" path="res://assets/sprites/garage/tires_section/tire_front.png" id="46_s272m"]
+[ext_resource type="Texture2D" uid="uid://dr2agfef56rw1" path="res://assets/sprites/garage/tires_section/tire_front_old.png" id="48_s272m"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7uce2"]
 texture = ExtResource("1_57cdy")
@@ -389,22 +390,46 @@ texture_region_size = Vector2i(32, 32)
 tile_size = Vector2i(32, 32)
 sources/0 = SubResource("TileSetAtlasSource_s272m")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rxlga"]
+size = Vector2(97, 35.5)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pt2vc"]
 texture = ExtResource("46_lugbs")
 texture_region_size = Vector2i(32, 32)
 0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, -7.6471386, -16, -7.6471386)
 1:1/0 = 0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, -7.6471386, -16, -7.6471386)
 2:1/0 = 0
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, -7.6471386, -16, -7.6471386)
 0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
 [sub_resource type="TileSet" id="TileSet_uqxvg"]
 tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_pt2vc")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rxlga"]
-size = Vector2(87, 5)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7uce2"]
+size = Vector2(98, 36)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u5bk5"]
+size = Vector2(88, 97)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kddjp"]
+size = Vector2(126, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kh5iw"]
+size = Vector2(141, 127)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0ru8o"]
+size = Vector2(474, 89)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_krpui"]
 
 [node name="GarageMap" type="Node2D" unique_id=874395224]
 
@@ -562,33 +587,89 @@ z_index = 10
 [node name="PartStorageZone" parent="Map/tires_section" unique_id=1193428044 instance=ExtResource("45_rxlga")]
 part_id = "neumatico"
 
-[node name="tires_wall_support" type="TileMapLayer" parent="Map/tires_section/PartStorageZone" unique_id=991299212]
-tile_map_data = PackedByteArray("AAAHAAAAAAAAAAEAAAAIAAAAAAABAAEAAAAJAAAAAAACAAEAAAAHAAEAAAAAAAAAAAAIAAEAAAABAAAAAAAJAAEAAAACAAAAAAA=")
-tile_set = SubResource("TileSet_uqxvg")
-
-[node name="CollisionShape2D" parent="Map/tires_section/PartStorageZone" index="1"]
-position = Vector2(271.5, 49)
+[node name="CollisionShape2D" parent="Map/tires_section/PartStorageZone" index="0"]
+position = Vector2(270.5, 64.25)
 shape = SubResource("RectangleShape2D_rxlga")
 
+[node name="tires_wall_support" type="TileMapLayer" parent="Map/tires_section/PartStorageZone" unique_id=991299212]
+tile_map_data = PackedByteArray("AAAHAAAAAAAAAAEAAAAIAAAAAAABAAEAAAAJAAAAAAACAAEAAAAHAAEAAAAAAAAAAAAIAAEAAAABAAAAAAAJAAEAAAACAAAAAAAHAAIAAAAAAAEAAAAIAAIAAAAAAAEAAAAJAAIAAAAAAAEAAAA=")
+tile_set = SubResource("TileSet_uqxvg")
+
 [node name="tire_1" type="Sprite2D" parent="Map/tires_section/PartStorageZone" unique_id=1321980483]
+visible = false
 position = Vector2(236, 36)
 texture = ExtResource("46_s272m")
 
 [node name="tire_2" type="Sprite2D" parent="Map/tires_section/PartStorageZone" unique_id=1324074133]
+visible = false
 position = Vector2(249, 36)
 texture = ExtResource("46_s272m")
 
 [node name="tire_3" type="Sprite2D" parent="Map/tires_section/PartStorageZone" unique_id=778988634]
+visible = false
 position = Vector2(263, 36)
 texture = ExtResource("46_s272m")
 
 [node name="tire_4" type="Sprite2D" parent="Map/tires_section/PartStorageZone" unique_id=901964776]
+visible = false
 position = Vector2(283, 36)
 texture = ExtResource("46_s272m")
 
 [node name="tire_5" type="Sprite2D" parent="Map/tires_section/PartStorageZone" unique_id=455932002]
+visible = false
 position = Vector2(295, 36)
 texture = ExtResource("46_s272m")
+
+[node name="PartStorageZone2" parent="Map/tires_section" unique_id=1186308567 instance=ExtResource("45_rxlga")]
+part_id = "neumatico_usado"
+
+[node name="CollisionShape2D" parent="Map/tires_section/PartStorageZone2" index="0"]
+position = Vector2(271, 63)
+shape = SubResource("RectangleShape2D_7uce2")
+
+[node name="tire_1" type="Sprite2D" parent="Map/tires_section/PartStorageZone2" unique_id=584840622]
+position = Vector2(236, 36)
+texture = ExtResource("48_s272m")
+
+[node name="tire_2" type="Sprite2D" parent="Map/tires_section/PartStorageZone2" unique_id=1423167774]
+position = Vector2(249, 36)
+texture = ExtResource("48_s272m")
+
+[node name="tire_3" type="Sprite2D" parent="Map/tires_section/PartStorageZone2" unique_id=1465929952]
+position = Vector2(263, 36)
+texture = ExtResource("48_s272m")
+
+[node name="tire_4" type="Sprite2D" parent="Map/tires_section/PartStorageZone2" unique_id=998835496]
+position = Vector2(283, 36)
+texture = ExtResource("48_s272m")
+
+[node name="tire_5" type="Sprite2D" parent="Map/tires_section/PartStorageZone2" unique_id=570452383]
+position = Vector2(297, 36)
+texture = ExtResource("48_s272m")
+
+[node name="no_drop_zone" type="Area2D" parent="Map" unique_id=1610518790]
+position = Vector2(77, 94)
+collision_layer = 2
+
+[node name="room" type="CollisionShape2D" parent="Map/no_drop_zone" unique_id=1948673066]
+position = Vector2(353, 15.5)
+shape = SubResource("RectangleShape2D_u5bk5")
+
+[node name="exit_door" type="CollisionShape2D" parent="Map/no_drop_zone" unique_id=1036650800]
+position = Vector2(209, -22)
+shape = SubResource("RectangleShape2D_kddjp")
+
+[node name="car_parking" type="CollisionShape2D" parent="Map/no_drop_zone" unique_id=2133524096]
+position = Vector2(27, 143)
+shape = SubResource("RectangleShape2D_kh5iw")
+
+[node name="bottom_garage" type="CollisionShape2D" parent="Map/no_drop_zone" unique_id=1688430432]
+position = Vector2(161, 250.5)
+shape = SubResource("RectangleShape2D_0ru8o")
+
+[node name="outside_bedroom" type="CollisionShape2D" parent="Map/no_drop_zone" unique_id=901954837]
+position = Vector2(383, 75)
+shape = SubResource("RectangleShape2D_krpui")
 
 [node name="Lights" type="Node2D" parent="." unique_id=960782942]
 
@@ -666,3 +747,4 @@ autoplay = true
 [editable path="Map/doors/ExitParkingDoorTrigger"]
 [editable path="Map/bedroom/walls/BehindWallTrigger"]
 [editable path="Map/tires_section/PartStorageZone"]
+[editable path="Map/tires_section/PartStorageZone2"]

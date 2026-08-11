@@ -468,17 +468,32 @@ func _spot_index_for_job(job_id: String) -> int:
 # --- Comandos ------------------------------------------------------------
 
 ## Lo llama JobsManager al aceptar un encargo, o al avisar al vendedor
-## para el retiro — el NPC corta lo que esté haciendo (patrullando
-## donde sea) y arranca camino al taller desde donde esté, por su
-## propia ruta, tarde lo que tarde.
+## para el retiro — el NPC corta lo que esté haciendo y arranca camino
+## al taller, tarde lo que tarde.
+##
+## Si en ese momento está en una rutina visible ("patrol"/"to_route"),
+## camina de vuelta por su propia ruta, hacia el punto 0 (la puerta del
+## taller). Cualquier otro momento (en casa, en el negocio, de franco, a
+## mitad de camino a otro lado) no tiene ninguna ruta visible que
+## revertir — "points" ni siquiera representa una ruta de la ciudad en
+## esos casos (ver _start_entering_workplace/_start_heading_home), así
+## que entra directo por la puerta del taller, como si ya hubiera
+## llegado caminando.
 func summon_to_workshop(npc_id: String, job_id: String) -> void:
 	var state: Dictionary = _npc_state.get(npc_id, {})
 	if state.is_empty():
 		return
 
-	state.mode = "to_workshop"
 	state.job_id = job_id
-	state.dir = -1
+
+	if state.mode in ["patrol", "to_route"]:
+		state.mode = "to_workshop"
+		state.dir = -1
+		return
+
+	_release_route(npc_id)
+	state.position = _garage_door_position
+	_start_entering_garage(npc_id, state)
 
 func _start_entering_garage(_npc_id: String, state: Dictionary) -> void:
 	var waiting_point: Vector2 = get_job_spot_position(state.job_id) + WAITING_OFFSET
