@@ -521,6 +521,83 @@ position = Vector2(846, 1456)
 [node name="d_point" type="Marker2D" parent="Map/WanderRoutes/Route3" unique_id=1046986341]
 position = Vector2(1329, 100)
 
+[node name="Route4" type="Node2D" parent="Map/WanderRoutes" unique_id=949340331]
+
+[node name="b_point" type="Marker2D" parent="Map/WanderRoutes/Route4" unique_id=164455474]
+position = Vector2(-1551, 813)
+
+[node name="c_point" type="Marker2D" parent="Map/WanderRoutes/Route4" unique_id=540442707]
+position = Vector2(846, 1456)
+
+[node name="d_point" type="Marker2D" parent="Map/WanderRoutes/Route4" unique_id=1788373722]
+position = Vector2(1329, 100)
+
+[node name="Route5" type="Node2D" parent="Map/WanderRoutes" unique_id=830187]
+
+[node name="b_point" type="Marker2D" parent="Map/WanderRoutes/Route5" unique_id=1316471867]
+position = Vector2(-1551, 813)
+
+[node name="c_point" type="Marker2D" parent="Map/WanderRoutes/Route5" unique_id=486580161]
+position = Vector2(846, 1456)
+
+[node name="d_point" type="Marker2D" parent="Map/WanderRoutes/Route5" unique_id=1335399225]
+position = Vector2(1329, 100)
+
+[node name="Route6" type="Node2D" parent="Map/WanderRoutes" unique_id=1784883559]
+
+[node name="b_point" type="Marker2D" parent="Map/WanderRoutes/Route6" unique_id=1870357872]
+position = Vector2(-1551, 813)
+
+[node name="c_point" type="Marker2D" parent="Map/WanderRoutes/Route6" unique_id=851993158]
+position = Vector2(846, 1456)
+
+[node name="d_point" type="Marker2D" parent="Map/WanderRoutes/Route6" unique_id=2086523772]
+position = Vector2(1329, 100)
+
+[node name="Route7" type="Node2D" parent="Map/WanderRoutes" unique_id=1153418240]
+
+[node name="b_point" type="Marker2D" parent="Map/WanderRoutes/Route7" unique_id=1015121262]
+position = Vector2(-1551, 813)
+
+[node name="c_point" type="Marker2D" parent="Map/WanderRoutes/Route7" unique_id=2116828987]
+position = Vector2(846, 1456)
+
+[node name="d_point" type="Marker2D" parent="Map/WanderRoutes/Route7" unique_id=1430193210]
+position = Vector2(1329, 100)
+
+[node name="Route8" type="Node2D" parent="Map/WanderRoutes" unique_id=594717701]
+
+[node name="b_point" type="Marker2D" parent="Map/WanderRoutes/Route8" unique_id=127631101]
+position = Vector2(-1551, 813)
+
+[node name="c_point" type="Marker2D" parent="Map/WanderRoutes/Route8" unique_id=78678929]
+position = Vector2(846, 1456)
+
+[node name="d_point" type="Marker2D" parent="Map/WanderRoutes/Route8" unique_id=1659051426]
+position = Vector2(1329, 100)
+
+[node name="Route9" type="Node2D" parent="Map/WanderRoutes" unique_id=1741353604]
+
+[node name="b_point" type="Marker2D" parent="Map/WanderRoutes/Route9" unique_id=113327050]
+position = Vector2(-1551, 813)
+
+[node name="c_point" type="Marker2D" parent="Map/WanderRoutes/Route9" unique_id=1388660077]
+position = Vector2(846, 1456)
+
+[node name="d_point" type="Marker2D" parent="Map/WanderRoutes/Route9" unique_id=569763564]
+position = Vector2(1329, 100)
+
+[node name="Route10" type="Node2D" parent="Map/WanderRoutes" unique_id=493592063]
+
+[node name="b_point" type="Marker2D" parent="Map/WanderRoutes/Route10" unique_id=695114849]
+position = Vector2(-1551, 813)
+
+[node name="c_point" type="Marker2D" parent="Map/WanderRoutes/Route10" unique_id=1910466189]
+position = Vector2(846, 1456)
+
+[node name="d_point" type="Marker2D" parent="Map/WanderRoutes/Route10" unique_id=1583559060]
+position = Vector2(1329, 100)
+
 [node name="grass" type="Node2D" parent="Map" unique_id=775443880]
 
 [node name="grass" type="TileMapLayer" parent="Map/grass" unique_id=1396707952]
@@ -941,9 +1018,11 @@ tile_set = SubResource("TileSet_hplta")
 [node name="Workplaces" type="Node2D" parent="Map" unique_id=1364697750]
 
 [node name="tire_shop" type="Marker2D" parent="Map/Workplaces" unique_id=1768858601]
-position = Vector2(-197, 1151)
+position = Vector2(-195, 1191)
 script = ExtResource("35_rl225")
 npc_id = "npc_01"
+open_hour = 6.0
+interior_scene_path = "uid://bsqffhx7cpav7"
 
 [node name="entrances" type="Node2D" parent="Map" unique_id=1013554949]
 
