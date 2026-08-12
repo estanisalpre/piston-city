@@ -355,6 +355,7 @@ func _restore_or_init_npc(npc_id: String) -> void:
 		"position": position,
 		"mode": mode,
 		"job_id": job_id,
+		"pending_summon_job_id": snapshot.get("pending_summon_job_id", ""),
 		"wait_remaining": snapshot.get("wait_remaining", 0.0),
 		# Si se guardó a mitad de una espera (wait_remaining > 0), esto
 		# viene en true — si no se persiste tal cual, al terminar los
@@ -403,6 +404,7 @@ func capture_snapshot() -> void:
 			"position": state.position,
 			"mode": state.mode,
 			"job_id": state.get("job_id", ""),
+			"pending_summon_job_id": state.get("pending_summon_job_id", ""),
 			"wait_remaining": state.get("wait_remaining", 0.0),
 			"_wait_consumed": state.get("_wait_consumed", false),
 		}
@@ -468,32 +470,31 @@ func _spot_index_for_job(job_id: String) -> int:
 # --- Comandos ------------------------------------------------------------
 
 ## Lo llama JobsManager al aceptar un encargo, o al avisar al vendedor
-## para el retiro — el NPC corta lo que esté haciendo y arranca camino
-## al taller, tarde lo que tarde.
+## para el retiro.
 ##
 ## Si en ese momento está en una rutina visible ("patrol"/"to_route"),
-## camina de vuelta por su propia ruta, hacia el punto 0 (la puerta del
-## taller). Cualquier otro momento (en casa, en el negocio, de franco, a
-## mitad de camino a otro lado) no tiene ninguna ruta visible que
-## revertir — "points" ni siquiera representa una ruta de la ciudad en
-## esos casos (ver _start_entering_workplace/_start_heading_home), así
-## que entra directo por la puerta del taller, como si ya hubiera
-## llegado caminando.
+## corta camino y camina de vuelta por su propia ruta, hacia el punto 0
+## (la puerta del taller). Si está ocupado con su día (en casa, en su
+## negocio, yendo/viniendo de cualquiera de los dos) NO lo interrumpe —
+## el pedido queda pendiente (pending_summon_job_id) y se atiende solo
+## en cuanto vuelva a estar libre (ver _on_point_reached, transición
+## "to_route" -> "patrol"), caminando su ruta real desde ahí, nunca
+## apareciendo de la nada.
 func summon_to_workshop(npc_id: String, job_id: String) -> void:
 	var state: Dictionary = _npc_state.get(npc_id, {})
 	if state.is_empty():
 		return
 
-	state.job_id = job_id
-
 	if state.mode in ["patrol", "to_route"]:
+		state.job_id = job_id
 		state.mode = "to_workshop"
 		state.dir = -1
 		return
 
-	_release_route(npc_id)
-	state.position = _garage_door_position
-	_start_entering_garage(npc_id, state)
+	if state.mode in ["to_workshop", "entering_garage", "waiting_at_door", "leaving_garage"]:
+		return  # ya viene o ya está en el encuentro por este mismo encargo
+
+	state.pending_summon_job_id = job_id
 
 func _start_entering_garage(_npc_id: String, state: Dictionary) -> void:
 	var waiting_point: Vector2 = get_job_spot_position(state.job_id) + WAITING_OFFSET
@@ -873,8 +874,20 @@ func _on_point_reached(npc_id: String, state: Dictionary) -> void:
 		return
 
 	if state.mode == "to_route":
-		print("[NPC] %s: llegó a su ruta del día (ruta=%s, índice=%d), arranca a patrullar" % [_log_name(npc_id), state.route, state.index])
 		state.mode = "patrol"
+
+		# Si mientras estaba ocupado (en casa, en el negocio, camino a
+		# cualquiera de los dos) le avisaron/aceptaron un encargo, recién
+		# ahora que está libre de verdad arranca a caminar hacia el
+		# taller — nunca antes.
+		var pending_job_id: String = state.get("pending_summon_job_id", "")
+		if pending_job_id != "":
+			print("[NPC] %s: ya está libre, recién ahora sale para el encargo pendiente" % _log_name(npc_id))
+			state.pending_summon_job_id = ""
+			summon_to_workshop(npc_id, pending_job_id)
+			return
+
+		print("[NPC] %s: llegó a su ruta del día (ruta=%s, índice=%d), arranca a patrullar" % [_log_name(npc_id), state.route, state.index])
 		return
 
 	# Si este punto tiene tiempo de espera configurado (NpcRouteWaitPoint)

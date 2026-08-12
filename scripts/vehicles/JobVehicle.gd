@@ -27,6 +27,39 @@ func play_arrival_fade() -> void:
 		_set_alpha(step_alpha)
 		await get_tree().create_timer(FADE_STEP_SECONDS).timeout
 
+## Cuando se completan todas las piezas requeridas de la tanda actual
+## (ver JobData.required_slots) y todavía quedan tandas por hacer (ver
+## JobData.repair_rounds) — lo llama VehiclePartInteraction al instalar
+## la última pieza que faltaba.
+func has_more_rounds(job: JobData) -> bool:
+	return _current_round(job.id) < job.repair_rounds - 1
+
+## Gira el auto (mismo parpadeo entrecortado que aparecer/irse, ver
+## FADE_STEPS) para mostrar el otro lado, y resetea el progreso de
+## required_slots para que haya que volver a cambiarlas ahí — sin arte
+## nuevo: al espejar el auto entero, el cuerpo y las piezas hijas
+## (posición y sprite) quedan del otro lado solos.
+func advance_round(job: JobData) -> void:
+	for i in FADE_STEPS.size():
+		_set_alpha(FADE_STEPS[i])
+		if i == 0:
+			scale.x *= -1
+		await get_tree().create_timer(FADE_STEP_SECONDS).timeout
+
+	Game.state.job_repair_progress[_round_key(job.id)] = str(_current_round(job.id) + 1)
+	for slot_id in job.required_slots:
+		Game.state.job_repair_progress.erase("%s:%s" % [job.id, slot_id])
+
+	for child in get_children():
+		if child.has_method("refresh_visual"):
+			child.refresh_visual()
+
+func _current_round(for_job_id: String) -> int:
+	return int(Game.state.job_repair_progress.get(_round_key(for_job_id), "0"))
+
+func _round_key(for_job_id: String) -> String:
+	return "%s:round" % for_job_id
+
 ## El cliente se lo lleva — mismo efecto entrecortado pero al revés,
 ## y se autodestruye al terminar.
 func play_departure_fade() -> void:

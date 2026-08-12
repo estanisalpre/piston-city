@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b132qmo1iekta" path="res://assets/sprites/vehicles/models/ford_ltd_1980/front_wheel.png" id="4_frontwheel"]
 [ext_resource type="Texture2D" uid="uid://bnyfusqtypq1p" path="res://assets/sprites/vehicles/models/ford_ltd_1980/rear_wheel.png" id="5_rearwheel"]
 [ext_resource type="Texture2D" uid="uid://ns0yfkvjnxab" path="res://assets/sprites/vehicles/concepts/wheels/tire_v3.png" id="6_carryicon"]
+[ext_resource type="Texture2D" uid="uid://c8p8mcbmdoba0" path="res://assets/sprites/vehicles/models/ford_ltd_1980/front_wheel_deflated.png" id="7_deflated"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_frontwheel"]
 size = Vector2(16, 16)
@@ -24,6 +25,7 @@ texture = ExtResource("2_body")
 script = ExtResource("3_partinteraction")
 slot_id = "front_wheel"
 carry_icon = ExtResource("6_carryicon")
+damaged_texture = ExtResource("7_deflated")
 
 [node name="Sprite2D" type="Sprite2D" parent="FrontWheel" unique_id=1327596550]
 texture = ExtResource("4_frontwheel")

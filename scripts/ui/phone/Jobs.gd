@@ -103,6 +103,12 @@ func _on_accept_pressed(job_id: String) -> void:
 	_render_jobs()
 
 func _on_request_pickup_pressed(job_id: String) -> void:
+	var job := JobsRepository.get_job(job_id)
+	if job and not JobsRepository.required_slots_done(job):
+		var dialogue := get_tree().get_first_node_in_group("dialogue_modal")
+		dialogue.show_lines(["Todavía no terminaste de cambiar las piezas de este trabajo."])
+		return
+
 	JobsManager.request_pickup(job_id)
 	_render_jobs()
 

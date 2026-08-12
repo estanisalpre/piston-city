@@ -79,7 +79,7 @@ func is_shop_open_now() -> bool:
 func finish_pickup(job_id: String) -> void:
 	var job := JobsRepository.get_job(job_id)
 	Game.state.pending_pickups.erase(job_id)
-	Game.state.job_repair_progress.erase(job_id)
+	_clear_job_repair_progress(job_id)
 
 	if job:
 		Game.state.money += job.reward_money
@@ -110,7 +110,7 @@ func _on_day_changed(current_day: int) -> void:
 func _expire_job(job_id: String) -> void:
 	var job := JobsRepository.get_job(job_id)
 	Game.state.active_jobs.erase(job_id)
-	Game.state.job_repair_progress.erase(job_id)
+	_clear_job_repair_progress(job_id)
 	job_expired.emit(job_id)
 
 	if job:
@@ -118,3 +118,14 @@ func _expire_job(job_id: String) -> void:
 			"Cliente molesto",
 			"El cliente de \"%s\" se cansó de esperar y se llevó el auto a otro lado." % job.title
 		)
+
+## Game.state.job_repair_progress usa claves compuestas "job_id:slot_id"
+## (ver VehiclePartInteraction) — erase(job_id) solo no borra nada,
+## dejaba basura de encargos anteriores que un job_id repetido (mismo
+## trabajo, pasado el cooldown) encontraba ya "instalada" sin haber
+## hecho nada.
+func _clear_job_repair_progress(job_id: String) -> void:
+	var prefix := "%s:" % job_id
+	for key in Game.state.job_repair_progress.keys():
+		if key.begins_with(prefix):
+			Game.state.job_repair_progress.erase(key)

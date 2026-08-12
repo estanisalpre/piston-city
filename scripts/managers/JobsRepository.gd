@@ -83,7 +83,21 @@ const JOB_TEMPLATES := {
 		[
 			# 1
 			{"title": "Retiro de espejos y manijas", "description": "Desmontar espejos y manijas exteriores."},
+			# 1.1 ¿Qué acción hará?
+			# Llega el vehículo.
+			# Se desmonta el espejo y manijas puertas (ambas si el auto no es coupe) de un lado. 
+			# Se gira el auto.
+			# Se desmonta espejo y manijas puertas del otro lado.
+			# Se va a estanteria y se guardan como usadas.
+			# Se agarran nuevas y se colocan.
+			# Se termina y se avisa automaticamente al dueño.
 			{"title": "Retiro de parachoques", "description": "Desmontar el parachoques delantero."},
+			# 1.2 ¿Qué acción hará?
+			# Llega el vehículo.
+			# Se desmonta el paragolpes delantero. 
+			# Se va a estanteria y se guarda como usado.
+			# Se agarra el paragolpe nuevo y se coloca.
+			# Se termina y se avisa automaticamente al dueño.
 		],
 		[
 			# 2
@@ -164,11 +178,15 @@ const JOB_TEMPLATES := {
 		[
 			# 1
 			{"title": "Cambio de neumáticos", "description": "Desmontar y montar un juego de neumáticos."}, 
-			# 1.1 = ¿Qué acción se hará?
-			
+			# 1.1 = se cambian las 4 ruedas del vehículo (el "juego" completo).
+			# Vehículo para un lado mostrando dos llantas - todas usadas.
+			# Cambiamos las dos llantas, quitando las usadas, poniendo las nuevas.
+			# Auto se gira para mostrar las otras dos llantas del otro lado.
+			# Quitamos las dos llantas de este otro lado, quitando usadas, poniendo las nuevas.
+			# Se avisa automáticamente al cliente.
 
 			{"title": "Montaje y desmontaje de rueda", "description": "Cambiar una rueda dañada por una nueva."},
-			# 1.2 = ¿Qué acción se hará?
+			# 1.2 = se cambia 1 sola rueda dañada por una nueva (no las 4).
 			# Nos dará 25 exp.
 			# Se acepta el trabajo por el celular.
 			# Se recibe el vehículo.
@@ -191,6 +209,13 @@ const JOB_TEMPLATES := {
 		[
 			# 2
 			{"title": "Balanceo de ruedas", "description": "Balancear las cuatro ruedas del vehículo."},
+			# 2.1 ¿Que acción se hará?
+			# Se quita la rueda => B + C + B
+			# Se la lleva a la balanceadora.
+			# Se presiona la balanceadora el botón/pantalla y comienza a girar la rueda (animación)
+			# Deja de girar y nos aparece un "check" listo encima.
+			# La recogemos
+			# La colocamos nuevamente en el vehiculo con lo que se requiere C + B + C.
 			{"title": "Balanceo delantero y trasero", "description": "Balancear ruedas después de un cambio de neumáticos."},
 		],
 		[
@@ -319,17 +344,44 @@ const JOB_TEMPLATES := {
 	],
 }
 
-## Filtro temporal de testeo — con un id acá, get_all_jobs() devuelve
-## SOLO ese encargo (ignora todos los demás), para probar una mecánica
-## puntual sin que el resto ensucie la lista del celular. Dejalo en ""
-## para volver a ver todos los encargos.
-const DEBUG_ONLY_JOB_ID := "neumaticos_lvl1_2"
+## Slots de VehiclePartInteraction que exige cada job antes de poder
+## pedir el retiro (ver JobData.required_slots / Jobs.gd). Job no
+## listado acá = sin piezas físicas, se comporta como siempre.
+## JobVehicle.tscn hoy solo tiene 2 slots (front_wheel/rear_wheel,
+## vista lateral): el 1.1 ("Cambio de neumáticos") exige los 2, el 1.2
+## ("Montaje y desmontaje de rueda") exige solo 1.
+const REQUIRED_SLOTS := {
+	"neumaticos_lvl1_1": ["front_wheel", "rear_wheel"],
+	"neumaticos_lvl1_2": ["front_wheel"],
+}
 
-## Igual de temporal — fuerza qué NPC trae el encargo de prueba, para no
-## depender del horario de un NPC dueño de local mientras testeás (ver
-## JobsRepository.is_job_available/NpcDirector.is_workplace_open).
-## Dejalo en "" para volver al reparto automático de siempre.
-const DEBUG_FORCE_NPC_ID := "npc_02"
+## Subconjunto de REQUIRED_SLOTS que además arranca con textura de
+## "dañado" (ver JobData.damaged_slots / VehiclePartInteraction). El
+## 1.2 es justo "1 rueda dañada por una nueva" — el 1.1 son las 4
+## ruedas por desgaste normal, ninguna rota.
+const DAMAGED_SLOTS := {
+	"neumaticos_lvl1_2": ["front_wheel"],
+}
+
+## Job no listado acá = 1 tanda (default de JobData.repair_rounds). El
+## 1.1 son las 4 ruedas: 2 tandas de 2 (front_wheel/rear_wheel de cada
+## lado), con el auto girando en el medio — ver JobVehicle.advance_round.
+const REPAIR_ROUNDS := {
+	"neumaticos_lvl1_1": 2,
+}
+
+## Filtro temporal de testeo — con un prefijo acá, get_all_jobs()
+## devuelve SOLO los encargos cuyo id empieza así (ignora todos los
+## demás), para probar una mecánica puntual sin que el resto ensucie
+## la lista del celular. Dejalo en "" para volver a ver todos los
+## encargos.
+const DEBUG_ONLY_JOB_ID := "neumaticos_lvl1_"
+
+## Igual de temporal — fuerza qué NPC trae TODOS los encargos de
+## prueba. Dejalo en "" (como ahora) para que el 1.1 y el 1.2 caigan en
+## NPCs distintos por el reparto round-robin de siempre — necesario
+## porque un mismo NPC no puede traer dos encargos al mismo tiempo.
+const DEBUG_FORCE_NPC_ID := ""
 
 static func get_all_jobs() -> Array[JobData]:
 	var jobs: Array[JobData] = []
@@ -346,7 +398,7 @@ static func get_all_jobs() -> Array[JobData]:
 				var job := JobData.new()
 				job.id = "%s_lvl%d_%d" % [skill_id, level, variant_index + 1]
 
-				if DEBUG_ONLY_JOB_ID != "" and job.id != DEBUG_ONLY_JOB_ID:
+				if DEBUG_ONLY_JOB_ID != "" and not job.id.begins_with(DEBUG_ONLY_JOB_ID):
 					npc_counter += 1
 					continue
 
@@ -356,6 +408,9 @@ static func get_all_jobs() -> Array[JobData]:
 				job.required_level = level
 				job.reward_money = rewards.money
 				job.reward_exp = rewards.exp
+				job.required_slots = Array(REQUIRED_SLOTS.get(job.id, []), TYPE_STRING, "", null)
+				job.damaged_slots = Array(DAMAGED_SLOTS.get(job.id, []), TYPE_STRING, "", null)
+				job.repair_rounds = REPAIR_ROUNDS.get(job.id, 1)
 				# Reparto parejo entre los NPCs del roster — siempre el
 				# mismo NPC para el mismo id de encargo.
 				job.npc_id = DEBUG_FORCE_NPC_ID if DEBUG_FORCE_NPC_ID != "" else NpcRoster.ALL[npc_counter % NpcRoster.ALL.size()]
@@ -378,6 +433,16 @@ static func is_job_available(job: JobData) -> bool:
 	if NpcDirector.is_workplace_open(job.npc_id):
 		return false  # está atendiendo su propio local ahora mismo, no puede salir a traerte un encargo
 
+	return true
+
+## true si ya se cambiaron todas las piezas que este job exige (ver
+## JobData.required_slots) — job sin piezas físicas siempre da true.
+## La usa Jobs.gd (botón manual) y VehiclePartInteraction (aviso
+## automático al terminar la última pieza).
+static func required_slots_done(job: JobData) -> bool:
+	for slot_id in job.required_slots:
+		if Game.state.job_repair_progress.get("%s:%s" % [job.id, slot_id], "") != "installed":
+			return false
 	return true
 
 static func get_job(job_id: String) -> JobData:
