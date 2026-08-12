@@ -1,15 +1,15 @@
 extends CanvasLayer
 
-@onready var season_option: OptionButton = $Bar/Row/SeasonOption
-@onready var day_spin: SpinBox = $Bar/Row/DaySpin
-@onready var hour_spin: SpinBox = $Bar/Row/HourSpin
-@onready var minute_spin: SpinBox = $Bar/Row/MinuteSpin
-@onready var apply_button: Button = $Bar/Row/ApplyButton
-@onready var send_home_button: Button = $Bar/Row/SendHomeButton
-@onready var add_tire_button: Button = $Bar/Row/AddTireButton
-@onready var remove_tire_button: Button = $Bar/Row/RemoveTireButton
-@onready var respawn_garage_button: Button = $Bar/Row/RespawnGarageButton
-@onready var reset_all_button: Button = $Bar/Row/ResetAllButton
+@onready var season_option: OptionButton = $Bar/Columns/Row/SeasonOption
+@onready var day_spin: SpinBox = $Bar/Columns/Row/DaySpin
+@onready var hour_spin: SpinBox = $Bar/Columns/Row/HourSpin
+@onready var minute_spin: SpinBox = $Bar/Columns/Row/MinuteSpin
+@onready var apply_button: Button = $Bar/Columns/Row/ApplyButton
+@onready var send_home_button: Button = $Bar/Columns/ButtonsRow/SendHomeButton
+@onready var add_tire_button: Button = $Bar/Columns/ButtonsRow/AddTireButton
+@onready var remove_tire_button: Button = $Bar/Columns/ButtonsRow/RemoveTireButton
+@onready var respawn_garage_button: Button = $Bar/Columns/ButtonsRow/RespawnGarageButton
+@onready var reset_all_button: Button = $Bar/Columns/ButtonsRow/ResetAllButton
 
 func _ready() -> void:
 	for season_name in TimeManager.SEASON_NAMES:

@@ -1,87 +1,91 @@
 [gd_scene format=3 uid="uid://c8vhpq0mxr6yl"]
 
-[ext_resource type="Script" path="res://scripts/ui/DebugBar.gd" id="1_debugbar"]
+[ext_resource type="Script" uid="uid://b3gqs0id8pta3" path="res://scripts/ui/DebugBar.gd" id="1_debugbar"]
 
-[node name="DebugBar" type="CanvasLayer" unique_id=3164729581]
+[node name="DebugBar" type="CanvasLayer" unique_id=-1130237715]
 layer = 20
 script = ExtResource("1_debugbar")
 
-[node name="Bar" type="PanelContainer" parent="."]
+[node name="Bar" type="PanelContainer" parent="." unique_id=1434444485]
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 24.0
+offset_bottom = 48.0
 grow_horizontal = 2
 
-[node name="Row" type="HBoxContainer" parent="Bar"]
+[node name="Columns" type="VBoxContainer" parent="Bar" unique_id=1866783824]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Row" type="HBoxContainer" parent="Bar/Columns" unique_id=1358102624]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Label" type="Label" parent="Bar/Row"]
+[node name="Label" type="Label" parent="Bar/Columns/Row" unique_id=1774901397]
 layout_mode = 2
 text = "DEBUG -"
 
-[node name="SeasonOption" type="OptionButton" parent="Bar/Row"]
+[node name="SeasonOption" type="OptionButton" parent="Bar/Columns/Row" unique_id=1866850442]
 layout_mode = 2
 focus_mode = 0
 
-[node name="Label2" type="Label" parent="Bar/Row"]
+[node name="Label2" type="Label" parent="Bar/Columns/Row" unique_id=315210254]
 layout_mode = 2
 text = "Día:"
 
-[node name="DaySpin" type="SpinBox" parent="Bar/Row"]
+[node name="DaySpin" type="SpinBox" parent="Bar/Columns/Row" unique_id=753130365]
 layout_mode = 2
-focus_mode = 0
-min_value = 1
-max_value = 28
-value = 1
+min_value = 1.0
+max_value = 28.0
+value = 1.0
 
-[node name="Label3" type="Label" parent="Bar/Row"]
+[node name="Label3" type="Label" parent="Bar/Columns/Row" unique_id=1719200000]
 layout_mode = 2
 text = "Hora:"
 
-[node name="HourSpin" type="SpinBox" parent="Bar/Row"]
+[node name="HourSpin" type="SpinBox" parent="Bar/Columns/Row" unique_id=269805908]
 layout_mode = 2
-focus_mode = 0
 max_value = 23.0
 value = 8.0
 
-[node name="Label4" type="Label" parent="Bar/Row"]
+[node name="Label4" type="Label" parent="Bar/Columns/Row" unique_id=857843681]
 layout_mode = 2
 text = ":"
 
-[node name="MinuteSpin" type="SpinBox" parent="Bar/Row"]
+[node name="MinuteSpin" type="SpinBox" parent="Bar/Columns/Row" unique_id=1556944870]
 layout_mode = 2
-focus_mode = 0
 max_value = 59.0
 step = 5.0
 
-[node name="ApplyButton" type="Button" parent="Bar/Row"]
+[node name="ApplyButton" type="Button" parent="Bar/Columns/Row" unique_id=89773291]
 layout_mode = 2
 focus_mode = 0
 text = "Aplicar"
 
-[node name="SendHomeButton" type="Button" parent="Bar/Row"]
+[node name="ButtonsRow" type="HBoxContainer" parent="Bar/Columns" unique_id=2091849343]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SendHomeButton" type="Button" parent="Bar/Columns/ButtonsRow" unique_id=895370168]
 layout_mode = 2
 focus_mode = 0
 text = "Regresar a casa"
 
-[node name="AddTireButton" type="Button" parent="Bar/Row"]
+[node name="AddTireButton" type="Button" parent="Bar/Columns/ButtonsRow" unique_id=955518764]
 layout_mode = 2
 focus_mode = 0
 text = "+1 neumático"
 
-[node name="RemoveTireButton" type="Button" parent="Bar/Row"]
+[node name="RemoveTireButton" type="Button" parent="Bar/Columns/ButtonsRow" unique_id=1976504883]
 layout_mode = 2
 focus_mode = 0
 text = "-1 neumático"
 
-[node name="RespawnGarageButton" type="Button" parent="Bar/Row"]
+[node name="RespawnGarageButton" type="Button" parent="Bar/Columns/ButtonsRow" unique_id=1524038704]
 layout_mode = 2
 focus_mode = 0
 text = "Respawnear en garage"
 
-[node name="ResetAllButton" type="Button" parent="Bar/Row"]
+[node name="ResetAllButton" type="Button" parent="Bar/Columns/ButtonsRow" unique_id=1395802798]
 layout_mode = 2
 focus_mode = 0
 text = "Resetear TODO"
-
