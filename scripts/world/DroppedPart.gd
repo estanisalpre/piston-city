@@ -20,6 +20,7 @@ func setup(part_id: String, icon: Texture2D, record_id: int) -> void:
 func _ready() -> void:
 	input_pickable = true
 	input_event.connect(_on_input_event)
+	PlayerCarry.dropped_part_removed.connect(_on_dropped_part_removed)
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if not event is InputEventMouseButton or not event.pressed or event.button_index != MOUSE_BUTTON_LEFT:
@@ -31,4 +32,10 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	get_viewport().set_input_as_handled()
 	PlayerCarry.carry(_part_id, _icon)
 	PlayerCarry.remove_dropped_record(_record_id)
-	queue_free()
+
+## Se dispara también cuando ESTA MISMA pieza se vendió desde la
+## computadora del marketplace (ver MarketplaceManager) — ahí nadie la
+## "levantó" a mano, pero igual tiene que desaparecer del mapa.
+func _on_dropped_part_removed(id: int) -> void:
+	if id == _record_id:
+		queue_free()

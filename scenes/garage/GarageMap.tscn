@@ -28,6 +28,8 @@
 [ext_resource type="Texture2D" uid="uid://bxbks6dw5rre5" path="res://assets/sprites/doors/parking_garage_door/top_center.png" id="18_4yspm"]
 [ext_resource type="AudioStream" uid="uid://borb4520kqy4f" path="res://effects/sounds/garage/music.mp3" id="19_20jni"]
 [ext_resource type="Texture2D" uid="uid://cpmcw4oe68t3j" path="res://assets/sprites/doors/parking_garage_door/bottom_center.png" id="19_34s8u"]
+[ext_resource type="Texture2D" uid="uid://djufgb6vac3wp" path="res://assets/sprites/garage/decorations/pc_and_desk.png" id="20_s272m"]
+[ext_resource type="Texture2D" uid="uid://dis8s6p50kugh" path="res://assets/sprites/garage/decorations/desk_chair.png" id="21_7uce2"]
 [ext_resource type="Texture2D" uid="uid://blbygia6l423n" path="res://assets/sprites/garage/bedroom/bed_right.png" id="24_n2gec"]
 [ext_resource type="Texture2D" uid="uid://dugnmqq318row" path="res://assets/sprites/garage/bedroom/bed_left.png" id="25_fdh2m"]
 [ext_resource type="Texture2D" uid="uid://c8hy3vrx7reta" path="res://assets/sprites/garage/walls/bedroom/square_interior_wall.png" id="26_uco2r"]
@@ -42,15 +44,15 @@
 [ext_resource type="Script" uid="uid://crrnm26m5omnk" path="res://scripts/world/DayNightVisibility.gd" id="37_daynightvis"]
 [ext_resource type="Script" uid="uid://c72gg8lcnhfct" path="res://scripts/world/BedTrigger.gd" id="38_bedtrigger"]
 [ext_resource type="PackedScene" uid="uid://dwxq4h1door01" path="res://scenes/world/DoorTrigger.tscn" id="39_doortrigger"]
-[ext_resource type="Texture2D" uid="uid://dwtdqar5p036s" path="res://assets/sprites/vehicles/concepts/concept_v1.png" id="40_yb3if"]
 [ext_resource type="Script" uid="uid://dke5pxo3gn4y6" path="res://scripts/world/JobEncounterSpawner.gd" id="41_jobspawner"]
-[ext_resource type="PackedScene" uid="uid://b683mhfka28re" path="res://scenes/vehicles/JobVehicle.tscn" id="42_jobvehicle"]
+[ext_resource type="PackedScene" uid="uid://w1ca8rx81j6v" path="res://scenes/vehicles/JobVehicle.tscn" id="42_jobvehicle"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/Client.tscn" id="43_client"]
-[ext_resource type="Texture2D" uid="uid://lgyw07a46vg2" path="res://assets/sprites/vehicles/concepts/wheels/tire_v2.png" id="44_avj37"]
 [ext_resource type="PackedScene" path="res://scenes/world/PartStorageZone.tscn" id="45_rxlga"]
 [ext_resource type="Texture2D" uid="uid://bj3to3rrkkrl4" path="res://assets/sprites/garage/tires_section/tire_wall_support.png" id="46_lugbs"]
 [ext_resource type="Texture2D" uid="uid://dljxa68uwp77g" path="res://assets/sprites/garage/tires_section/tire_front.png" id="46_s272m"]
 [ext_resource type="Texture2D" uid="uid://dr2agfef56rw1" path="res://assets/sprites/garage/tires_section/tire_front_old.png" id="47_s272m"]
+[ext_resource type="PackedScene" path="res://scenes/world/NpcInteraction.tscn" id="49_7uce2"]
+[ext_resource type="Script" uid="uid://dm5tlgxokp67x" path="res://scripts/world/MarketplaceComputer.gd" id="50_qedn1"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7uce2"]
 texture = ExtResource("1_57cdy")
@@ -224,6 +226,28 @@ sources/1 = SubResource("TileSetAtlasSource_ynoap")
 sources/2 = SubResource("TileSetAtlasSource_kwvp2")
 sources/3 = SubResource("TileSetAtlasSource_oe4ep")
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1vukj"]
+texture = ExtResource("20_s272m")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -5.098091, 16, -4.779461, 16, 16, -16, 16)
+0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 8.921661, -16, 8.603031)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4ato0"]
+texture = ExtResource("21_7uce2")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-12.4265995, 0.31863022, 10.8334465, 0.31863022, 10.196182, 16, -12.107969, 16)
+0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 9.877552, -1.2745228, -10.8334465, -0.63726044)
+
+[sub_resource type="TileSet" id="TileSet_78gbc"]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_1vukj")
+sources/1 = SubResource("TileSetAtlasSource_4ato0")
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mp0ji"]
 texture = ExtResource("2_c2ank")
 texture_region_size = Vector2i(32, 32)
@@ -365,33 +389,8 @@ tile_size = Vector2i(32, 32)
 sources/1 = SubResource("TileSetAtlasSource_wtopnight")
 sources/2 = SubResource("TileSetAtlasSource_wbotnight")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lugbs"]
-texture = ExtResource("40_yb3if")
-texture_region_size = Vector2i(32, 32)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_krpui"]
-tile_size = Vector2i(32, 32)
-sources/0 = SubResource("TileSetAtlasSource_lugbs")
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s272m"]
-texture = ExtResource("44_avj37")
-texture_region_size = Vector2i(32, 32)
-0:0/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_hplta"]
-tile_size = Vector2i(32, 32)
-sources/0 = SubResource("TileSetAtlasSource_s272m")
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rxlga"]
-size = Vector2(97, 35.5)
+size = Vector2(97, 56)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pt2vc"]
 texture = ExtResource("46_lugbs")
@@ -427,6 +426,9 @@ size = Vector2(141, 127)
 size = Vector2(474, 89)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_krpui"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qedn1"]
+size = Vector2(69, 89)
 
 [node name="GarageMap" type="Node2D" unique_id=874395224]
 
@@ -472,6 +474,10 @@ z_index = 41
 position = Vector2(17, -6)
 tile_map_data = PackedByteArray("AAAGAAoAAAAAAAAAAAAGAAsAAQAAAAAAAAAHAAoAAgAAAAAAAAAHAAsAAwAAAAAAAAA=")
 tile_set = SubResource("TileSet_bpu5i")
+
+[node name="desk_marketplace" type="TileMapLayer" parent="Map/decorations" unique_id=1382672074]
+tile_map_data = PackedByteArray("AAAOAAkAAAAAAAEAAAAOAAgAAAAAAAAAAAANAAkAAQAAAAEAAAANAAgAAQAAAAAAAAA=")
+tile_set = SubResource("TileSet_78gbc")
 
 [node name="doors" type="Node2D" parent="Map" unique_id=980264216]
 
@@ -568,16 +574,6 @@ client_spawn_point = NodePath("../../doors/ClientSpawn")
 vehicle_scene = ExtResource("42_jobvehicle")
 client_scene = ExtResource("43_client")
 
-[node name="concept_v1" type="TileMapLayer" parent="Map/vehicles" unique_id=1518791088]
-tile_map_data = PackedByteArray("AAAKAAYAAAAAAAAAAAAKAAcAAAAAAAEAAAALAAYAAAABAAAAAAALAAcAAAABAAEAAAAMAAYAAAACAAAAAAAMAAcAAAACAAEAAAANAAYAAAADAAAAAAANAAcAAAADAAEAAAA=")
-tile_set = SubResource("TileSet_krpui")
-
-[node name="wheels" type="Node2D" parent="Map/vehicles" unique_id=1583146034]
-
-[node name="wheels" type="TileMapLayer" parent="Map/vehicles/wheels" unique_id=1713013452]
-tile_map_data = PackedByteArray("AAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAABA=")
-tile_set = SubResource("TileSet_hplta")
-
 [node name="tires_section" type="Node2D" parent="Map" unique_id=591852782]
 z_index = 9
 
@@ -588,7 +584,7 @@ part_icons = Dictionary[String, Texture2D]({
 })
 
 [node name="CollisionShape2D" parent="Map/tires_section/PartStorageZone" index="0"]
-position = Vector2(270.5, 64.25)
+position = Vector2(270.5, 54)
 shape = SubResource("RectangleShape2D_rxlga")
 
 [node name="tires_wall_support" type="TileMapLayer" parent="Map/tires_section/PartStorageZone" unique_id=991299212]
@@ -643,6 +639,16 @@ shape = SubResource("RectangleShape2D_0ru8o")
 [node name="outside_bedroom" type="CollisionShape2D" parent="Map/no_drop_zone" unique_id=901954837]
 position = Vector2(383, 75)
 shape = SubResource("RectangleShape2D_krpui")
+
+[node name="NpcInteraction" parent="Map" unique_id=1754473209 instance=ExtResource("49_7uce2")]
+
+[node name="CollisionShape2D" parent="Map/NpcInteraction" index="0"]
+position = Vector2(441.5, 296.5)
+shape = SubResource("RectangleShape2D_qedn1")
+
+[node name="MarketplaceComputer" type="Node2D" parent="Map" unique_id=2066376480]
+script = ExtResource("50_qedn1")
+interaction_path = NodePath("../NpcInteraction")
 
 [node name="Lights" type="Node2D" parent="." unique_id=960782942]
 
@@ -720,3 +726,4 @@ autoplay = true
 [editable path="Map/doors/ExitParkingDoorTrigger"]
 [editable path="Map/bedroom/walls/BehindWallTrigger"]
 [editable path="Map/tires_section/PartStorageZone"]
+[editable path="Map/NpcInteraction"]

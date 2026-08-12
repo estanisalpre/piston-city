@@ -9,6 +9,12 @@ extends Node
 
 signal carry_changed(part_id: String, icon: Texture2D)  # icon null = dejó de cargar algo
 
+## Avisa cuando se sacó un registro de dropped_parts (levantado a mano,
+## o vendido desde la computadora del marketplace) — lo escucha
+## DroppedPart para autodestruirse si en ese momento está visible en
+## el mapa cargado, sin importar quién haya pedido sacar el registro.
+signal dropped_part_removed(id: int)
+
 const DroppedPartScene := preload("res://scenes/world/DroppedPart.tscn")
 
 var _part_id := ""
@@ -29,6 +35,12 @@ func is_carrying() -> bool:
 
 func get_carried_part_id() -> String:
 	return _part_id
+
+## Lo llama quien use la pieza cargada en una acción (ej. instalarla en
+## el auto) — a diferencia de soltarla, no busca dónde dejarla: la
+## pieza se consume y desaparece de la cabeza sin ir a ningún lado.
+func consume() -> void:
+	_finish_carry()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_carrying():
@@ -103,4 +115,5 @@ func remove_dropped_record(id: int) -> void:
 	for i in Game.state.dropped_parts.size():
 		if Game.state.dropped_parts[i].id == id:
 			Game.state.dropped_parts.remove_at(i)
+			dropped_part_removed.emit(id)
 			return

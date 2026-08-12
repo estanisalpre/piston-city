@@ -3,7 +3,7 @@ extends Area2D
 ## Mueble con lugares físicos limitados en el taller (ej. la
 ## estantería de neumáticos) — reusable: instanciar
 ## PartStorageZone.tscn en cualquier lugar y completar Zone Id,
-## Capacity y Part Icons desde el Inspector.
+## Capacity, Part Icons y Take Part Id desde el Inspector.
 ##
 ## Pura vista: nunca decide qué hay dónde, eso vive en
 ## PartsInventory.get_slots(zone_id, capacity) (ver ahí el porqué —
@@ -13,9 +13,13 @@ extends Area2D
 ## neumático usado no se pisa nunca con uno nuevo ni viceversa, cada
 ## uno tiene su propio lugar hasta que se saca de ahí.
 ##
-## Además, cualquiera que esté cargando una pieza (ver PlayerCarry)
-## puede depositarla acá con try_deposit() — nunca decide cuándo
-## llamarlo, eso lo maneja PlayerCarry al soltar.
+## Dos interacciones:
+## - Cualquiera que esté cargando una pieza (ver PlayerCarry) puede
+##   depositarla acá con try_deposit() — nunca decide cuándo llamarlo,
+##   eso lo maneja PlayerCarry al soltar.
+## - Click izquierdo, parado acá y sin cargar nada, agarra el lugar
+##   MÁS CERCANO al mouse (no siempre el primero de la fila) — sea
+##   nuevo o usado, lo que sea que tenga puesto ese lugar puntual.
 
 @export var zone_id: String = "tire_shelf"
 @export var capacity: int = 5
@@ -28,8 +32,10 @@ var player_in_range := false
 
 func _ready() -> void:
 	add_to_group("part_storage_zone")
+	input_pickable = true
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	input_event.connect(_on_input_event)
 	PartsInventory.slots_changed.connect(_on_slots_changed)
 	_refresh_slots()
 
@@ -37,16 +43,46 @@ func _ready() -> void:
 ## parado acá, esta estantería acepta ese tipo de pieza, y todavía hay
 ## lugar libre (sea cual sea la mezcla de tipos ya puestos).
 func try_deposit(carried_part_id: String) -> bool:
-	print("[PartStorageZone %s] try_deposit('%s') — player_in_range=%s, part_icons acepta=%s, part_icons keys=%s" % [
-		zone_id, carried_part_id, player_in_range, part_icons.has(carried_part_id), part_icons.keys()
-	])
-
 	if not player_in_range or not part_icons.has(carried_part_id):
 		return false
 
-	var ok := PartsInventory.deposit_in_zone(zone_id, capacity, carried_part_id)
-	print("[PartStorageZone %s] deposit_in_zone -> %s (slots=%s)" % [zone_id, ok, PartsInventory.get_slots(zone_id, capacity)])
-	return ok
+	return PartsInventory.deposit_in_zone(zone_id, capacity, carried_part_id)
+
+func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if not event is InputEventMouseButton or not event.pressed or event.button_index != MOUSE_BUTTON_LEFT:
+		return
+
+	if not player_in_range or PlayerCarry.is_carrying():
+		return
+
+	var index := _closest_slot_index()
+	if index == -1:
+		return
+
+	var taken_part_id := PartsInventory.take_from_index(zone_id, index)
+	if taken_part_id == "":
+		return
+
+	get_viewport().set_input_as_handled()
+	PlayerCarry.carry(taken_part_id, part_icons.get(taken_part_id))
+
+## Cuál de los Sprite2D hijos está más cerca del mouse ahora mismo —
+## así el click agarra el lugar que estás mirando, no siempre el
+## primero de la fila.
+func _closest_slot_index() -> int:
+	var sprite_slots := _get_slots()
+	var mouse_pos := get_global_mouse_position()
+
+	var best_index := -1
+	var best_dist := INF
+
+	for i in sprite_slots.size():
+		var dist: float = sprite_slots[i].global_position.distance_to(mouse_pos)
+		if dist < best_dist:
+			best_dist = dist
+			best_index = i
+
+	return best_index
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):

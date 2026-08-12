@@ -978,6 +978,7 @@ offset_bottom = -34.0
 text = "peaje"
 
 [node name="navigation_region" type="Node2D" parent="Map" unique_id=286876079]
+visible = false
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="Map/navigation_region" unique_id=2062574752]
 position = Vector2(3, -10)

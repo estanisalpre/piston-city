@@ -108,4 +108,5 @@ func load_game() -> void:
 		Game.state.storage_slots = loaded_state.storage_slots
 		Game.state.dropped_parts = loaded_state.dropped_parts
 		Game.state.next_dropped_part_id = loaded_state.next_dropped_part_id
+		Game.state.pending_sales = loaded_state.pending_sales
 		Game.state.job_repair_progress = loaded_state.job_repair_progress

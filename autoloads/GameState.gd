@@ -107,6 +107,12 @@ signal money_changed(amount: int)
 @export var dropped_parts: Array[Dictionary] = []
 @export var next_dropped_part_id: int = 0
 
+## Ventas hechas desde la computadora del marketplace, todavía sin
+## pagar — el pago nunca es instantáneo, se acredita al día siguiente
+## a las 08:00 (ver MarketplaceManager). Cada entrada: {"amount": int,
+## "pay_day": int} (Game.state.day en el que corresponde pagar).
+@export var pending_sales: Array[Dictionary] = []
+
 ## job_id -> en qué paso de la reparación quedó ese encargo puntual
 ## (String libre, ej. "" = todavía no arrancó, "wheel_removed" = ya le
 ## sacó la rueda vieja). Vive en Game.state (no en el nodo del auto en
@@ -149,5 +155,6 @@ func reset() -> void:
 	storage_slots = fresh.storage_slots
 	dropped_parts = fresh.dropped_parts
 	next_dropped_part_id = fresh.next_dropped_part_id
+	pending_sales = fresh.pending_sales
 	job_repair_progress = fresh.job_repair_progress
 	npc_snapshots = fresh.npc_snapshots

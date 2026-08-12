@@ -164,6 +164,9 @@ const JOB_TEMPLATES := {
 		[
 			# 1
 			{"title": "Cambio de neumáticos", "description": "Desmontar y montar un juego de neumáticos."}, 
+			# 1.1 = ¿Qué acción se hará?
+			
+
 			{"title": "Montaje y desmontaje de rueda", "description": "Cambiar una rueda dañada por una nueva."},
 			# 1.2 = ¿Qué acción se hará?
 			# Nos dará 25 exp.

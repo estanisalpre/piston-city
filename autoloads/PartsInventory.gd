@@ -63,3 +63,28 @@ func deposit_in_zone(zone_id: String, capacity: int, part_id: String) -> bool:
 	add_part(part_id, 1)
 	slots_changed.emit(zone_id)
 	return true
+
+## Libera el lugar puntual "index" de esa estantería (el que el
+## jugador clickeó/seleccionó, ver PartStorageZone, o el que eligió
+## vender desde la computadora, ver MarketplaceManager) y devuelve qué
+## part_id tenía puesto — "" si ese lugar estaba vacío, el índice no
+## existe, o la estantería ni se cargó todavía. Sin "capacity" a
+## propósito: para SACAR algo no hace falta saber el tamaño máximo,
+## solo importa para cuando hay que crear la estantería la primera vez
+## (ver deposit_in_zone).
+func take_from_index(zone_id: String, index: int) -> String:
+	if not Game.state.storage_slots.has(zone_id):
+		return ""
+
+	var slots: Array = Game.state.storage_slots[zone_id]
+	if index < 0 or index >= slots.size():
+		return ""
+
+	var part_id: String = slots[index]
+	if part_id == "":
+		return ""
+
+	slots[index] = ""
+	remove_part(part_id, 1)
+	slots_changed.emit(zone_id)
+	return part_id
