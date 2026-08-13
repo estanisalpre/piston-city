@@ -88,3 +88,18 @@ func take_from_index(zone_id: String, index: int) -> String:
 	remove_part(part_id, 1)
 	slots_changed.emit(zone_id)
 	return part_id
+
+# --- Etiquetas de caja (texto libre) ----------------------------------------
+#
+# El jugador describe a mano qué guardó en cada caja (ver ZoneLabel) — no se
+# arma solo a partir de storage_slots porque no hay catálogo de piezas con
+# nombres lindos todavía, solo part_ids como "bateria".
+
+signal zone_label_changed(zone_id: String)
+
+func get_zone_label(zone_id: String) -> String:
+	return Game.state.box_labels.get(zone_id, "")
+
+func set_zone_label(zone_id: String, text: String) -> void:
+	Game.state.box_labels[zone_id] = text
+	zone_label_changed.emit(zone_id)

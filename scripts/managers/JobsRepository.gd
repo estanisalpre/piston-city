@@ -353,6 +353,7 @@ const JOB_TEMPLATES := {
 const REQUIRED_SLOTS := {
 	"neumaticos_lvl1_1": ["front_wheel", "rear_wheel"],
 	"neumaticos_lvl1_2": ["front_wheel"],
+	"desmantelador_lvl1_2": ["front_bumper"],
 }
 
 ## Subconjunto de REQUIRED_SLOTS que además arranca con textura de
@@ -375,13 +376,13 @@ const REPAIR_ROUNDS := {
 ## demás), para probar una mecánica puntual sin que el resto ensucie
 ## la lista del celular. Dejalo en "" para volver a ver todos los
 ## encargos.
-const DEBUG_ONLY_JOB_ID := "neumaticos_lvl1_"
+const DEBUG_ONLY_JOB_ID := "desmantelador_lvl1_2"
 
 ## Igual de temporal — fuerza qué NPC trae TODOS los encargos de
 ## prueba. Dejalo en "" (como ahora) para que el 1.1 y el 1.2 caigan en
 ## NPCs distintos por el reparto round-robin de siempre — necesario
 ## porque un mismo NPC no puede traer dos encargos al mismo tiempo.
-const DEBUG_FORCE_NPC_ID := ""
+const DEBUG_FORCE_NPC_ID := "npc_02"
 
 static func get_all_jobs() -> Array[JobData]:
 	var jobs: Array[JobData] = []

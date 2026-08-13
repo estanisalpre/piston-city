@@ -7,6 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://bnyfusqtypq1p" path="res://assets/sprites/vehicles/models/ford_ltd_1980/rear_wheel.png" id="5_rearwheel"]
 [ext_resource type="Texture2D" uid="uid://ns0yfkvjnxab" path="res://assets/sprites/vehicles/concepts/wheels/tire_v3.png" id="6_carryicon"]
 [ext_resource type="Texture2D" uid="uid://c8p8mcbmdoba0" path="res://assets/sprites/vehicles/models/ford_ltd_1980/front_wheel_deflated.png" id="7_deflated"]
+[ext_resource type="Texture2D" path="res://assets/sprites/vehicles/models/ford_ltd_1980/front_bumper.png" id="8_frontbumper"]
+[ext_resource type="Texture2D" uid="uid://7fa48y8w2e02" path="res://assets/sprites/vehicles/models/ford_ltd_1980/rear_bumper.png" id="9_rearbumper"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_frontwheel"]
 size = Vector2(16, 16)
@@ -14,12 +16,18 @@ size = Vector2(16, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rearwheel"]
 size = Vector2(16, 16)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_frontbumper"]
+size = Vector2(12, 20)
+
 [node name="JobVehicle" type="Node2D" unique_id=825636545]
 z_index = 10
 script = ExtResource("1_jobvehicle")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=799657077]
 texture = ExtResource("2_body")
+
+[node name="RearBumper" type="Sprite2D" parent="." unique_id=612044837]
+texture = ExtResource("9_rearbumper")
 
 [node name="FrontWheel" type="Area2D" parent="." unique_id=1293787391]
 script = ExtResource("3_partinteraction")
@@ -45,3 +53,17 @@ texture = ExtResource("5_rearwheel")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RearWheel" unique_id=39958977]
 position = Vector2(-32, 22)
 shape = SubResource("RectangleShape2D_rearwheel")
+
+[node name="FrontBumper" type="Area2D" parent="." unique_id=771029384]
+script = ExtResource("3_partinteraction")
+slot_id = "front_bumper"
+removed_part_id = "parachoques_usado"
+install_part_id = "parachoques"
+carry_icon = ExtResource("8_frontbumper")
+
+[node name="Sprite2D" type="Sprite2D" parent="FrontBumper" unique_id=1055409291]
+texture = ExtResource("8_frontbumper")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FrontBumper" unique_id=1592637648]
+position = Vector2(58, 22)
+shape = SubResource("RectangleShape2D_frontbumper")

@@ -97,6 +97,13 @@ signal money_changed(amount: int)
 ## saca de ahí. Ver PartsInventory.deposit_in_zone/get_slots.
 @export var storage_slots: Dictionary[String, Array] = {}
 
+## zone_id (String libre, ej. "small_box_1") -> texto libre que el
+## jugador escribió para describir qué guardó ahí (ej. "Espejo nuevo +
+## batería usada"). No se genera solo a partir de storage_slots — no
+## hay catálogo de piezas con nombres lindos todavía, así que el
+## jugador lo escribe a mano. Ver PartsInventory.get_zone_label/set_zone_label.
+@export var box_labels: Dictionary[String, String] = {}
+
 ## Piezas tiradas en el piso de algún mapa (ver PlayerCarry) — para que
 ## sigan ahí después de guardar/cargar, en vez de desaparecer. Cada
 ## entrada: {"id": int, "map_path": String, "position": Vector2,
@@ -153,6 +160,7 @@ func reset() -> void:
 	job_cooldowns = fresh.job_cooldowns
 	parts = fresh.parts
 	storage_slots = fresh.storage_slots
+	box_labels = fresh.box_labels
 	dropped_parts = fresh.dropped_parts
 	next_dropped_part_id = fresh.next_dropped_part_id
 	pending_sales = fresh.pending_sales

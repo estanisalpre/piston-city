@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://doypeyqtjja4e" path="res://scripts/player/Player.gd" id="1_plyrsc"]
 [ext_resource type="Texture2D" uid="uid://cpkrnis7g0b55" path="res://assets/sprites/player/atlas_animation_player.png" id="2_gfjak"]
-[ext_resource type="Script" path="res://scripts/player/PlayerCarryIcon.gd" id="3_carryicon"]
+[ext_resource type="Script" uid="uid://cm8tj7cff3jg2" path="res://scripts/player/PlayerCarryIcon.gd" id="3_carryicon"]
 
 [sub_resource type="Animation" id="Animation_gfjak"]
 length = 0.001
@@ -194,7 +194,7 @@ cull_mode = 1
 polygon = PackedVector2Array(-6, -18, -7, -13, -8, -9, -5, -6, -6, -3, -7, 0, -9, 5, -5, 8, -4, 12, -7, 17, 6, 17, 6, 13, 4, 13, 4, 7, 8, 6, 8, 2, 6, -1, 5, -5, 5, -7, 7, -9, 7, -12, 6, -18, 4, -20, -4, -20)
 
 [node name="Player" type="CharacterBody2D" unique_id=383342561]
-z_index = 10
+z_index = 20
 script = ExtResource("1_plyrsc")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=42938060]
@@ -219,7 +219,7 @@ shape = SubResource("RectangleShape2D_qrre2")
 [node name="LightOccluder2D" type="LightOccluder2D" parent="." unique_id=214260650]
 occluder = SubResource("OccluderPolygon2D_u5bk5")
 
-[node name="CarryIcon" type="Sprite2D" parent="."]
-position = Vector2(0, -18)
+[node name="CarryIcon" type="Sprite2D" parent="." unique_id=2025225343]
 z_index = 1
+position = Vector2(0, -18)
 script = ExtResource("3_carryicon")

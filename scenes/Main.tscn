@@ -20,6 +20,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/ButtonSequenceMinigame.tscn" id="17_buttonseq"]
 [ext_resource type="PackedScene" path="res://scenes/world/FloorPlacementCursor.tscn" id="18_floorcursor"]
 [ext_resource type="PackedScene" path="res://scenes/ui/MarketplaceModal.tscn" id="19_marketplacemodal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/BoxInventoryModal.tscn" id="20_boxinventorymodal"]
 
 [sub_resource type="Animation" id="Animation_0ge4i"]
 length = 0.001
@@ -139,3 +140,5 @@ transform = Transform2D(0.5, 0, 0, 0.5, 0, 35)
 [node name="ButtonSequenceMinigame" parent="UI" instance=ExtResource("17_buttonseq")]
 
 [node name="MarketplaceModal" parent="UI" instance=ExtResource("19_marketplacemodal")]
+
+[node name="BoxInventoryModal" parent="UI" instance=ExtResource("20_boxinventorymodal")]

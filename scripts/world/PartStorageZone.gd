@@ -1,28 +1,46 @@
 extends Area2D
 
 ## Mueble con lugares físicos limitados en el taller (ej. la
-## estantería de neumáticos) — reusable: instanciar
-## PartStorageZone.tscn en cualquier lugar y completar Zone Id,
-## Capacity, Part Icons y Take Part Id desde el Inspector.
+## estantería de neumáticos, o una caja de la estantería del cuarto de
+## almacenamiento) — reusable: instanciar PartStorageZone.tscn en
+## cualquier lugar y completar Zone Id, Capacity y Part Icons desde el
+## Inspector.
 ##
 ## Pura vista: nunca decide qué hay dónde, eso vive en
 ## PartsInventory.get_slots(zone_id, capacity) (ver ahí el porqué —
 ## tiene que existir incluso comprando desde otro mapa donde este nodo
 ## ni está cargado). Este script solo pinta ese estado sobre hasta
-## "capacity" Sprite2D hijos, en el mismo orden — el lugar que ocupó un
+## "capacity" lugares, en el mismo orden — el lugar que ocupó un
 ## neumático usado no se pisa nunca con uno nuevo ni viceversa, cada
 ## uno tiene su propio lugar hasta que se saca de ahí.
+##
+## Cada Sprite2D hijo directo (ej. tire_1..tire_5) es "un lugar": se
+## ve/oculta según si está ocupado — patrón de la estantería de
+## neumáticos, un mueble ABIERTO donde tiene sentido ver cada pieza
+## puesta en su lugar físico.
+##
+## Para muebles CERRADOS (ej. las cajas del cuarto de almacenamiento,
+## donde no tiene sentido ver íconos flotando sobre la tapa) usar
+## use_modal = true: no se dibuja nada en el mundo, y clickear la caja
+## abre BoxInventoryModal en grande con la grilla completa — recién
+## ahí se ve qué hay en cada lugar.
 ##
 ## Dos interacciones:
 ## - Cualquiera que esté cargando una pieza (ver PlayerCarry) puede
 ##   depositarla acá con try_deposit() — nunca decide cuándo llamarlo,
-##   eso lo maneja PlayerCarry al soltar.
-## - Click izquierdo, parado acá y sin cargar nada, agarra el lugar
-##   MÁS CERCANO al mouse (no siempre el primero de la fila) — sea
-##   nuevo o usado, lo que sea que tenga puesto ese lugar puntual.
+##   eso lo maneja PlayerCarry al soltar. Funciona igual con o sin
+##   modal.
+## - Click izquierdo, parado acá y sin cargar nada: en modo normal
+##   agarra el lugar MÁS CERCANO al mouse (sea nuevo o usado, lo que
+##   sea que tenga puesto ese lugar puntual); en modo use_modal abre
+##   el modal en vez de sacar nada directo.
 
 @export var zone_id: String = "tire_shelf"
 @export var capacity: int = 5
+
+## true para muebles cerrados (ver arriba) — clickear abre
+## BoxInventoryModal en vez de sacar un lugar directo del mundo.
+@export var use_modal: bool = false
 
 ## part_id (ej. "neumatico", "neumatico_usado") -> textura a mostrar en
 ## el lugar que ocupe. Un mueble puede tener varios tipos mezclados.
@@ -55,6 +73,12 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	if not player_in_range or PlayerCarry.is_carrying():
 		return
 
+	get_viewport().set_input_as_handled()
+
+	if use_modal:
+		_open_modal()
+		return
+
 	var index := _closest_slot_index()
 	if index == -1:
 		return
@@ -63,8 +87,15 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	if taken_part_id == "":
 		return
 
-	get_viewport().set_input_as_handled()
 	PlayerCarry.carry(taken_part_id, part_icons.get(taken_part_id))
+
+## Solo para muebles cerrados (use_modal = true) — el modal se agrega
+## una única vez a la escena principal (ver Main.tscn), así que
+## siempre existe sin importar qué mapa esté cargado.
+func _open_modal() -> void:
+	var modal := get_tree().get_first_node_in_group("box_inventory_modal")
+	if modal:
+		modal.open(zone_id, capacity, part_icons)
 
 ## Cuál de los Sprite2D hijos está más cerca del mouse ahora mismo —
 ## así el click agarra el lugar que estás mirando, no siempre el
@@ -97,6 +128,9 @@ func _on_slots_changed(changed_zone_id: String) -> void:
 		_refresh_slots()
 
 func _refresh_slots() -> void:
+	if use_modal:
+		return
+
 	var occupants: Array = PartsInventory.get_slots(zone_id, capacity)
 	var sprite_slots := _get_slots()
 

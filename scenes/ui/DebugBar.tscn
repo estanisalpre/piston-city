@@ -80,6 +80,11 @@ layout_mode = 2
 focus_mode = 0
 text = "-1 neumático"
 
+[node name="AddBumperButton" type="Button" parent="Bar/Columns/ButtonsRow"]
+layout_mode = 2
+focus_mode = 0
+text = "+1 parachoques"
+
 [node name="RespawnGarageButton" type="Button" parent="Bar/Columns/ButtonsRow" unique_id=1524038704]
 layout_mode = 2
 focus_mode = 0
